@@ -48,18 +48,18 @@ Use $task-execution-simple to implement the supplied task.
 
 ## Installation
 
-The commands below use `./skills` as the Waypoint source inside a local checkout. This intentionally excludes ignored development-only skills elsewhere in the working tree. After the repository is published, replace `./skills` with its GitHub shorthand (`owner/waypoint`) or full repository URL.
+The commands below install from the published `Adol1111/waypoint` repository. Contributors working from a local checkout can use `./skills` as the source; that intentionally excludes ignored development-only skills elsewhere in the working tree.
 
 List the skills available from a source:
 
 ```bash
-npx skills add ./skills --list
+npx skills add Adol1111/waypoint --list
 ```
 
 Install one standalone skill:
 
 ```bash
-npx skills add ./skills --skill task-spec
+npx skills add Adol1111/waypoint --skill task-spec
 ```
 
 Repeat `--skill` to install a selected set. Installation is project-local by default; add `-g` for a user-level installation or `-a codex` to target a specific supported agent.
@@ -67,7 +67,7 @@ Repeat `--skill` to install a selected set. Installation is project-local by def
 Install every Waypoint skill:
 
 ```bash
-npx skills add ./skills --skill '*'
+npx skills add Adol1111/waypoint --skill '*'
 ```
 
 The [`skills` CLI](https://github.com/vercel-labs/skills) supports Codex, Claude Code, Cursor, and other Agent Skills-compatible tools.
@@ -88,7 +88,7 @@ Both workflows are explicitly invoked; installing one does not let it take over 
 Installing only `waypoint-workflow` is technically valid, but it may recommend an atomic skill that is not installed. For complete routing coverage, install the workflow plus all six engineering waypoints:
 
 ```bash
-npx skills add ./skills \
+npx skills add Adol1111/waypoint \
   --skill waypoint-workflow \
   --skill domain-context \
   --skill roadmap-planning \
@@ -109,7 +109,7 @@ Use $waypoint-workflow to recommend the next atomic waypoint.
 `milestone-workflow` coordinates the same six atomic waypoints and adds durable Milestone governance:
 
 ```bash
-npx skills add ./skills \
+npx skills add Adol1111/waypoint \
   --skill milestone-workflow \
   --skill domain-context \
   --skill roadmap-planning \
@@ -128,7 +128,7 @@ Use $milestone-workflow to plan, continue, or close this delivery.
 Add `docs-workflow-bootstrap` to either bundle only when the team wants Waypoint to initialize a shared local docs convention:
 
 ```bash
-npx skills add ./skills --skill docs-workflow-bootstrap
+npx skills add Adol1111/waypoint --skill docs-workflow-bootstrap
 ```
 
 > [!NOTE]
@@ -177,7 +177,7 @@ Or replace the repeated `--skill` arguments with the single companion you need. 
 For a complete local Waypoint installation plus all companions:
 
 ```bash
-npx skills add ./skills --skill '*'
+npx skills add Adol1111/waypoint --skill '*'
 npx skills add mattpocock/skills \
   --skill grilling \
   --skill research \
@@ -207,3 +207,16 @@ python3 -m unittest discover -s tests -v
 ```
 
 The suite validates independent no-`docs/` usage, both bootstrap choices, lightweight coordinator recommendations, Milestone discovery and closure rules, chat-independent specifications, destructive closing confirmation, frontmatter, `agents/openai.yaml`, template ownership, and fixture pairing. See [ARCHITECTURE.md](ARCHITECTURE.md) for the atomic-skill contract and safety boundaries.
+
+## Releases
+
+Waypoint uses [Changesets](https://github.com/changesets/changesets) to collect release notes and create versioned GitHub changelogs.
+
+For a user-visible skill or workflow change:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm changeset
+```
+
+Commit the generated `.changeset/*.md` fragment with the change. After it reaches `main`, the release workflow creates or updates a Version PR. Merging that PR updates `CHANGELOG.md`, removes consumed fragments, creates the version tag, and publishes the corresponding GitHub release. Documentation-only, test-only, and internal maintenance changes do not normally need a fragment.

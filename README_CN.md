@@ -48,18 +48,18 @@ Use $task-execution-simple to implement the supplied task.
 
 ## 安装
 
-下面的命令在本地 checkout 中使用 `./skills` 作为 Waypoint 来源，这会主动排除工作树其他位置中已 ignore、仅供开发使用的 skills。仓库发布后，可以把 `./skills` 替换成 GitHub 简写（`owner/waypoint`）或完整仓库 URL。
+下面的命令从已发布的 `Adol1111/waypoint` 仓库安装。Contributor 在本地 checkout 中可以改用 `./skills` 作为来源，这会主动排除工作树其他位置中已 ignore、仅供开发使用的 skills。
 
 列出一个来源中的可用 skills：
 
 ```bash
-npx skills add ./skills --list
+npx skills add Adol1111/waypoint --list
 ```
 
 安装一个独立 skill：
 
 ```bash
-npx skills add ./skills --skill task-spec
+npx skills add Adol1111/waypoint --skill task-spec
 ```
 
 重复 `--skill` 可以安装一组选定 skills。默认安装到当前项目；添加 `-g` 可进行用户级安装，添加 `-a codex` 可指定受支持的 agent。
@@ -67,7 +67,7 @@ npx skills add ./skills --skill task-spec
 安装所有 Waypoint skills：
 
 ```bash
-npx skills add ./skills --skill '*'
+npx skills add Adol1111/waypoint --skill '*'
 ```
 
 [`skills` CLI](https://github.com/vercel-labs/skills) 支持 Codex、Claude Code、Cursor 和其他兼容 Agent Skills 的工具。
@@ -88,7 +88,7 @@ Waypoint 提供两个可选 workflows。它们共享相同的 atomic skills，�
 技术上可以只安装 `waypoint-workflow`，但它可能推荐一个尚未安装的 atomic skill。为了让所有推荐都能直接执行，建议同时安装 workflow 和六个工程 waypoints：
 
 ```bash
-npx skills add ./skills \
+npx skills add Adol1111/waypoint \
   --skill waypoint-workflow \
   --skill domain-context \
   --skill roadmap-planning \
@@ -109,7 +109,7 @@ Use $waypoint-workflow to recommend the next atomic waypoint.
 `milestone-workflow` 统筹相同的六个 atomic waypoints，并增加持久的 Milestone 治理：
 
 ```bash
-npx skills add ./skills \
+npx skills add Adol1111/waypoint \
   --skill milestone-workflow \
   --skill domain-context \
   --skill roadmap-planning \
@@ -128,7 +128,7 @@ Use $milestone-workflow to plan, continue, or close this delivery.
 只有当团队希望 Waypoint 初始化共享的本地 docs 约定时，才需要在任一组合中额外安装 `docs-workflow-bootstrap`：
 
 ```bash
-npx skills add ./skills --skill docs-workflow-bootstrap
+npx skills add Adol1111/waypoint --skill docs-workflow-bootstrap
 ```
 
 > [!NOTE]
@@ -177,7 +177,7 @@ npx skills add mattpocock/skills \
 完整安装本地 Waypoint 和全部 companions：
 
 ```bash
-npx skills add ./skills --skill '*'
+npx skills add Adol1111/waypoint --skill '*'
 npx skills add mattpocock/skills \
   --skill grilling \
   --skill research \
@@ -207,3 +207,16 @@ python3 -m unittest discover -s tests -v
 ```
 
 测试覆盖无 `docs/` 的独立调用、两套 bootstrap、轻量 coordinator 推荐、Milestone 发现项与关闭规则、无需聊天历史的 specification、破坏性收尾确认、frontmatter、`agents/openai.yaml`、模板所有权和 fixture 配对。Atomic-skill 契约与安全边界见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+
+## 发布
+
+Waypoint 使用 [Changesets](https://github.com/changesets/changesets) 收集 release notes，并生成带版本的 GitHub changelog。
+
+当 skill 或 workflow 发生用户可见变化时：
+
+```bash
+pnpm install --frozen-lockfile
+pnpm changeset
+```
+
+将生成的 `.changeset/*.md` fragment 与变更一起提交。它进入 `main` 后，release workflow 会创建或更新 Version PR。合并该 PR 后会更新 `CHANGELOG.md`、删除已消费的 fragments、创建版本 tag，并发布对应的 GitHub Release。仅文档、仅测试或内部维护变更通常不需要 fragment。

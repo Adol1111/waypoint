@@ -6,5 +6,6 @@
 - Keep `SKILL.md` frontmatter limited to `name` and `description`. Put OpenAI invocation policy in `agents/openai.yaml`.
 - Require explicit, target-specific confirmation only for merge, branch/worktree deletion, and discarding work.
 - Update English and Chinese README guidance together.
+- Add one `.changeset/*.md` fragment for user-visible skill or workflow changes. Do not add a changeset for documentation-only, test-only, or internal maintenance changes unless they affect the published experience.
 - Run `scripts/validate.sh` after changing skills, metadata, templates, fixtures, or documentation links.
-- Treat `/Users/gaoxiaoyi/projects/skills/doc-driven-spec-workflow` as read-only reference material. Never apply or alter its stash.
+- Treat [Adol1111/doc-driven-spec-workflow](https://github.com/Adol1111/doc-driven-spec-workflow) as read-only reference material.

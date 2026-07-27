@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 import unittest
 from pathlib import Path
@@ -385,6 +386,52 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("delivered, reviewed, or rejected independently", spec)
         for phrase in ("silently delete", "skip", "loosen", "replacement evidence"):
             self.assertIn(phrase, execution)
+
+    def test_changesets_release_configuration_is_complete(self) -> None:
+        package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
+        self.assertTrue(package["private"])
+        self.assertRegex(package["version"], r"\A\d+\.\d+\.\d+\Z")
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        self.assertIn(f"## {package['version']}", changelog)
+        self.assertEqual("pnpm@10.28.2", package["packageManager"])
+        self.assertTrue((ROOT / "pnpm-lock.yaml").exists())
+        self.assertFalse((ROOT / "package-lock.json").exists())
+        for dependency in ("@changesets/cli", "@changesets/changelog-github"):
+            self.assertIn(dependency, package["devDependencies"])
+
+        config = json.loads(
+            (ROOT / ".changeset" / "config.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            [
+                "@changesets/changelog-github",
+                {"repo": "Adol1111/waypoint"},
+            ],
+            config["changelog"],
+        )
+        self.assertTrue(config["privatePackages"]["version"])
+        self.assertTrue(config["privatePackages"]["tag"])
+
+        workflow = (
+            ROOT / ".github" / "workflows" / "release.yml"
+        ).read_text(encoding="utf-8")
+        self.assertIn("changesets/action@v1", workflow)
+        self.assertIn("pnpm/action-setup@v6", workflow)
+        self.assertIn("pnpm install --frozen-lockfile", workflow)
+        self.assertIn("publish: pnpm run release", workflow)
+        self.assertIn("GITHUB_TOKEN:", workflow)
+
+    def test_pending_changeset_fragments_are_valid(self) -> None:
+        fragments = sorted((ROOT / ".changeset").glob("*.md"))
+        fragments = [path for path in fragments if path.name != "README.md"]
+        self.assertGreaterEqual(len(fragments), 1)
+        pattern = re.compile(
+            r'\A---\n"waypoint-skills": (patch|minor|major)\n---\n\n\S',
+            re.DOTALL,
+        )
+        for fragment in fragments:
+            with self.subTest(fragment=fragment.name):
+                self.assertRegex(fragment.read_text(encoding="utf-8"), pattern)
 
 
 if __name__ == "__main__":

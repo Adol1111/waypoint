@@ -7,7 +7,7 @@ Use the smallest subset that leaves a reviewer independent of chat history.
 
 ## Intent
 
-<Desired outcome and why it matters.>
+<Problem or motivation, desired outcome, and why it matters.>
 
 ## Scope
 

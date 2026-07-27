@@ -387,6 +387,25 @@ class RepositoryContractTests(unittest.TestCase):
         for phrase in ("silently delete", "skip", "loosen", "replacement evidence"):
             self.assertIn(phrase, execution)
 
+    def test_task_motivation_and_timing_context_remain_durable(self) -> None:
+        spec = (skill_dir("task-spec") / "SKILL.md").read_text(encoding="utf-8")
+        spec_template = (
+            skill_dir("task-spec") / "references" / "spec-template.md"
+        ).read_text(encoding="utf-8")
+        state = (skill_dir("task-state") / "SKILL.md").read_text(encoding="utf-8")
+        state_template = (
+            skill_dir("task-state") / "references" / "task-state-template.md"
+        ).read_text(encoding="utf-8")
+
+        for text in (spec, spec_template):
+            self.assertIn("problem or motivation", text.lower())
+            self.assertIn("why it matters", text.lower())
+        for label in ("Why now", "Start when", "Revisit when"):
+            self.assertIn(label, state)
+            self.assertIn(label, state_template)
+        self.assertIn("Do not invent dates", state)
+        self.assertIn("Omit the Selection context section", state_template)
+
     def test_changesets_release_configuration_is_complete(self) -> None:
         package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
         self.assertTrue(package["private"])

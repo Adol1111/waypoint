@@ -12,8 +12,9 @@ Keep the task recoverable without imposing a tracker or lifecycle.
 1. Find the repository's existing issue, task file, checklist, roadmap entry, or other state convention.
 2. Update that artifact. If none exists and durable state is useful, propose the smallest Markdown task record in a repository-consistent location.
 3. Preserve acceptance criteria and record status as `planned`, `in-progress`, `blocked`, or `completed`.
-4. Record evidence or blockers next to the state, not only in chat.
-5. Report any mismatch between claimed state and available evidence.
+4. Preserve useful selection or timing context when it already exists or affects recovery.
+5. Record evidence or blockers next to the state, not only in chat.
+6. Report any mismatch between claimed state and available evidence.
 
 Use [references/task-state-template.md](references/task-state-template.md) only when no local format exists. Do not require a docs directory, labels, a branch scheme, or a fixed transition sequence.
 
@@ -21,12 +22,22 @@ When milestone context is supplied, update the selected task truthfully and retu
 
 ## State rules
 
-- `planned`: intent and acceptance are visible enough to select later.
+- `planned`: intent and acceptance are visible enough to select later; preserve relevant selection, activation, or reconsideration signals.
 - `in-progress`: active work has started; preserve the current working surface when useful.
 - `blocked`: name the blocking condition, its impact, and what would unblock it. Do not use it for ordinary uncertainty or incomplete work.
 - `completed`: acceptance is satisfied and durable verification evidence is recorded. Do not equate “code written” with completion.
 
 Update stale status when evidence clearly supports a non-destructive change. Ask when acceptance itself is ambiguous or changing it would hide unfinished scope.
+
+## Selection and timing context
+
+When timing matters, distinguish its meaning instead of relying on a vague `when` field:
+
+- `Why now`: the reason this task is currently selected or prioritized.
+- `Start when`: a real dependency, precondition, or activation signal.
+- `Revisit when`: the signal for reconsidering deferred work.
+
+Record only the entries that carry useful recovery context. Do not invent dates, priorities, dependencies, or empty headings. Runtime trigger behavior belongs in the task specification; roadmap or milestone placement remains owned by the repository's existing planning system.
 
 ## Closing safety
 

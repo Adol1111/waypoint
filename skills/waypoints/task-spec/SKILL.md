@@ -23,7 +23,7 @@ Before writing, test the task boundary. If the requested acceptance contains mul
 
 Make these facts explicit somewhere in the artifact:
 
-- intent and desired outcome;
+- problem or motivation, desired outcome, and why it matters;
 - in-scope behavior and meaningful non-goals;
 - likely implementation surface or ownership boundary;
 - material decisions and why they were chosen;

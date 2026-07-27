@@ -1,0 +1,4 @@
+interface:
+  display_name: "Task Spec"
+  short_description: "Write a compact reviewable task specification"
+  default_prompt: "Use $task-spec to write a reviewable specification for this task."

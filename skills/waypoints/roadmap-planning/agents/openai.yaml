@@ -1,0 +1,4 @@
+interface:
+  display_name: "Roadmap Planning"
+  short_description: "Shape goals into verifiable delivery slices"
+  default_prompt: "Use $roadmap-planning to turn this goal into independently verifiable delivery slices."

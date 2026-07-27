@@ -1,0 +1,4 @@
+interface:
+  display_name: "Domain Context"
+  short_description: "Preserve durable terms and major decisions"
+  default_prompt: "Use $domain-context to capture durable terminology or a consequential decision."

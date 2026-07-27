@@ -1,0 +1,6 @@
+interface:
+  display_name: "Waypoint Workflow"
+  short_description: "Recommend the next useful engineering waypoint"
+  default_prompt: "Use $waypoint-workflow to recommend exactly one next atomic skill from the available evidence."
+policy:
+  allow_implicit_invocation: false

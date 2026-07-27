@@ -1,0 +1,6 @@
+interface:
+  display_name: "Milestone Workflow"
+  short_description: "Govern multi-task delivery across milestones"
+  default_prompt: "Use $milestone-workflow to plan, continue, or close milestone-managed delivery."
+policy:
+  allow_implicit_invocation: false

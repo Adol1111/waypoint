@@ -1,0 +1,6 @@
+interface:
+  display_name: "Docs Workflow Bootstrap"
+  short_description: "Scaffold an optional lightweight docs convention"
+  default_prompt: "Use $docs-workflow-bootstrap to propose or create a lightweight shared docs convention."
+policy:
+  allow_implicit_invocation: false

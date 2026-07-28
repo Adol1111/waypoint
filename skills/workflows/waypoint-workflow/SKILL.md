@@ -32,12 +32,14 @@ Prefer the skill closest to the user's requested outcome. For example, missing d
 
 ## Output
 
-Return:
+Return exactly these four short fields:
 
 - `Evidence`: the request and existing artifact signals;
 - `Recommended skill`: exactly one skill name;
-- `Reuse`: existing artifacts that skill should read or update;
+- `Reuse`: existing artifacts that skill should read or update, or `none`;
 - `Why now`: one concise rationale.
+
+Finish only when the recommendation names one skill from the map and `Reuse` names only artifacts that exist or says `none`.
 
 Docs conventions are opt-in and never prerequisites.
 

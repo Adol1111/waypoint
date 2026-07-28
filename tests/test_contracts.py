@@ -225,7 +225,10 @@ class RepositoryContractTests(unittest.TestCase):
                 )
                 self.assertEqual(1, len(recommendations))
                 self.assertIn(recommendations[0], ATOMIC_SKILLS)
-                self.assertIn("- Writes: nothing", text)
+                self.assertEqual(
+                    ["Evidence", "Recommended skill", "Reuse", "Why now"],
+                    re.findall(r"^- ([^:]+):", text, re.MULTILINE),
+                )
 
     def test_reviewable_spec_fixture_contains_no_chat_dependencies(self) -> None:
         text = (

@@ -2,5 +2,5 @@
 
 - Evidence: behavior is reviewable, but material technical design choices remain unresolved.
 - Recommended skill: `technical-design`
-- Reuse: `engineering/changes/payment-retry/spec.md` and the relevant code and architecture records
-- Writes: nothing
+- Reuse: `engineering/changes/payment-retry/spec.md`
+- Why now: persistence ownership, concurrency, state, and verification seams still shape the solution.

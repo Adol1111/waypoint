@@ -10,7 +10,7 @@ Implement the supplied scope and leave truthful evidence.
 ## Work independently
 
 1. Read repository instructions, the supplied task or spec, relevant code and tests, and current version-control state.
-2. Confirm the task is implementable. If behavior or boundaries are materially ambiguous, surface the need for a task specification; if review-critical architecture, interfaces, data or state models, algorithms, concurrency, security, performance, or test seams are unresolved, surface the need for technical design; if risky order is unresolved, surface the need for an implementation plan.
+2. Confirm the task is implementable from repository evidence. Stop before editing only when a missing behavioral boundary, technical choice, or execution-order decision would materially change the result. Name the missing decision and why current evidence does not decide it so the user can resolve it directly or capture it in a suitable artifact.
 3. Before editing, state a concise approach preview: the change surface, core strategy, material constraints, and verification seam. Do not create a formal artifact for straightforward work.
 4. Choose isolation based on repository practice, current dirty state, collision risk, task size, and user direction. Do not assume a task branch or worktree is required.
 5. Implement only the supplied scope. Preserve unrelated user changes.
@@ -22,7 +22,7 @@ Do not require another local skill, a docs layout, tracker, branch convention, m
 
 Report durable out-of-scope discoveries without silently expanding the task. When milestone context was supplied, identify their impact and source clearly enough for the calling workflow to record and classify them.
 
-Do not bury a material technical decision in code. Follow an established repository decision when evidence is clear and record it in an existing suitable artifact when it remains review-critical. When genuine alternatives would materially change the result, stop before editing and ask for the missing decision; another local skill is never a prerequisite for using this one.
+Treat established technical choices as repository evidence. Keep a review-critical choice visible in an existing suitable artifact; otherwise keep the work focused on the supplied scope.
 
 ## Adaptive verification
 

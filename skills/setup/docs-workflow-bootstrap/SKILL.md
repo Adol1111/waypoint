@@ -16,6 +16,7 @@ Create only the shared documentation convention the repository will actually use
    - Milestone management: `milestone-workflow`.
 4. If the choice is absent and a task structure would be created, ask one direct question: whether the team wants Milestone-managed delivery.
 5. Do not create either task structure until that answer is known.
+6. Finish when the report identifies the chosen convention, every reused or created location, and any deliberately omitted structures.
 
 The user may explicitly request only glossary or ADR locations without task tracking. In that case, create only those accepted locations and do not ask an irrelevant Milestone question.
 

@@ -10,7 +10,7 @@
 
 </div>
 
-Waypoint 提供一组小型、独立的 agent skills，用来保存值得延续的工程事实：术语、重要决策、交付切片、任务边界、高风险执行策略、验证证据和安全收尾状态。
+Waypoint 提供一组小型、独立的 agent skills，用来保存值得延续的工程事实：术语、重要决策、交付切片、任务行为边界、技术设计、高风险执行策略、验证证据和安全收尾状态。
 
 > [!IMPORTANT]
 > 每个 atomic skill 都能独立工作。可选 workflows 负责协调，但不会把固定 `docs/` 布局、任务跟踪器、分支约定、review 节奏或 commit 序列变成强制要求。
@@ -32,7 +32,8 @@ Agent 对话是临时的，工程决策和完成证据不应该是。每个 atom
 | --- | --- |
 | [`domain-context`](skills/waypoints/domain-context/SKILL.md) | 维护持久术语，并且只为符合门槛的决策创建 ADR |
 | [`roadmap-planning`](skills/waypoints/roadmap-planning/SKILL.md) | 把目标转化为可独立验证的交付切片 |
-| [`task-spec`](skills/waypoints/task-spec/SKILL.md) | 编写无需聊天历史即可评审的紧凑规格 |
+| [`task-spec`](skills/waypoints/task-spec/SKILL.md) | 定义可评审的任务行为和需求，不规定技术实现 |
+| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | 在编码前持久化需要评审的架构和技术方案选择 |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | 规划真实的顺序、迁移、兼容或 rollout 风险 |
 | [`task-state`](skills/waypoints/task-state/SKILL.md) | 保存验收、状态、阻塞、证据和安全收尾状态 |
 | [`task-execution-simple`](skills/waypoints/task-execution-simple/SKILL.md) | 使用适合当前上下文的保护措施实现给定范围 |
@@ -42,6 +43,7 @@ Agent 对话是临时的，工程决策和完成证据不应该是。每个 atom
 
 ```text
 Use $task-spec to make this change reviewable without relying on this chat.
+Use $technical-design to design the technical approach without writing a coding recipe.
 Use $roadmap-planning to turn this goal into independently verifiable slices.
 Use $task-execution-simple to implement the supplied task.
 ```
@@ -85,7 +87,7 @@ Waypoint 提供两个可选 workflows。它们共享相同的 atomic skills，�
 
 ### 轻量 Workflow 组合
 
-技术上可以只安装 `waypoint-workflow`，但它可能推荐一个尚未安装的 atomic skill。为了让所有推荐都能直接执行，建议同时安装 workflow 和六个工程 waypoints：
+技术上可以只安装 `waypoint-workflow`，但它可能推荐一个尚未安装的 atomic skill。为了让所有推荐都能直接执行，建议同时安装 workflow 和七个工程 waypoints：
 
 ```bash
 npx skills add Adol1111/waypoint \
@@ -93,6 +95,7 @@ npx skills add Adol1111/waypoint \
   --skill domain-context \
   --skill roadmap-planning \
   --skill task-spec \
+  --skill technical-design \
   --skill implementation-plan \
   --skill task-state \
   --skill task-execution-simple
@@ -106,7 +109,7 @@ Use $waypoint-workflow to recommend the next atomic waypoint.
 
 ### Milestone-managed Workflow 组合
 
-`milestone-workflow` 统筹相同的六个 atomic waypoints，并增加持久的 Milestone 治理：
+`milestone-workflow` 统筹相同的七个 atomic waypoints，并增加持久的 Milestone 治理：
 
 ```bash
 npx skills add Adol1111/waypoint \
@@ -114,6 +117,7 @@ npx skills add Adol1111/waypoint \
   --skill domain-context \
   --skill roadmap-planning \
   --skill task-spec \
+  --skill technical-design \
   --skill implementation-plan \
   --skill task-state \
   --skill task-execution-simple
@@ -143,7 +147,7 @@ npx skills add Adol1111/waypoint --skill docs-workflow-bootstrap
 | Standalone | 扁平的 active/completed/deferred task index |
 | Milestone-managed | open/completed Milestone index，以及 backlog destination |
 
-两种选择都可以包含 `docs/context/` 和 `docs/architecture/decisions/`。Task-local `spec.md` 和可选 `plan.md` 可以放在 task 旁边。仓库已有位置始终优先；bootstrap 不创建 placeholder Milestones。
+两种选择都可以包含 `docs/context/` 和 `docs/architecture/decisions/`。Task-local `spec.md`、可选 `design.md` 和可选 `plan.md` 可以放在 task 旁边；仓库也可以在同一个 artifact 中保留彼此独立的 specification 和 technical-design sections。仓库已有位置始终优先；bootstrap 不创建 placeholder Milestones。
 
 ## Companion Skills
 
@@ -153,6 +157,7 @@ Waypoint 不复制通用协议。以下可选 companions 均来自 [**mattpocock
 | --- | --- | --- |
 | `grilling` | 持续澄清和压力测试 | [skills.sh](https://www.skills.sh/mattpocock/skills/grilling) |
 | `research` | 基于第一方来源开展研究 | [skills.sh](https://www.skills.sh/mattpocock/skills/research) |
+| `codebase-design` | 进行 module、interface、seam 和 deep-design 推理 | [skills.sh](https://www.skills.sh/mattpocock/skills/codebase-design) |
 | `tdd` | Red-green-refactor 实现 | [skills.sh](https://www.skills.sh/mattpocock/skills/tdd) |
 | `code-review` | 独立检查规范和实现一致性 | [skills.sh](https://www.skills.sh/mattpocock/skills/code-review) |
 | `handoff` | 跨会话或跨协作者继续工作 | [skills.sh](https://www.skills.sh/mattpocock/skills/handoff) |
@@ -161,12 +166,13 @@ Waypoint 不复制通用协议。以下可选 companions 均来自 [**mattpocock
 
 Waypoint 和 companions 来自不同来源，因此需要分别运行安装命令。Companions 不是任一 workflow 的硬依赖；只安装自己希望使用的通用协议即可。
 
-一次安装全部五个 companions：
+一次安装全部六个 companions：
 
 ```bash
 npx skills add mattpocock/skills \
   --skill grilling \
   --skill research \
+  --skill codebase-design \
   --skill tdd \
   --skill code-review \
   --skill handoff
@@ -181,6 +187,7 @@ npx skills add Adol1111/waypoint --skill '*'
 npx skills add mattpocock/skills \
   --skill grilling \
   --skill research \
+  --skill codebase-design \
   --skill tdd \
   --skill code-review \
   --skill handoff
@@ -206,7 +213,7 @@ Waypoint 不是：
 python3 -m unittest discover -s tests -v
 ```
 
-测试覆盖无 `docs/` 的独立调用、两套 bootstrap、轻量 coordinator 推荐、Milestone 发现项与关闭规则、无需聊天历史的 specification、破坏性收尾确认、frontmatter、`agents/openai.yaml`、模板所有权和 fixture 配对。Atomic-skill 契约与安全边界见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+测试覆盖无 `docs/` 的独立调用、两套 bootstrap、轻量 coordinator 推荐、Milestone 发现项与关闭规则、无需聊天历史的行为 specification 与 technical design 分离、破坏性收尾确认、frontmatter、`agents/openai.yaml`、模板所有权和 fixture 配对。Atomic-skill 契约与安全边界见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 ## 发布
 

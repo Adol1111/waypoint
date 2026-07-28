@@ -32,4 +32,4 @@ Suggested `docs/tasks/index.md`:
 - <Concrete follow-up, or link to the repository's existing tracker>
 ```
 
-Task-local `spec.md` and optional `plan.md` may live beside a task. Do not create placeholder task directories or files.
+Task-local `spec.md`, optional `design.md`, and optional `plan.md` may live beside a task. A repository may instead keep distinct specification and technical-design sections in one task artifact. Do not create placeholder task directories or files.

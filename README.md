@@ -10,7 +10,7 @@ Keep agent-driven work recoverable across sessions, models, and collaborators.
 
 </div>
 
-Waypoint provides small, standalone agent skills that preserve the engineering facts worth carrying forward: terminology, consequential decisions, delivery slices, task boundaries, risky execution strategy, verification evidence, and safe closing state.
+Waypoint provides small, standalone agent skills that preserve the engineering facts worth carrying forward: terminology, consequential decisions, delivery slices, behavioral task boundaries, technical designs, risky execution strategy, verification evidence, and safe closing state.
 
 > [!IMPORTANT]
 > Every atomic skill works independently. Optional workflows coordinate them without making a fixed `docs/` layout, task tracker, branch convention, review cadence, or commit sequence mandatory.
@@ -32,7 +32,8 @@ Install or invoke only the skill needed for the current outcome.
 | --- | --- |
 | [`domain-context`](skills/waypoints/domain-context/SKILL.md) | Maintain durable terminology and create only qualifying ADRs |
 | [`roadmap-planning`](skills/waypoints/roadmap-planning/SKILL.md) | Turn goals into independently verifiable delivery slices |
-| [`task-spec`](skills/waypoints/task-spec/SKILL.md) | Write a compact specification reviewable without chat history |
+| [`task-spec`](skills/waypoints/task-spec/SKILL.md) | Define reviewable task behavior and requirements without prescribing implementation |
+| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Make review-critical architecture and implementation choices durable before coding |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | Plan real sequencing, migration, compatibility, or rollout risk |
 | [`task-state`](skills/waypoints/task-state/SKILL.md) | Preserve acceptance, status, blockers, evidence, and safe closing state |
 | [`task-execution-simple`](skills/waypoints/task-execution-simple/SKILL.md) | Implement supplied scope with context-appropriate safeguards |
@@ -42,6 +43,7 @@ Example invocations:
 
 ```text
 Use $task-spec to make this change reviewable without relying on this chat.
+Use $technical-design to design the technical approach without writing a coding recipe.
 Use $roadmap-planning to turn this goal into independently verifiable slices.
 Use $task-execution-simple to implement the supplied task.
 ```
@@ -85,7 +87,7 @@ Both workflows are explicitly invoked; installing one does not let it take over 
 
 ### Lightweight workflow bundle
 
-Installing only `waypoint-workflow` is technically valid, but it may recommend an atomic skill that is not installed. For complete routing coverage, install the workflow plus all six engineering waypoints:
+Installing only `waypoint-workflow` is technically valid, but it may recommend an atomic skill that is not installed. For complete routing coverage, install the workflow plus all seven engineering waypoints:
 
 ```bash
 npx skills add Adol1111/waypoint \
@@ -93,6 +95,7 @@ npx skills add Adol1111/waypoint \
   --skill domain-context \
   --skill roadmap-planning \
   --skill task-spec \
+  --skill technical-design \
   --skill implementation-plan \
   --skill task-state \
   --skill task-execution-simple
@@ -106,7 +109,7 @@ Use $waypoint-workflow to recommend the next atomic waypoint.
 
 ### Milestone-managed workflow bundle
 
-`milestone-workflow` coordinates the same six atomic waypoints and adds durable Milestone governance:
+`milestone-workflow` coordinates the same seven atomic waypoints and adds durable Milestone governance:
 
 ```bash
 npx skills add Adol1111/waypoint \
@@ -114,6 +117,7 @@ npx skills add Adol1111/waypoint \
   --skill domain-context \
   --skill roadmap-planning \
   --skill task-spec \
+  --skill technical-design \
   --skill implementation-plan \
   --skill task-state \
   --skill task-execution-simple
@@ -143,7 +147,7 @@ Teams that want shared repository-local documentation can invoke `docs-workflow-
 | Standalone | Flat active/completed/deferred task index |
 | Milestone-managed | Open/completed Milestone index plus backlog destination |
 
-Both choices may include `docs/context/` and `docs/architecture/decisions/`. Task-local `spec.md` and optional `plan.md` files may live beside a task. Existing repository locations always take precedence, and bootstrap does not create placeholder Milestones.
+Both choices may include `docs/context/` and `docs/architecture/decisions/`. Task-local `spec.md`, optional `design.md`, and optional `plan.md` files may live beside a task; a repository may instead keep distinct specification and technical-design sections in one artifact. Existing repository locations always take precedence, and bootstrap does not create placeholder Milestones.
 
 ## Companion skills
 
@@ -153,6 +157,7 @@ Waypoint deliberately does not copy general-purpose protocols. The following opt
 | --- | --- | --- |
 | `grilling` | Sustained clarification and stress-testing | [skills.sh](https://www.skills.sh/mattpocock/skills/grilling) |
 | `research` | Research grounded in primary sources | [skills.sh](https://www.skills.sh/mattpocock/skills/research) |
+| `codebase-design` | Module, interface, seam, and deep-design reasoning | [skills.sh](https://www.skills.sh/mattpocock/skills/codebase-design) |
 | `tdd` | Red-green-refactor implementation | [skills.sh](https://www.skills.sh/mattpocock/skills/tdd) |
 | `code-review` | Independent standards and specification review | [skills.sh](https://www.skills.sh/mattpocock/skills/code-review) |
 | `handoff` | Cross-session or cross-collaborator continuation | [skills.sh](https://www.skills.sh/mattpocock/skills/handoff) |
@@ -161,12 +166,13 @@ Waypoint deliberately does not copy general-purpose protocols. The following opt
 
 Waypoint and its companions have different sources, so install them with separate commands. The companions are not required for either workflow; install only the protocols you want available.
 
-Install all five companions:
+Install all six companions:
 
 ```bash
 npx skills add mattpocock/skills \
   --skill grilling \
   --skill research \
+  --skill codebase-design \
   --skill tdd \
   --skill code-review \
   --skill handoff
@@ -181,6 +187,7 @@ npx skills add Adol1111/waypoint --skill '*'
 npx skills add mattpocock/skills \
   --skill grilling \
   --skill research \
+  --skill codebase-design \
   --skill tdd \
   --skill code-review \
   --skill handoff
@@ -206,7 +213,7 @@ Run the focused contract suite with Python's standard library:
 python3 -m unittest discover -s tests -v
 ```
 
-The suite validates independent no-`docs/` usage, both bootstrap choices, lightweight coordinator recommendations, Milestone discovery and closure rules, chat-independent specifications, destructive closing confirmation, frontmatter, `agents/openai.yaml`, template ownership, and fixture pairing. See [ARCHITECTURE.md](ARCHITECTURE.md) for the atomic-skill contract and safety boundaries.
+The suite validates independent no-`docs/` usage, both bootstrap choices, lightweight coordinator recommendations, Milestone discovery and closure rules, separation of chat-independent behavioral specifications from technical designs, destructive closing confirmation, frontmatter, `agents/openai.yaml`, template ownership, and fixture pairing. See [ARCHITECTURE.md](ARCHITECTURE.md) for the atomic-skill contract and safety boundaries.
 
 ## Releases
 

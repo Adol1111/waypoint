@@ -16,6 +16,7 @@ Create only the shared documentation convention the repository will actually use
    - Milestone management: `milestone-workflow`.
 4. If the choice is absent and a task structure would be created, ask one direct question: whether the team wants Milestone-managed delivery.
 5. Do not create either task structure until that answer is known.
+6. Finish when the report identifies the chosen convention, every reused or created location, and any deliberately omitted structures.
 
 The user may explicitly request only glossary or ADR locations without task tracking. In that case, create only those accepted locations and do not ask an irrelevant Milestone question.
 
@@ -40,4 +41,4 @@ Use [references/milestone-convention.md](references/milestone-convention.md) whe
 
 Offer `docs/context/` for glossary and durable context and `docs/architecture/decisions/` for qualifying ADRs in either convention. Let the user accept only useful parts.
 
-Do not create substantive glossary entries, ADRs, roadmap slices, task specs, plans, or implementation changes while bootstrapping. Do not create labels, confirmation flags, mandatory lifecycle, branch policy, fixed review cadence, hierarchy beyond the selected convention, or commit sequence.
+Do not create substantive glossary entries, ADRs, roadmap slices, task specs, technical designs, plans, or implementation changes while bootstrapping. Do not create labels, confirmation flags, mandatory lifecycle, branch policy, fixed review cadence, hierarchy beyond the selected convention, or commit sequence.

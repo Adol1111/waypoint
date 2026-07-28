@@ -441,9 +441,10 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("GITHUB_TOKEN:", workflow)
 
     def test_pending_changeset_fragments_are_valid(self) -> None:
-        fragments = sorted((ROOT / ".changeset").glob("*.md"))
+        changeset_dir = ROOT / ".changeset"
+        self.assertTrue((changeset_dir / "README.md").is_file())
+        fragments = sorted(changeset_dir.glob("*.md"))
         fragments = [path for path in fragments if path.name != "README.md"]
-        self.assertGreaterEqual(len(fragments), 1)
         pattern = re.compile(
             r'\A---\n"waypoint-skills": (patch|minor|major)\n---\n\n\S',
             re.DOTALL,

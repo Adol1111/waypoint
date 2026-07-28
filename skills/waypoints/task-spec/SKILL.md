@@ -1,6 +1,6 @@
 ---
 name: task-spec
-description: Write or revise a compact, reviewable specification for one concrete engineering task. Use when a collaborator needs durable intent, scope and non-goals, implementation surface, material decisions and rationale, relevant error behavior, and completion proof without relying on chat history.
+description: Write or revise a compact behavioral specification for one concrete engineering task. Use when a collaborator needs durable problem and outcome, scope and non-goals, observable rules, relevant failure or compatibility requirements, and completion proof without relying on chat history.
 ---
 
 # Task Spec
@@ -25,14 +25,17 @@ Make these facts explicit somewhere in the artifact:
 
 - problem or motivation, desired outcome, and why it matters;
 - in-scope behavior and meaningful non-goals;
-- likely implementation surface or ownership boundary;
-- material decisions and why they were chosen;
-- error, fallback, partial-failure, or compatibility behavior when relevant;
+- actors, inputs, outputs, rules, and user- or operator-visible state transitions when relevant;
+- material product or behavioral decisions and why they were chosen;
+- observable error, fallback, partial-failure, or compatibility requirements when relevant;
+- externally imposed constraints that limit an acceptable solution;
 - completion proof, including what evidence demonstrates success.
 
 Use headings that fit the task. Do not force empty sections, an option matrix, a diagram, or alternatives that were never genuinely considered. A compact spec may be a few focused sections; compact must not mean implicit.
 
-Keep implementation sequencing out unless it affects the behavioral contract. When sequencing, migration, compatibility, rollout, or cross-module coordination is risky, leave the specification stable and use `implementation-plan` separately.
+Own what the system must do, not the internal mechanism used to do it. Do not choose architecture, module seams, internal interfaces, database schema, persistence strategy, internal state machines, concurrency control, caches, algorithms, file paths, or code structure. Preserve a mandated technical constraint when it is part of the request, but route unresolved review-critical implementation choices to `technical-design`.
+
+Keep implementation sequencing out. When sequencing, migration, compatibility, rollout, or cross-module coordination is risky, leave the specification stable and use `implementation-plan` separately.
 
 Use [references/spec-template.md](references/spec-template.md) only when no stronger local pattern exists.
 

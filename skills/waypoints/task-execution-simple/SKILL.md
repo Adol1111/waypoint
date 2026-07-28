@@ -10,16 +10,19 @@ Implement the supplied scope and leave truthful evidence.
 ## Work independently
 
 1. Read repository instructions, the supplied task or spec, relevant code and tests, and current version-control state.
-2. Confirm the task is implementable. If behavior or boundaries are materially ambiguous, request a `task-spec`; if risky order is unresolved, request an `implementation-plan`.
-3. Choose isolation based on repository practice, current dirty state, collision risk, task size, and user direction. Do not assume a task branch or worktree is required.
-4. Implement only the supplied scope. Preserve unrelated user changes.
-5. Run the most relevant practical verification and inspect the resulting diff.
-6. Update existing docs or task state when implementation changes their stated facts or when requested.
-7. Report result, verification evidence, residual risk, and current working state.
+2. Confirm the task is implementable. If behavior or boundaries are materially ambiguous, surface the need for a task specification; if review-critical architecture, interfaces, data or state models, algorithms, concurrency, security, performance, or test seams are unresolved, surface the need for technical design; if risky order is unresolved, surface the need for an implementation plan.
+3. Before editing, state a concise approach preview: the change surface, core strategy, material constraints, and verification seam. Do not create a formal artifact for straightforward work.
+4. Choose isolation based on repository practice, current dirty state, collision risk, task size, and user direction. Do not assume a task branch or worktree is required.
+5. Implement only the supplied scope. Preserve unrelated user changes.
+6. Run the most relevant practical verification and inspect the resulting diff.
+7. Update existing docs or task state when implementation changes their stated facts or when requested.
+8. Report result, verification evidence, residual risk, and current working state.
 
 Do not require another local skill, a docs layout, tracker, branch convention, mandatory commit, or fixed review pause.
 
 Report durable out-of-scope discoveries without silently expanding the task. When milestone context was supplied, identify their impact and source clearly enough for the calling workflow to record and classify them.
+
+Do not bury a material technical decision in code. Follow an established repository decision when evidence is clear and record it in an existing suitable artifact when it remains review-critical. When genuine alternatives would materially change the result, stop before editing and ask for the missing decision; another local skill is never a prerequisite for using this one.
 
 ## Adaptive verification
 

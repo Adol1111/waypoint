@@ -51,4 +51,4 @@ Concrete, task-shaped deferred work that is not assigned to an open Milestone li
 - <Outcome, source, reason deferred, and reconsideration signal>
 ```
 
-Create `docs/tasks/<milestone>/index.md` only when a real Milestone is planned. Put task-local `spec.md` and optional `plan.md` beside their task when useful. Do not create placeholder Milestones.
+Create `docs/tasks/<milestone>/index.md` only when a real Milestone is planned. Put task-local `spec.md`, optional `design.md`, and optional `plan.md` beside their task when useful, or keep distinct specification and technical-design sections in one task artifact. Do not create placeholder Milestones.

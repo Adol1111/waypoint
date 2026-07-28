@@ -17,19 +17,25 @@ Use the smallest subset that leaves a reviewer independent of chat history.
 
 - <Tempting adjacent work that is excluded>
 
-## Implementation surface
+## Behavioral contract
 
-<Likely owning modules, interfaces, or boundaries without prescribing every edit.>
+- <Actor, input, output, rule, or observable state transition>
 
-## Decisions
+## Behavioral decisions
 
-- <Material choice and rationale>
+- <Material product or behavior choice and rationale>
 
-## Error and compatibility behavior
+## Error and compatibility requirements
 
 <Include only when relevant.>
+
+## Constraints
+
+<Externally imposed constraint only when it limits an acceptable solution.>
 
 ## Completion proof
 
 - <Evidence and what it must demonstrate>
 ```
+
+Do not add architecture, internal interfaces, database schema, algorithms, file paths, or other technical design.

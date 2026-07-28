@@ -1,0 +1,4 @@
+interface:
+  display_name: "Technical Design"
+  short_description: "Design review-critical technical choices before coding"
+  default_prompt: "Use $technical-design to design the technical approach for this task."

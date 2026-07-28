@@ -15,17 +15,20 @@ Bound HTTP retry time per request so transient failures cannot consume unbounded
 - Per-endpoint retry configuration.
 - Server-side behavior changes.
 
-## Implementation surface
+## Behavioral contract
 
-`client/retry.go` remains the owner of retry classification and budget enforcement.
+- The first request attempt does not consume the retry budget.
+- Retried attempts and their backoff share one 800 ms budget.
+- Timeout and connection-reset failures remain retryable while budget remains.
+- HTTP 4xx responses remain non-retryable.
 
-## Decision and rationale
+## Behavioral decisions
 
-Exclude the first attempt from the 800 ms budget so the new limit bounds recovery work without redefining the normal request timeout. Keep classification in the existing retry owner to avoid a second policy source.
+Exclude the first attempt from the 800 ms budget so the new limit bounds recovery work without redefining the normal request timeout.
 
-## Error behavior
+## Error and compatibility requirements
 
-When the budget is exhausted, return the last transport error wrapped with `ErrRetryBudgetExceeded`. A 4xx response returns without retrying or producing the budget error.
+When the budget is exhausted, expose the last transport failure together with a distinguishable retry-budget-exhausted condition. A 4xx response returns without retrying or producing the budget-exhausted condition.
 
 ## Completion proof
 

@@ -43,7 +43,8 @@ Choosing `milestone-workflow` does not make its lifecycle mandatory for other us
 | --- | --- |
 | Glossary entry and qualifying ADR | `domain-context` |
 | Goal decomposition and delivery slices | `roadmap-planning` |
-| Reviewable task behavior and proof | `task-spec` |
+| Reviewable task behavior, requirements, and proof | `task-spec` |
+| Review-critical architecture, interfaces, data and state models, algorithms, quality attributes, and verification seams | `technical-design` |
 | Risk-driven execution order and rollback | `implementation-plan` |
 | Acceptance, status, blockers, evidence, closing state | `task-state` |
 | Code changes and execution verification | `task-execution-simple` |
@@ -52,6 +53,8 @@ Choosing `milestone-workflow` does not make its lifecycle mandatory for other us
 | Milestone definition, global placement, discoveries, evidence, and closure | `milestone-workflow` |
 
 Templates live only with the skill that owns the artifact or scaffold. They are fallbacks when the repository has no stronger convention, not schemas to enforce. The bootstrap skill owns its two scaffold conventions but does not generate substantive artifacts for other skills. `milestone-workflow` owns the fallback Milestone artifact shape and its global state.
+
+Artifact ownership is semantic rather than file-prescriptive. `task-spec` and `technical-design` may maintain separate sections in one task artifact when that matches repository practice, or use separate `spec.md` and `design.md` files. Behavioral requirements remain owned by `task-spec`; internal architecture and implementation choices remain owned by `technical-design`. `implementation-plan` consumes either form only when execution order itself creates risk.
 
 ## Milestone governance
 
@@ -75,4 +78,4 @@ Confirmation is action- and target-specific. Merge approval does not authorize l
 
 ## Deliberate separation from the legacy workflow
 
-The legacy repository supplied useful lessons about durable docs, task-local specs, optional plans, Milestone closure, discovered-work routing, verification, and closing safety. Waypoint retains those Milestone capabilities only inside the user-selected `milestone-workflow`. It removes the fixed stage chain, required docs entry points, roadmap confirmation flags, tracker-specific transitions, mandatory review pauses, default commit checkpoints, default task branches, prescribed cross-Milestone serialization, and fixed closing-choice lifecycle.
+The legacy repository supplied useful lessons about durable docs, task-local specs, embedded technical decisions, optional plans, Milestone closure, discovered-work routing, verification, and closing safety. Waypoint retains the valuable information but gives behavioral specification and technical design separate semantic owners. It retains Milestone capabilities only inside the user-selected `milestone-workflow` and removes the fixed stage chain, required docs entry points, roadmap confirmation flags, tracker-specific transitions, mandatory review pauses, default commit checkpoints, default task branches, prescribed cross-Milestone serialization, and fixed closing-choice lifecycle.

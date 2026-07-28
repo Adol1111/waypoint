@@ -40,4 +40,4 @@ Use [references/milestone-convention.md](references/milestone-convention.md) whe
 
 Offer `docs/context/` for glossary and durable context and `docs/architecture/decisions/` for qualifying ADRs in either convention. Let the user accept only useful parts.
 
-Do not create substantive glossary entries, ADRs, roadmap slices, task specs, plans, or implementation changes while bootstrapping. Do not create labels, confirmation flags, mandatory lifecycle, branch policy, fixed review cadence, hierarchy beyond the selected convention, or commit sequence.
+Do not create substantive glossary entries, ADRs, roadmap slices, task specs, technical designs, plans, or implementation changes while bootstrapping. Do not create labels, confirmation flags, mandatory lifecycle, branch policy, fixed review cadence, hierarchy beyond the selected convention, or commit sequence.

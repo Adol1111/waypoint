@@ -13,6 +13,7 @@ ATOMIC_SKILLS = {
     "domain-context",
     "roadmap-planning",
     "task-spec",
+    "technical-design",
     "implementation-plan",
     "task-state",
     "task-execution-simple",
@@ -25,11 +26,19 @@ SKILL_CATEGORIES = {
     "workflows": WORKFLOW_SKILLS,
     "setup": {"docs-workflow-bootstrap"},
 }
-COMPANION_SKILLS = {"grilling", "research", "tdd", "code-review", "handoff"}
+COMPANION_SKILLS = {
+    "grilling",
+    "research",
+    "codebase-design",
+    "tdd",
+    "code-review",
+    "handoff",
+}
 SKILLS_WITH_COMPANIONS = {
     "domain-context",
     "roadmap-planning",
     "task-spec",
+    "technical-design",
     "implementation-plan",
     "task-state",
     "task-execution-simple",
@@ -39,6 +48,7 @@ OWNED_TEMPLATES = {
     "domain-context": {"adr-template.md", "glossary-template.md"},
     "roadmap-planning": {"roadmap-template.md"},
     "task-spec": {"spec-template.md"},
+    "technical-design": {"technical-design-template.md"},
     "implementation-plan": {"plan-template.md"},
     "task-state": {"task-state-template.md"},
     "task-execution-simple": set(),
@@ -225,14 +235,20 @@ class RepositoryContractTests(unittest.TestCase):
             "Intent",
             "Scope",
             "Non-goals",
-            "Implementation surface",
-            "Decision and rationale",
-            "Error behavior",
+            "Behavioral contract",
+            "Behavioral decisions",
+            "Error and compatibility requirements",
             "Completion proof",
         }
         for item in required:
             self.assertIn(f"## {item}", text)
         self.assertNotRegex(text.lower(), r"\b(as discussed|from the chat|see conversation)\b")
+        for implementation_detail in (
+            "client/retry.go",
+            "database schema",
+            "internal state machine",
+        ):
+            self.assertNotIn(implementation_detail, text)
 
     def test_destructive_closing_requires_action_specific_confirmation(self) -> None:
         expected = (
@@ -386,6 +402,45 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("delivered, reviewed, or rejected independently", spec)
         for phrase in ("silently delete", "skip", "loosen", "replacement evidence"):
             self.assertIn(phrase, execution)
+
+    def test_behavioral_spec_and_technical_design_have_distinct_owners(self) -> None:
+        spec = (skill_dir("task-spec") / "SKILL.md").read_text(encoding="utf-8")
+        spec_template = (
+            skill_dir("task-spec") / "references" / "spec-template.md"
+        ).read_text(encoding="utf-8")
+        design = (skill_dir("technical-design") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        design_template = (
+            skill_dir("technical-design")
+            / "references"
+            / "technical-design-template.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("Own what the system must do", spec)
+        self.assertIn("technical-design", spec)
+        for forbidden_heading in (
+            "## Implementation surface",
+            "## Technical design",
+            "## Architecture",
+            "## Database schema",
+        ):
+            self.assertNotIn(forbidden_heading, spec_template)
+        self.assertIn("Do not add architecture", spec_template)
+
+        for required in (
+            "module responsibilities",
+            "data model",
+            "state transitions",
+            "concurrency",
+            "technical alternatives",
+            "verification seams",
+        ):
+            self.assertIn(required, design)
+        self.assertIn("pseudocode", design.lower())
+        self.assertIn("only when", design.lower())
+        self.assertIn("Do not expand", design_template)
+        self.assertIn("implementation-plan", design)
 
     def test_task_motivation_and_timing_context_remain_durable(self) -> None:
         spec = (skill_dir("task-spec") / "SKILL.md").read_text(encoding="utf-8")

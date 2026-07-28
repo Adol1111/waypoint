@@ -21,7 +21,7 @@ This workflow owns milestone governance. It does not replace the atomic skill th
 
 - Define a milestone by a meaningful delivery outcome, release or migration boundary, or shared exit criteria.
 - Use `roadmap-planning` for independently verifiable slices when useful, then place those slices or tasks in the milestone artifact.
-- Keep task placement above implementation sequencing. Use `task-spec` and `implementation-plan` for task-local detail.
+- Keep task placement above task-local behavior, technical design, and implementation sequencing. Use their atomic owners when that detail is needed.
 - Allow parallel milestones when repository practice and delivery reality support them.
 - Keep concrete deferred work in an existing backlog or tracker. Preserve broader future questions without inventing tasks.
 - Distinguish task-shaped backlog items from goal-shaped future directions. Give each deferred item a reconsideration signal rather than expanding it into a speculative tree.
@@ -33,6 +33,7 @@ Choose the next action from current evidence rather than a mandatory stage chain
 
 - shape milestone boundaries or slices with `roadmap-planning`;
 - make one selected task reviewable with `task-spec`;
+- make review-critical implementation choices durable with `technical-design`;
 - plan real execution risk with `implementation-plan`;
 - implement scoped work with `task-execution-simple`;
 - update one task's acceptance, status, blocker, or evidence with `task-state`;
@@ -86,4 +87,4 @@ Freeze a completed milestone's scope. Permit factual corrections and evidence li
 
 ## Boundaries
 
-Do not impose bootstrap, fixed review pauses, mandatory commits, branch policy, a single current milestone, or serial milestone execution. Do not write task specs, implementation plans, or code in place of their atomic owners.
+Do not impose bootstrap, fixed review pauses, mandatory commits, branch policy, a single current milestone, or serial milestone execution. Do not write task specs, technical designs, implementation plans, or code in place of their atomic owners.

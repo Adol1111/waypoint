@@ -1,5 +1,13 @@
 # waypoint-skills
 
+## 0.2.2
+
+### Patch Changes
+
+- [#6](https://github.com/Adol1111/waypoint/pull/6) [`8b1fd63`](https://github.com/Adol1111/waypoint/commit/8b1fd63461afb83ed1801f2ff25b3dc21f7d2c2c) Thanks [@Adol1111](https://github.com/Adol1111)! - Make task execution choose isolation adaptively and create cohesive verified Git checkpoints before advancing when repository and user policy permit.
+
+- [#6](https://github.com/Adol1111/waypoint/pull/6) [`50cdc61`](https://github.com/Adol1111/waypoint/commit/50cdc61b4292940716dca12684412923ef47294e) Thanks [@Adol1111](https://github.com/Adol1111)! - Use acceptance as the durable progress record, create recovery checkpoints only at stopping boundaries, and reserve final verification for task completion.
+
 ## 0.2.1
 
 ### Patch Changes

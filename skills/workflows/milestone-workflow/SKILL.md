@@ -45,7 +45,15 @@ Keep a compact current-focus pointer when work spans sessions: the selected mile
 
 ## Record discovered work
 
-Record a finding in the active milestone when it is durable, affects correctness, exit criteria, compatibility, migration, operations, or future capability, and is not yet correctly placed. Do not use the milestone as a debugging diary.
+Compare each finding with the selected task's accepted scope before recording it globally:
+
+- If fixing the finding is necessary to satisfy the current task's acceptance or the correctness of its supplied scope, record it in that task's artifact or state and keep it in the current task. Fix and verify it before completing the task, or mark the task blocked; do not defer it merely because the correction is difficult. Escalate it to `Discovered work` only if it remains unresolved at handoff or changes a Milestone-level boundary.
+- If it exceeds the current task, exposes a systemic or cross-task concern, needs separate work, or belongs to another current or future task, append it to the active Milestone's `Discovered work` before routing it elsewhere.
+- If the boundary or placement is uncertain, record it as `untriaged` rather than silently expanding the task or assuming another task will cover it.
+
+Use `Discovered work` only for durable findings that affect correctness, exit criteria, compatibility, migration, operations, or future capability. Do not use it as a debugging diary. Keep the source entry after creating or linking its destination.
+
+When routing a finding to an existing task, verify that task's durable acceptance, scope, or state explicitly owns it. A task link or similar title is not enough. Keep the finding `untriaged` or `current milestone` until that ownership is explicit.
 
 Capture:
 
@@ -53,12 +61,14 @@ Capture:
 - impact;
 - source task or verification;
 - disposition;
-- destination when resolved.
+- destination when routed elsewhere;
+- resolution evidence, reconsideration signal, or rationale when the disposition closes or durably places the finding.
 
 Use these adaptive dispositions:
 
 - `untriaged`;
 - `current milestone`;
+- `resolved`;
 - `later milestone`;
 - `backlog`;
 - `future question`;
@@ -71,6 +81,15 @@ Revisit unresolved discoveries, backlog candidates, and future directions when s
 
 ## Close a milestone
 
+Audit every discovered-work entry individually before closure:
+
+- change completed current-Milestone work to `resolved` and record its evidence;
+- verify that a finding assigned to another current-Milestone task is explicitly owned there and has completion evidence before resolving it;
+- link `later milestone` and `backlog` items to a durable destination;
+- preserve a `future question` with its uncertainty and reconsideration signal;
+- record the accepted consequence for an `accepted limitation`;
+- give a concrete reason for `discarded`.
+
 Close only when:
 
 - exit criteria are satisfied;
@@ -79,7 +98,7 @@ Close only when:
 - every discovered item has a disposition;
 - no `current milestone` finding remains unresolved.
 
-Follow-up work elsewhere does not block closure. An `untriaged` item or unresolved current-milestone item does.
+Follow-up work elsewhere does not block closure once its destination is durable. An `untriaged` item, unresolved current-milestone item, missing destination, or missing closure rationale does.
 
 Closing a milestone updates delivery state and does not itself require destructive confirmation. If closing also proposes merge, branch/worktree deletion, or discard, keep those as separate explicit gates.
 

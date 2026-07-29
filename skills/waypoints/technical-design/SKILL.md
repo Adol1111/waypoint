@@ -55,6 +55,8 @@ Prefer stable module, interface, contract, and data concepts over file-by-file i
 
 Use pseudocode, a state table, or a compact schema only when it expresses a non-trivial algorithm, protocol, invariant, or transition more precisely than prose. Keep it decision-rich rather than executable.
 
+Use a flow or interaction diagram when branches, cycles, concurrency, multiple actors, or cross-boundary relationships are materially easier to review visually. Express a single linear sequence as concise prose or a short ordered list.
+
 Keep delivery ordering out unless it is part of the technical invariant. When sequencing, migration, compatibility, rollout, or rollback risk is material, leave the design stable and use `implementation-plan` separately.
 
 Use [references/technical-design-template.md](references/technical-design-template.md) only when no stronger local pattern exists.

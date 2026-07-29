@@ -357,6 +357,12 @@ class RepositoryContractTests(unittest.TestCase):
             "completion evidence",
             "parallel milestones",
             "every discovered item has a disposition",
+            "Compare each finding with the selected task's accepted scope",
+            "necessary to satisfy the current task's acceptance",
+            "belongs to another current or future task",
+            "A task link or similar title is not enough",
+            "Audit every discovered-work entry individually",
+            "give a concrete reason for `discarded`",
             "no `current milestone` finding remains unresolved",
             "current-focus pointer",
             "future directions",
@@ -386,7 +392,25 @@ class RepositoryContractTests(unittest.TestCase):
         )
         self.assertIn("Closure remains blocked", blocked)
         self.assertIn("Closure is allowed", cleared)
+        self.assertIn("rechecks every discovered item individually", cleared)
+        self.assertIn("durable destinations", cleared)
+        self.assertIn("discarded items have reasons", cleared)
         self.assertIn("does not reopen", completed)
+
+    def test_milestone_discovery_intake_respects_task_scope(self) -> None:
+        fixture_dir = FIXTURES_ROOT / "milestone"
+        in_scope = (fixture_dir / "in-scope-bug.expected.md").read_text(
+            encoding="utf-8"
+        )
+        planned_gap = (fixture_dir / "planned-task-gap.expected.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Keep the failure in the current task", in_scope)
+        self.assertIn("mark that task blocked", in_scope)
+        self.assertIn("Do not duplicate it in Milestone Discovered work", in_scope)
+        self.assertIn("current milestone", planned_gap)
+        self.assertIn("title or link alone is insufficient", planned_gap)
+        self.assertIn("preventing Milestone closure from losing it", planned_gap)
 
     def test_milestone_workflow_does_not_require_bootstrap(self) -> None:
         expected = (
@@ -453,6 +477,8 @@ class RepositoryContractTests(unittest.TestCase):
         )
         self.assertIn("Failure and quality mechanisms", design_template)
         self.assertNotIn("Failure and quality behavior", design_template)
+        self.assertIn("branches, cycles, concurrency, multiple actors", design)
+        self.assertIn("single linear sequence", design)
         self.assertIn("Do not expand", design_template)
         self.assertIn("implementation-plan", design)
 

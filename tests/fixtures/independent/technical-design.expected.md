@@ -8,4 +8,5 @@
 - It captures current constraints, module and interface responsibilities, data ownership and lifecycle, execution and side-effect boundaries, concurrency and failure mechanisms, genuine alternatives and rationale, and verification seams.
 - It leaves mechanically derivable parsing, validation, normalization, mapping, and ordinary control flow to implementation unless their semantics define a material invariant.
 - It uses pseudocode or a compact schema only if a non-trivial invariant or transition needs more precision than prose.
+- It uses a flow or interaction diagram only when branching, cycles, concurrency, multiple actors, or cross-boundary relationships benefit materially; a single linear sequence stays prose or a short ordered list.
 - It does not expand into complete code, file-by-file edits, commits, or migration sequencing.

@@ -1,5 +1,13 @@
 # waypoint-skills
 
+## 0.2.1
+
+### Patch Changes
+
+- [#4](https://github.com/Adol1111/waypoint/pull/4) [`42685c1`](https://github.com/Adol1111/waypoint/commit/42685c1aa785fe6420fed8764f9e8baff9f513b0) Thanks [@Adol1111](https://github.com/Adol1111)! - Focus technical designs on consequential implementation choices and leave mechanically derivable work out of durable design artifacts.
+
+- [#4](https://github.com/Adol1111/waypoint/pull/4) [`74dbe72`](https://github.com/Adol1111/waypoint/commit/74dbe7264377c00cf97c8b28822f262cef223e82) Thanks [@Adol1111](https://github.com/Adol1111)! - Reserve technical diagrams for genuinely complex relationships and make Milestone discovered-work intake scope-aware, durable, and auditable at closure.
+
 ## 0.2.0
 
 ### Minor Changes

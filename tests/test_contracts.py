@@ -430,6 +430,53 @@ class RepositoryContractTests(unittest.TestCase):
         for phrase in ("silently delete", "skip", "loosen", "replacement evidence"):
             self.assertIn(phrase, execution)
 
+    def test_execution_creates_adaptive_git_checkpoints_before_advancing(
+        self,
+    ) -> None:
+        execution = (skill_dir("task-execution-simple") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        coordinator = (skill_dir("waypoint-workflow") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        milestone = (skill_dir("milestone-workflow") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        fixture_dir = FIXTURES_ROOT / "execution"
+        checkpoint = (
+            fixture_dir / "adaptive-git-checkpoint.expected.md"
+        ).read_text(encoding="utf-8")
+        unavailable = (
+            fixture_dir / "checkpoint-unavailable.expected.md"
+        ).read_text(encoding="utf-8")
+        workflow_checkpoint = (
+            FIXTURES_ROOT / "workflow" / "completed-uncommitted.expected.md"
+        ).read_text(encoding="utf-8")
+
+        for phrase in (
+            "Choose isolation before editing",
+            "Create a branch or worktree for non-trivial work",
+            "Before advancing to another task or waypoint",
+            "one cohesive final task commit",
+            "do not manufacture commits per file, layer, plan step, or review round",
+            "stable changes are committed or explicitly accounted for",
+        ):
+            self.assertIn(phrase, execution)
+        self.assertIn("silently uncommitted task work", coordinator)
+        self.assertIn("Before selecting another task", milestone)
+        self.assertIn("Create suitable task isolation", checkpoint)
+        self.assertIn("one cohesive task commit before advancing", checkpoint)
+        self.assertIn("Leave the mixed work uncommitted", unavailable)
+        self.assertIn("Do not silently advance", unavailable)
+        self.assertIn(
+            "Recommended skill: `task-execution-simple`",
+            workflow_checkpoint,
+        )
+
+        for readme_name in ("README.md", "README_CN.md"):
+            text = (ROOT / readme_name).read_text(encoding="utf-8")
+            self.assertIn("cohesive", text)
+
     def test_behavioral_spec_and_technical_design_have_distinct_owners(self) -> None:
         spec = (skill_dir("task-spec") / "SKILL.md").read_text(encoding="utf-8")
         spec_template = (

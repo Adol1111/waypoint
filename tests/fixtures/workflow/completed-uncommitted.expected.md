@@ -1,0 +1,4 @@
+- Evidence: The current task is accepted and verified, but its stable scoped changes remain uncommitted without a repository or user no-commit policy.
+- Recommended skill: `task-execution-simple`
+- Reuse: `CHANGE.md`
+- Why now: Create or explicitly account for the task Git checkpoint before selecting another task.

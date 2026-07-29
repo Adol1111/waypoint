@@ -15,6 +15,8 @@ Waypoint 提供一组小型、独立的 agent skills，用来保存值得延续�
 > [!IMPORTANT]
 > 每个 atomic skill 都能独立工作。可选 workflows 负责协调，但不会把固定 `docs/` 布局、任务跟踪器、分支约定、review 节奏或 commit 序列变成强制要求。
 
+在实现期间，“可选”并不等于“不执行”：`task-execution-simple` 根据仓库实践和冲突风险选择隔离方式，在允许时于推进前创建 cohesive、已验证的 commit；必须保留未提交工作时则说明原因。
+
 ## 为什么使用 Waypoint？
 
 Agent 对话是临时的，工程决策和完成证据不应该是。每个 atomic Waypoint skill 都遵循同一份轻量契约：
@@ -36,7 +38,7 @@ Agent 对话是临时的，工程决策和完成证据不应该是。每个 atom
 | [`technical-design`](skills/waypoints/technical-design/SKILL.md) | 在编码前持久化需要评审的架构和技术方案选择 |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | 规划真实的顺序、迁移、兼容或 rollout 风险 |
 | [`task-state`](skills/waypoints/task-state/SKILL.md) | 保存验收、状态、阻塞、证据和安全收尾状态 |
-| [`task-execution-simple`](skills/waypoints/task-execution-simple/SKILL.md) | 使用适合当前上下文的保护措施实现给定范围 |
+| [`task-execution-simple`](skills/waypoints/task-execution-simple/SKILL.md) | 使用自适应隔离、验证和 Git checkpoint 实现给定范围 |
 | [`docs-workflow-bootstrap`](skills/setup/docs-workflow-bootstrap/SKILL.md) | 可选地创建轻量共享 docs 约定 |
 
 调用示例：
@@ -199,11 +201,13 @@ Waypoint 不是：
 
 - Superpowers/OpenSpec 风格的强制生命周期；
 - tracker 状态机、label 系统，或要求所有用户采用 Milestone；
-- 固定 review 节奏或强制 commit 序列；
+- 固定 review 节奏、每阶段一个 commit，或预设 commit 序列；
 - branch 或 worktree 策略；
 - 访谈、研究、TDD、评审或交接 skills 的替代品。
 
 只有后果重大的收尾操作保留明确确认：merge、删除 branch/worktree，以及丢弃工作。确认必须指出操作和目标；“继续”或“完成”并不足够。
+
+这不意味着让稳定工作长期保持未提交。日常隔离和 cohesive task commit 根据仓库实践、任务风险和用户方向执行，只是不预设固定顺序。
 
 ## 验证
 

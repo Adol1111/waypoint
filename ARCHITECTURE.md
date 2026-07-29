@@ -46,8 +46,8 @@ Choosing `milestone-workflow` does not make its lifecycle mandatory for other us
 | Reviewable task behavior, requirements, and proof | `task-spec` |
 | Review-critical architecture, interfaces, data and state models, algorithms, quality attributes, and verification seams | `technical-design` |
 | Risk-driven execution order and rollback | `implementation-plan` |
-| Acceptance, status, blockers, evidence, closing state | `task-state` |
-| Code changes and execution verification | `task-execution-simple` |
+| Acceptance, status, blockers, recovery checkpoint, final verification, and closing safety | `task-state` |
+| Code changes, execution verification, adaptive isolation, and task-scoped Git checkpoints | `task-execution-simple` |
 | Optional docs scaffold only | `docs-workflow-bootstrap` |
 | One next-skill recommendation only | `waypoint-workflow` |
 | Milestone definition, global placement, discoveries, evidence, and closure | `milestone-workflow` |
@@ -68,6 +68,8 @@ Completed Milestone scope is frozen. Factual corrections and evidence links rema
 
 Ordinary, reversible progress uses adaptive judgment based on repository practice, task risk, and user direction. Waypoint does not require confirmation for routine edits, questions, tests, commits, reviews, or isolation when those actions are already within the user's request.
 
+Optional branch and commit policy means there is no prescribed sequence, not that stable work remains indefinitely uncommitted. Task execution chooses isolation from collision and recovery risk, commits cohesive verified work before advancing when permitted, and reports an explicit reason when a safe checkpoint is unavailable.
+
 Three closing operations require explicit confirmation:
 
 - merging isolated work;
@@ -78,4 +80,4 @@ Confirmation is action- and target-specific. Merge approval does not authorize l
 
 ## Deliberate separation from the legacy workflow
 
-The legacy repository supplied useful lessons about durable docs, task-local specs, embedded technical decisions, optional plans, Milestone closure, discovered-work routing, verification, and closing safety. Waypoint retains the valuable information but gives behavioral specification and technical design separate semantic owners. It retains Milestone capabilities only inside the user-selected `milestone-workflow` and removes the fixed stage chain, required docs entry points, roadmap confirmation flags, tracker-specific transitions, mandatory review pauses, default commit checkpoints, default task branches, prescribed cross-Milestone serialization, and fixed closing-choice lifecycle.
+The legacy repository supplied useful lessons about durable docs, task-local specs, embedded technical decisions, optional plans, Milestone closure, discovered-work routing, verification, and closing safety. Waypoint retains the valuable information but gives behavioral specification and technical design separate semantic owners. It retains Milestone capabilities only inside the user-selected `milestone-workflow` and removes the fixed stage chain, required docs entry points, roadmap confirmation flags, tracker-specific transitions, mandatory review pauses, default commit checkpoints, default task branches, prescribed cross-Milestone serialization, and fixed closing-choice lifecycle. Adaptive isolation and cohesive Git checkpoints remain available when repository state and task risk justify them.

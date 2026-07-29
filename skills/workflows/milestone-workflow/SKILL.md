@@ -41,6 +41,8 @@ Choose the next action from current evidence rather than a mandatory stage chain
 
 When continuing task-level work, carry the milestone, selected task, relevant exit criteria, and unresolved discovered work into the atomic skill. Afterward, reconcile its durable result and new discoveries back into milestone state.
 
+Before selecting another task, inspect whether the current task has stable uncommitted changes. When routine commits are permitted, return completed uncommitted work to `task-execution-simple` for a cohesive Git checkpoint. Otherwise record the user or repository no-commit policy, or the concrete mixed-work reason that prevents safe separation; do not advance silently.
+
 Keep a compact current-focus pointer when work spans sessions: the selected milestone, selected task or slice, next atomic waypoint, and blocker when present. This is recovery context, not a required tracker state or a claim that only one milestone may be active.
 
 ## Record discovered work

@@ -15,6 +15,8 @@ Waypoint provides small, standalone agent skills that preserve the engineering f
 > [!IMPORTANT]
 > Every atomic skill works independently. Optional workflows coordinate them without making a fixed `docs/` layout, task tracker, branch convention, review cadence, or commit sequence mandatory.
 
+During implementation, optional does not mean absent: `task-execution-simple` chooses isolation from repository and collision risk, creates cohesive verified commits before advancing when permitted, and reports why when work must remain uncommitted.
+
 ## Why Waypoint?
 
 Agent conversations are temporary; engineering decisions and proof should not be. Each atomic Waypoint skill follows the same lightweight contract:
@@ -36,7 +38,7 @@ Install or invoke only the skill needed for the current outcome.
 | [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Make review-critical architecture and implementation choices durable before coding |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | Plan real sequencing, migration, compatibility, or rollout risk |
 | [`task-state`](skills/waypoints/task-state/SKILL.md) | Preserve acceptance, status, blockers, evidence, and safe closing state |
-| [`task-execution-simple`](skills/waypoints/task-execution-simple/SKILL.md) | Implement supplied scope with context-appropriate safeguards |
+| [`task-execution-simple`](skills/waypoints/task-execution-simple/SKILL.md) | Implement supplied scope with adaptive isolation, verification, and Git checkpoints |
 | [`docs-workflow-bootstrap`](skills/setup/docs-workflow-bootstrap/SKILL.md) | Optionally scaffold a lightweight shared docs convention |
 
 Example invocations:
@@ -199,11 +201,13 @@ Waypoint is not:
 
 - a Superpowers/OpenSpec-style mandatory lifecycle;
 - a tracker state machine, label system, or Milestone requirement for every user;
-- a fixed review cadence or mandatory commit sequence;
+- a fixed review cadence, commit per phase, or prescribed commit sequence;
 - a branch or worktree policy;
 - a replacement for interviewing, research, TDD, review, or handoff skills.
 
 Explicit confirmation is reserved for consequential closing operations: merge, deleting a branch or worktree, and discarding work. Confirmation must identify the action and target; “continue” or “finish” is not enough.
+
+This does not leave stable work indefinitely uncommitted. Routine isolation and cohesive task commits use repository practice, task risk, and user direction; only their sequence is not prescribed.
 
 ## Validation
 

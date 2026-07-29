@@ -1,4 +1,4 @@
 interface:
   display_name: "Task Execution Simple"
-  short_description: "Implement scoped work with fitting safeguards"
-  default_prompt: "Use $task-execution-simple to implement this supplied task or specification."
+  short_description: "Implement and checkpoint scoped work safely"
+  default_prompt: "Use $task-execution-simple to implement, verify, review, and checkpoint this supplied task."

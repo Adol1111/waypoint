@@ -48,7 +48,13 @@ Concrete, task-shaped deferred work that is not assigned to an open Milestone li
 
 ## Items
 
-- <Outcome, source, reason deferred, and reconsideration signal>
+### <Outcome>
+
+- Source: <Milestone discovery, task, issue, or request>
+- Reason deferred: <why no active artifact owns it now>
+- Reconsider when: <observable signal>
 ```
+
+Backlog is an active queue rather than history. Promote an item only after a destination Milestone, task, or slice explicitly owns it, then remove it. Remove resolved items after their evidence is durable elsewhere. Leave unchanged entries untouched; do not append review dates, retained states, or review history.
 
 Create `docs/tasks/<milestone>/index.md` only when a real Milestone is planned. Put task-local `spec.md`, optional `design.md`, and optional `plan.md` beside their task when useful, or keep distinct specification and technical-design sections in one task artifact. Do not create placeholder Milestones.

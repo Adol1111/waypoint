@@ -1,4 +1,4 @@
 interface:
   display_name: "Task State"
-  short_description: "Keep acceptance, blockers, and closing visible"
-  default_prompt: "Use $task-state to update this task state and record its evidence or blockers."
+  short_description: "Keep task checkpoints recoverable and truthful"
+  default_prompt: "Use $task-state to update acceptance, recovery state, blockers, or final verification without creating a process log."

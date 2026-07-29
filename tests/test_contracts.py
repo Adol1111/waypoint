@@ -430,6 +430,53 @@ class RepositoryContractTests(unittest.TestCase):
         for phrase in ("silently delete", "skip", "loosen", "replacement evidence"):
             self.assertIn(phrase, execution)
 
+    def test_execution_creates_adaptive_git_checkpoints_before_advancing(
+        self,
+    ) -> None:
+        execution = (skill_dir("task-execution-simple") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        coordinator = (skill_dir("waypoint-workflow") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        milestone = (skill_dir("milestone-workflow") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        fixture_dir = FIXTURES_ROOT / "execution"
+        checkpoint = (
+            fixture_dir / "adaptive-git-checkpoint.expected.md"
+        ).read_text(encoding="utf-8")
+        unavailable = (
+            fixture_dir / "checkpoint-unavailable.expected.md"
+        ).read_text(encoding="utf-8")
+        workflow_checkpoint = (
+            FIXTURES_ROOT / "workflow" / "completed-uncommitted.expected.md"
+        ).read_text(encoding="utf-8")
+
+        for phrase in (
+            "Choose isolation before editing",
+            "Create a branch or worktree for non-trivial work",
+            "Before advancing to another task or waypoint",
+            "one cohesive final task commit",
+            "do not manufacture commits per file, layer, plan step, or review round",
+            "stable changes are committed or explicitly accounted for",
+        ):
+            self.assertIn(phrase, execution)
+        self.assertIn("silently uncommitted task work", coordinator)
+        self.assertIn("Before selecting another task", milestone)
+        self.assertIn("Create suitable task isolation", checkpoint)
+        self.assertIn("one cohesive task commit before advancing", checkpoint)
+        self.assertIn("Leave the mixed work uncommitted", unavailable)
+        self.assertIn("Do not silently advance", unavailable)
+        self.assertIn(
+            "Recommended skill: `task-execution-simple`",
+            workflow_checkpoint,
+        )
+
+        for readme_name in ("README.md", "README_CN.md"):
+            text = (ROOT / readme_name).read_text(encoding="utf-8")
+            self.assertIn("cohesive", text)
+
     def test_behavioral_spec_and_technical_design_have_distinct_owners(self) -> None:
         spec = (skill_dir("task-spec") / "SKILL.md").read_text(encoding="utf-8")
         spec_template = (
@@ -512,8 +559,56 @@ class RepositoryContractTests(unittest.TestCase):
         for label in ("Why now", "Start when", "Revisit when"):
             self.assertIn(label, state)
             self.assertIn(label, state_template)
-        self.assertIn("Do not invent dates", state)
-        self.assertIn("Omit the Selection context section", state_template)
+        self.assertIn("only an observed signal", state)
+        self.assertIn("inventing dates", state)
+        self.assertIn("add one selection signal", state_template.lower())
+
+    def test_task_state_uses_acceptance_not_verification_logs_for_progress(
+        self,
+    ) -> None:
+        state = (skill_dir("task-state") / "SKILL.md").read_text(encoding="utf-8")
+        template = (
+            skill_dir("task-state") / "references" / "task-state-template.md"
+        ).read_text(encoding="utf-8")
+        fixture_dir = FIXTURES_ROOT / "task-state"
+        progress = (fixture_dir / "progress-not-log.expected.md").read_text(
+            encoding="utf-8"
+        )
+        completion = (
+            fixture_dir / "completion-verification.expected.md"
+        ).read_text(encoding="utf-8")
+        review = (fixture_dir / "review-handoff.expected.md").read_text(
+            encoding="utf-8"
+        )
+        continuous_review = (
+            fixture_dir / "continuous-review.expected.md"
+        ).read_text(encoding="utf-8")
+
+        for phrase in (
+            "primary progress record",
+            "The task carries no running command history",
+            "expensive or impossible to reproduce",
+            "one concise final verification summary",
+            "Maintain a checkpoint, not a process log",
+            "Grilling is optional and leaves no task-state marker",
+            "During uninterrupted execution-review loops",
+            "At a stopping boundary",
+            "prefer live version-control inspection",
+        ):
+            self.assertIn(phrase, state)
+        self.assertIn("smallest durable record", template)
+        self.assertIn("## Recovery checkpoint", template)
+        self.assertIn("## Final verification", template)
+        self.assertNotIn("## Evidence", template)
+        self.assertIn("task carries no routine command history", progress)
+        self.assertIn("Do not add phase-completion state", progress)
+        self.assertIn("Mark the task `completed` only", completion)
+        self.assertIn("unresolved token refresh race", review)
+        self.assertIn("Do not preserve resolved review comments", review)
+        self.assertIn("link it instead of duplicating it", review)
+        self.assertIn("Do not add review rounds", continuous_review)
+        self.assertIn("without creating a Recovery checkpoint", continuous_review)
+        self.assertIn("survive a stop, handoff, or blocker", continuous_review)
 
     def test_changesets_release_configuration_is_complete(self) -> None:
         package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))

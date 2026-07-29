@@ -24,11 +24,13 @@ Do not create or update artifacts, specs, plans, roadmap tasks, state, or implem
 - Concrete task needs a reviewable behavioral boundary: `task-spec`
 - Behavior is clear but review-critical architecture, interfaces, data or state models, algorithms, quality attributes, or testing seams remain unresolved: `technical-design`
 - Real sequencing, migration, compatibility, rollout, or coordination risk: `implementation-plan`
-- Acceptance, blocker, status, evidence, or isolated-work closing needs visibility: `task-state`
-- Scoped task or spec is ready to implement: `task-execution-simple`
+- Acceptance, blocker, status, recovery checkpoint, final verification, or isolated-work closing needs visibility: `task-state`
+- Scoped task or spec is ready to implement, or completed stable task changes need verification and a Git checkpoint before advancing: `task-execution-simple`
 - Team explicitly wants a shared local docs convention: `docs-workflow-bootstrap`
 
 Prefer the skill closest to the user's requested outcome. For example, missing docs do not outrank a request to implement a supplied, workable task. Do not recommend technical design merely because implementation has not started; require a real review-critical choice. When evidence ties, recommend the smallest earlier waypoint that prevents material invention.
+
+Treat completed but silently uncommitted task work as unfinished delivery when repository policy and user direction permit routine commits. Recommend `task-execution-simple` to create or explicitly account for the checkpoint before recommending another task.
 
 ## Output
 

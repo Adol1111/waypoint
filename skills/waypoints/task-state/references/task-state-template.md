@@ -2,6 +2,8 @@
 
 Use only when no existing tracker or task artifact fits.
 
+Start with the smallest durable record:
+
 ```md
 # <Task>
 
@@ -10,24 +12,39 @@ Status: <planned | in-progress | blocked | completed>
 ## Acceptance
 
 - [ ] <observable acceptance condition>
+```
 
-## Evidence
+Add only the branch required by the current state.
 
-- <command, result, review, or delivered artifact>
+For work stopping or handing off:
 
-## Blocker
+```md
+## Recovery checkpoint
 
-<For blocked work: condition, impact, and unblocking event. Omit otherwise.>
+- Now: <where work paused>
+- Remaining: <unresolved acceptance, decision, or review finding>
+- Next: <next meaningful action>
 
 ## Working state
 
-<Branch, worktree, or uncommitted surface only when useful for recovery.>
-
-## Selection context
-
-- Why now: <Reason this task is currently selected.>
-- Start when: <Dependency, precondition, or activation signal.>
-- Revisit when: <Signal for reconsidering deferred work.>
+<Only non-obvious state required for safe continuation>
 ```
 
-Omit the Selection context section or any unused entry when it adds no recovery value. Do not invent scheduling information.
+For blocked work:
+
+```md
+## Blocker
+
+<Condition, impact, and unblocking event>
+```
+
+For completed work:
+
+```md
+## Final verification
+
+- <Final checks or review, outcomes, and acceptance demonstrated>
+- Verified revision or run: <commit, PR, CI, release, or artifact link when one exists>
+```
+
+When useful, add one selection signal: `Why now`, `Start when`, or `Revisit when`. Add unresolved review details beneath `Remaining` or link their durable review location. The completed form contains Acceptance and Final verification, not transient recovery sections.

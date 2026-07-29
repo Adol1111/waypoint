@@ -151,6 +151,8 @@ npx skills add Adol1111/waypoint --skill docs-workflow-bootstrap
 
 两种选择都可以包含 `docs/context/` 和 `docs/architecture/decisions/`。Task-local `spec.md`、可选 `design.md` 和可选 `plan.md` 可以放在 task 旁边；仓库也可以在同一个 artifact 中保留彼此独立的 specification 和 technical-design sections。仓库已有位置始终优先；bootstrap 不创建 placeholder Milestones。
 
+在 Milestone convention 中，backlog 是活动队列，而不是历史日志。条目带有 reconsideration signal，在提升或已有持久解决证据后删除；复查没有产生新结果时保持原样。来源 discovery 和已完成 task 负责保留历史。
+
 ## Companion Skills
 
 Waypoint 不复制通用协议。以下可选 companions 均来自 [**mattpocock/skills**](https://github.com/mattpocock/skills)：

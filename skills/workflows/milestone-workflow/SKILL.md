@@ -24,7 +24,8 @@ This workflow owns milestone governance. It does not replace the atomic skill th
 - Keep task placement above task-local behavior, technical design, and implementation sequencing. Use their atomic owners when that detail is needed.
 - Allow parallel milestones when repository practice and delivery reality support them.
 - Keep concrete deferred work in an existing backlog or tracker. Preserve broader future questions without inventing tasks.
-- Distinguish task-shaped backlog items from goal-shaped future directions. Give each deferred item a reconsideration signal rather than expanding it into a speculative tree.
+- Treat backlog as an active queue, not history. Give each task-shaped item an outcome, source, reason deferred, and reconsideration signal; keep goal-shaped uncertainty under future directions.
+- Before inventing work for a new Milestone, search backlog for matching outcomes and signals that are now satisfied.
 - Do not require numeric milestone names, `Roadmap confirmed` flags, modules, or a fixed milestone sequence.
 
 ## Coordinate the next waypoint
@@ -79,7 +80,16 @@ Use these adaptive dispositions:
 
 Do not expand current scope silently. Ask when classifying a finding would change product intent, exit criteria, or a consequential delivery boundary.
 
-Revisit unresolved discoveries, backlog candidates, and future directions when selecting a new milestone and when closing one. Promote an item only when its outcome and placement are concrete enough; otherwise preserve its uncertainty.
+## Retrieve backlog work
+
+Review backlog candidates when selecting or planning a Milestone, when a reconsideration signal is observed, when new evidence changes value, risk, or dependencies, or when the user requests backlog work.
+
+- To promote an item, first make a destination Milestone, task, or slice explicitly own its outcome through scope or acceptance. Update its source discovered-work entry when one exists, then remove the backlog entry.
+- When an item is already resolved, first preserve its evidence in a completed task, issue, PR, commit, or source discovered-work entry, then remove the backlog entry.
+- When another durable item owns it or a decision makes it obsolete, preserve that owner or rationale at the source when useful, then remove the backlog entry.
+- When nothing changed, leave the backlog entry untouched. Add no review date, retained disposition, or review history.
+
+Never remove an item before its destination, evidence, owner, or rationale is durable. Backlog contains only unresolved work that no other active artifact owns; completed tasks and source discovered-work entries carry history.
 
 ## Close a milestone
 
@@ -101,6 +111,8 @@ Close only when:
 - no `current milestone` finding remains unresolved.
 
 Follow-up work elsewhere does not block closure once its destination is durable. An `untriaged` item, unresolved current-milestone item, missing destination, or missing closure rationale does.
+
+Closing validates any backlog entries created from this Milestone but does not append backlog review history or rewrite unchanged older items.
 
 Closing a milestone updates delivery state and does not itself require destructive confirmation. If closing also proposes merge, branch/worktree deletion, or discard, keep those as separate explicit gates.
 

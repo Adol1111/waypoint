@@ -151,6 +151,8 @@ Teams that want shared repository-local documentation can invoke `docs-workflow-
 
 Both choices may include `docs/context/` and `docs/architecture/decisions/`. Task-local `spec.md`, optional `design.md`, and optional `plan.md` files may live beside a task; a repository may instead keep distinct specification and technical-design sections in one artifact. Existing repository locations always take precedence, and bootstrap does not create placeholder Milestones.
 
+In the Milestone convention, backlog is an active queue rather than a history log. Items carry a reconsideration signal, are removed after promotion or durable resolution, and remain unchanged when review finds no new outcome; source discoveries and completed tasks retain history.
+
 ## Companion skills
 
 Waypoint deliberately does not copy general-purpose protocols. The following optional companions come from [**mattpocock/skills**](https://github.com/mattpocock/skills):

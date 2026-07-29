@@ -412,6 +412,36 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("title or link alone is insufficient", planned_gap)
         self.assertIn("preventing Milestone closure from losing it", planned_gap)
 
+    def test_milestone_backlog_is_an_active_queue_without_review_history(
+        self,
+    ) -> None:
+        workflow = (skill_dir("milestone-workflow") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        convention = (
+            skill_dir("docs-workflow-bootstrap")
+            / "references"
+            / "milestone-convention.md"
+        ).read_text(encoding="utf-8")
+        expected = (
+            FIXTURES_ROOT / "milestone" / "backlog-retrieval.expected.md"
+        ).read_text(encoding="utf-8")
+
+        for phrase in (
+            "Treat backlog as an active queue, not history",
+            "Before inventing work for a new Milestone, search backlog",
+            "then remove the backlog entry",
+            "leave the backlog entry untouched",
+            "Add no review date, retained disposition, or review history",
+            "Never remove an item before",
+        ):
+            self.assertIn(phrase, workflow)
+        self.assertIn("Backlog is an active queue rather than history", convention)
+        self.assertIn("remove that backlog entry", expected)
+        self.assertIn("Leave the regional failover entry untouched", expected)
+        self.assertIn("Add no review date", expected)
+        self.assertIn("Never delete a backlog entry before", expected)
+
     def test_milestone_workflow_does_not_require_bootstrap(self) -> None:
         expected = (
             FIXTURES_ROOT / "milestone" / "no-existing-artifact.expected.md"

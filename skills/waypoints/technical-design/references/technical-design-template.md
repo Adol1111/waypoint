@@ -7,27 +7,36 @@ Use the smallest subset that makes review-critical implementation choices durabl
 
 ## Context and constraints
 
-<Current technical facts and externally imposed constraints.>
+<Only the current technical facts and constraints that shape an implementation choice. Link to the behavioral specification instead of summarizing it.>
 
-## Proposed design
+## Proposed technical design
 
-<Architecture or approach and how it satisfies the behavioral specification.>
+<Architecture, ownership boundaries, and technical mechanism.>
+
+## Technical decisions
+
+### <Technical question>
+
+- Choice: <selected implementation approach>
+- Why: <material rationale>
+- Alternatives: <genuine alternatives and why they were not selected; omit when none>
+- Invariant or consequence: <durable effect of the choice>
 
 ## Responsibilities and interfaces
 
 - <Module, interface, seam, or integration contract>
 
-## Data and state flow
+## Data, storage, and lifecycle
 
-<Data ownership, schema concepts, states, transitions, control flow, or events when relevant.>
+<Data ownership, persisted shape, identity, lifecycle, state transitions, or events when a material choice is involved.>
 
-## Failure and quality behavior
+## Execution model and side effects
 
-<Concurrency, consistency, security, privacy, performance, operations, or recovery when relevant.>
+<Request-time, background, scheduled, or event-driven execution; transaction, atomicity, concurrency, and side-effect boundaries.>
 
-## Decisions and tradeoffs
+## Failure and quality mechanisms
 
-- <Choice, genuine alternatives, and rationale>
+<Mechanisms for consistency, security, privacy, performance, operations, or recovery. Reference observable requirements rather than repeating them.>
 
 ## Algorithm or protocol
 
@@ -35,11 +44,11 @@ Use the smallest subset that makes review-critical implementation choices durabl
 
 ## Verification seams
 
-- <Interface, observation, or evidence that can prove the design>
+- <Technical seam or observation that can prove the chosen mechanism without repeating the specification's completion cases>
 
 ## Open technical decisions
 
-- <Unresolved choice, impact, and latest useful decision point>
+- <Unresolved implementation choice, impact, and latest useful decision point; return observable behavior questions to the specification>
 ```
 
-Omit unused sections. Do not expand the template into file-by-file edits, complete code, commit steps, or an implementation sequence.
+Omit unused sections. Every included section must add a review-critical implementation choice beyond the specification and repository conventions. Leave mechanically derivable parsing, validation, normalization, mapping, and ordinary control flow to implementation. Do not expand the template into file-by-file edits, complete code, commit steps, or an implementation sequence.

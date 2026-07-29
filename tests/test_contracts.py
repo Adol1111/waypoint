@@ -442,8 +442,33 @@ class RepositoryContractTests(unittest.TestCase):
             self.assertIn(required, design)
         self.assertIn("pseudocode", design.lower())
         self.assertIn("only when", design.lower())
+        self.assertIn("Document the decision, not the derivation", design)
+        self.assertIn("mechanically derivable implementation", design)
+        self.assertIn("task-level implementation choices", design)
+        self.assertNotIn("Keep task-level choices", design)
+        self.assertIn("Reference the relevant behavioral requirement", design)
+        self.assertIn(
+            "Every included section must add a review-critical implementation choice",
+            design_template,
+        )
+        self.assertIn("Failure and quality mechanisms", design_template)
+        self.assertNotIn("Failure and quality behavior", design_template)
         self.assertIn("Do not expand", design_template)
         self.assertIn("implementation-plan", design)
+
+    def test_technical_design_filters_mechanics_from_decisions(self) -> None:
+        expected = (
+            FIXTURES_ROOT / "design-review" / "oauth-mechanics.expected.md"
+        ).read_text(encoding="utf-8")
+        for required in (
+            "without restating",
+            "Leave splitting, trimming, form encoding",
+            "configuration identity and canonical representation",
+            "background scheduling, request-time preflight",
+            "atomic persistence",
+            "without duplicating",
+        ):
+            self.assertIn(required, expected)
 
     def test_task_motivation_and_timing_context_remain_durable(self) -> None:
         spec = (skill_dir("task-spec") / "SKILL.md").read_text(encoding="utf-8")

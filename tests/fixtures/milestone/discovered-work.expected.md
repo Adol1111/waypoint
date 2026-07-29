@@ -4,3 +4,4 @@
 - Capture its impact and verification source.
 - Set disposition to `untriaged`.
 - Do not silently expand the current task or send it directly to backlog.
+- Keep the source entry in Discovered work if it is later routed elsewhere.

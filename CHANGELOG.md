@@ -1,5 +1,11 @@
 # waypoint-skills
 
+## 0.2.3
+
+### Patch Changes
+
+- [#8](https://github.com/Adol1111/waypoint/pull/8) [`5526f7e`](https://github.com/Adol1111/waypoint/commit/5526f7e68cb844c137151ea1b3e2ec02585a0b95) Thanks [@Adol1111](https://github.com/Adol1111)! - Treat Milestone backlog as an active unresolved queue: remove promoted or durably resolved items and leave unchanged entries free of review history.
+
 ## 0.2.2
 
 ### Patch Changes

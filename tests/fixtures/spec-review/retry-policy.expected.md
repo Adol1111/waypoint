@@ -30,7 +30,15 @@ Exclude the first attempt from the 800 ms budget so the new limit bounds recover
 
 When the budget is exhausted, expose the last transport failure together with a distinguishable retry-budget-exhausted condition. A 4xx response returns without retrying or producing the budget-exhausted condition.
 
-## Completion proof
+---
 
-- Focused unit tests demonstrate budget exhaustion and non-retryable 4xx behavior.
-- The existing client integration suite passes, demonstrating preserved surrounding behavior.
+# Task artifact update
+
+## References
+
+- [Specification](./spec.md)
+
+## Acceptance
+
+- [ ] Focused tests demonstrate budget exhaustion and non-retryable 4xx behavior.
+- [ ] The existing client integration suite passes with surrounding behavior preserved.

@@ -12,7 +12,14 @@ docs/
 │       └── index.md
 └── tasks/
     ├── index.md
-    └── backlog.md
+    ├── backlog.md
+    └── <milestone>/
+        ├── index.md
+        └── <task>/
+            ├── task.md
+            ├── spec.md              # when behavior is specified
+            ├── technical-design.md  # optional, repository-native name may differ
+            └── plan.md    # optional
 ```
 
 Suggested `docs/tasks/index.md`:
@@ -60,4 +67,8 @@ Concrete deferred candidate outcomes that are not assigned to an open Milestone 
 
 Backlog is an active queue rather than history. These fields preserve each candidate's current priority, evidence, deferral reason, and reconsideration signal without imposing a scoring system or planning algorithm. The selected roadmap or workflow skill determines how candidates are evaluated and transferred; bootstrap only creates the agreed storage convention.
 
-Create `docs/tasks/<milestone>/index.md` only when a real Milestone is planned. Put task-local `spec.md`, optional `design.md`, and optional `plan.md` beside their task when useful, or keep distinct specification and technical-design sections in one task artifact. Do not create placeholder Milestones.
+At bootstrap, create only the accepted shared roots; the `<milestone>` and `<task>` entries above describe the convention rather than placeholder directories.
+
+When a real Milestone and its atomic tasks are confirmed, create `docs/tasks/<milestone>/index.md` plus one non-empty `docs/tasks/<milestone>/<task>/task.md` planning handoff for each selected task. The index keeps an ordered list such as ``- `planned` [Task](./task/task.md)``, retains global selection and exit criteria, and adds a Mermaid graph only when real cross-task dependencies exist. Task status is the global recovery signal; there is no Milestone-level Current Focus.
+
+Development skills own later task contents. This convention adds References only for artifacts that exist and follows repository-native locations and filenames.

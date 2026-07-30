@@ -1,7 +1,6 @@
 # Expected behavior
 
 - Record the finding in Credential Rotation's discovered-work section.
-- Capture its impact and verification source.
-- Set disposition to `untriaged`.
+- Keep the entry concise enough to understand the concern and decide its owner.
 - Do not silently expand the current task or send it directly to backlog.
-- Keep the source entry in Discovered work if it is later routed elsewhere.
+- Do not invent a finding/impact/source/destination/resolution schema.

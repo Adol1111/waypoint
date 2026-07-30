@@ -1,6 +1,6 @@
 # Roadmap Template
 
-Adapt this shape to the repository. Do not create empty sections or speculative task trees.
+Use this fallback only for a standalone goal with no task artifacts or local roadmap form. A Milestone index uses linked task handoffs instead of these expanded slices. Omit empty sections and keep each fact in one place.
 
 ```md
 # <Goal>
@@ -9,45 +9,14 @@ Adapt this shape to the repository. Do not create empty sections or speculative 
 
 <Desired future state, success signals, and material constraints.>
 
-## Why this direction now
+## Delivery slices
 
-- Evidence: <product gap, feedback, incident, research, dependency, or other durable signal>
-- Alternatives considered: <other plausible Milestone directions, when genuine>
-- Why selected: <expected result and cost of delay>
-- Task-count target: <user request or confirmed agent proposal>
-- Optional external constraint: <timebox, deadline, or release boundary only when supplied>
-- Explicitly later: <important work excluded from this boundary>
+### <Meaningful delivery>
 
-## Selected backlog outcomes
-
-| Candidate outcome | Score at selection | Why selected | Expanded tasks |
-| --- | ---: | --- | --- |
-| <backlog outcome> | <0–10 or repository-native priority> | <evidence-backed rationale> | <task links or names> |
-
-## Atomic tasks
-
-### <Meaningful engineering delivery>
-
-- Outcome: <bounded stage result>
-- Rough scope: <included and excluded>
+- Outcome: <bounded result>
+- Planning boundary: <included and excluded>
 - Depends on: <hard dependency, or none>
-- Unblocks: <named task or candidate outcome, when relevant>
-- Stage proof: <task-level success signal; implementation verification stays in this task>
-
-## Milestone coverage
-
-<Account for every exit criterion without repeating task-level spec, design, or plan detail.>
-
-| Exit criterion | Contributing tasks | Cross-task proof or remaining gap |
-| --- | --- | --- |
-| <observable criterion> | <completed, active, or proposed tasks> | <integration proof only when task proof is insufficient> |
-
-## Delivery shape
-
-- Hard dependencies: <only ordering that cannot change>
-- Ready tasks: <tasks with no unsatisfied dependency>
-- Parallel paths: <tasks that can progress independently>
-- Integration task: <only when substantial cross-task work is required>
+- Stage proof: <independent success signal>
 
 ## Open decisions
 
@@ -57,8 +26,6 @@ Adapt this shape to the repository. Do not create empty sections or speculative 
 
 - <Question preserved without invented decomposition>
 ```
-
-For a standalone goal, omit Milestone coverage and unused delivery-shape fields. For a Milestone, retain the coverage table before identifying a next ready task.
 
 When maintaining a backlog alongside this roadmap, keep each item as a schedulable candidate outcome:
 

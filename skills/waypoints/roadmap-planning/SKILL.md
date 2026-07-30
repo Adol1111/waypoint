@@ -1,6 +1,6 @@
 ---
 name: roadmap-planning
-description: Shape goals or backlog outcomes into independently verifiable delivery slices. Use for coarse roadmap decomposition, product-gap or backlog review, scoring candidate outcomes, selecting the next Milestone, or completing a Milestone delivery map without writing task-level specs or designs.
+description: Shape goals or backlog outcomes into independently verifiable delivery slices. Use for standalone roadmap decomposition, product-gap or backlog prioritization, selecting a Milestone task batch, or reconciling an existing Milestone delivery map.
 ---
 
 # Roadmap Planning
@@ -13,9 +13,9 @@ Shape direction into outcomes that can be delivered and verified independently.
 2. Update the existing roadmap artifact when one fits. Otherwise propose the smallest useful Markdown artifact in a repository-consistent location.
 3. State the goal, constraints, current evidence, and success signals before decomposing.
 4. Select the branch that matches the request:
-   - for a standalone goal, shape a few independently verifiable delivery slices directly;
-   - for a new Milestone, prepare and score candidates before forming the task batch;
-   - for an existing Milestone, reconcile its complete delivery map and coverage.
+   - for a standalone goal, shape a few independently verifiable delivery slices directly, using [references/roadmap-template.md](references/roadmap-template.md) only when no local form exists;
+   - for a new Milestone, prepare and score candidates before forming the task batch, then read [references/milestone-planning-handoff.md](references/milestone-planning-handoff.md) before placing the confirmed result;
+   - for an existing Milestone, read the same handoff reference and reconcile its delivery map.
 5. Preserve precise open decisions and keep vague future questions at their current level of uncertainty.
 
 Remain usable without a docs layout, task tracker, labels, milestone hierarchy, workflow stage, or confirmation state.
@@ -59,23 +59,33 @@ Agent-generated scores are recommendations. Ask the user when business value or 
 3. Starting with the highest-scoring candidates, expand only the likely selections at planning granularity. One backlog outcome may become two or three Milestone tasks and consumes that many places in the batch.
 4. Let atomicity and dependencies determine task boundaries. A smaller or larger set needs a visible reason and user agreement when it materially departs from the requested count.
 5. Theme similarity is secondary. A Milestone may contain unrelated high-scoring outcomes when each selected task has a meaningful boundary.
-6. Preserve the selected candidate scores and selection rationale once in the Milestone. Milestone tasks do not inherit scores; order them only through real dependencies and identify the ready set.
+6. Preserve the selected candidate scores and selection rationale once in the Milestone. Milestone tasks do not inherit scores; list them in the recommended execution sequence and model only real dependencies.
 7. Transfer a candidate out of backlog after the Milestone durably owns its full selected outcome. When only a verifiable part is selected, rewrite the backlog entry as the remaining outcome and rescore it.
 
 Milestone planning defines task boundaries, rough scope, success signals, dependencies, and any genuine cross-task integration need. Create the task spec and any warranted design or plan when development of the individual task begins.
 
+## Place the planning result
+
+Follow the repository's existing tracker and artifact convention:
+
+- In a tracker, create or update one durable item for every confirmed atomic task and link those items from the Milestone.
+- In a local Milestone folder convention, materialize the planning handoff from the Milestone reference as one non-empty task artifact for every confirmed atomic task.
+- In a single-file convention, keep the task map compact and inline only the fields that have no other durable owner.
+
+Keep the Milestone artifact as a linked global map. Keep each planning handoff in its task artifact when task artifacts exist. Every confirmed task receives one durable individual owner.
+
 ## Complete the Milestone map
 
-Cover the whole Milestone before recommending its next ready task:
+Cover the whole Milestone before recommending its next task:
 
-1. Check that the selected outcomes, user-confirmed task-count boundary, optional external constraints, exit criteria, and material constraints are explicit.
+1. Check that the selected outcomes, optional external constraints, exit criteria, and material constraints are explicit.
 2. Inventory completed, active, and proposed tasks that contribute to the selected outcomes. Preserve valid completed work rather than replanning it.
-3. Map every exit criterion to the tasks and proof expected to satisfy it. Identify uncovered criteria, redundant tasks, and work that does not support the Milestone.
+3. Link every exit criterion directly to the task or tasks that satisfy it. An uncovered criterion means the plan is incomplete: add a task, adjust the criterion, or preserve a genuinely global unresolved choice under Open Decisions.
 4. Add the smallest missing meaningful tasks needed for complete coverage. Keep each at outcome level so task behavior and technical design remain with their owning skills.
-5. Show hard dependencies, meaningful parallel paths, and any preparatory work that unblocks a named capability.
-6. Preserve planning gaps as open decisions or future questions instead of hiding them inside an apparently complete task list.
+5. Keep an ordered task link and status list in the Milestone index. Let top-to-bottom order express the recommended execution sequence, not a hard dependency. When cross-task start or completion dependencies exist, show them in a Mermaid graph and label completion or verification gates distinctly. Omit the graph when tasks are independent.
+6. Preserve only global planning gaps as open decisions or future questions instead of hiding them inside an apparently complete task list.
 
-A Milestone plan makes its full delivery shape and closure path reviewable. Highlight a ready or current task only after that map is complete.
+A Milestone plan makes its full delivery shape and closure path reviewable. Task status and true dependencies are sufficient to recover what can proceed; do not add a global current-focus cursor.
 
 Replan when selected outcomes or exit criteria change, discovered work changes coverage, a completed task invalidates an assumption, or a closure audit reveals a gap. Reconcile the affected remaining map while preserving stable completed work. Closing a Milestone reconciles and rescores affected backlog work; a new Milestone begins only with user direction.
 
@@ -87,12 +97,10 @@ Replan when selected outcomes or exit criteria change, discovered work changes c
 - Keep file edits, endpoints, migration commands, test-writing steps, and other isolated actions inside the meaningful delivery they support.
 - Split only when each result supports an independent spec and meaningful stage proof. Combine work that has value only as one outcome.
 - When a backlog candidate expands into several tasks, count each atomic task toward the user-confirmed batch.
-- Keep priority on backlog candidates and selected-outcome rationale. Express Milestone execution through hard dependencies and a ready set.
+- Keep priority on backlog candidates and selected-outcome rationale. Express Milestone execution through list order and hard dependencies.
 - Add Milestone-level integration proof only when task-local verification cannot cover a real cross-task interaction, compatibility, migration, release, or end-to-end risk. Make it a separate task only when the integration work is substantial.
 
 Record a specific unresolved choice as an open decision with its impact and decision point. Preserve a vague future question without inventing owners, dates, or a speculative task tree.
-
-Use [references/roadmap-template.md](references/roadmap-template.md) only when no local form exists. Include its Milestone coverage section only for Milestone-scoped planning.
 
 ## Completion criteria
 
@@ -100,9 +108,10 @@ Planning is complete when:
 
 - the artifact reflects the requested branch and its durable evidence;
 - each slice or atomic task has a meaningful outcome, rough boundary, and stage proof;
-- a Milestone selection has a user-confirmed task-count boundary and durable ownership for selected and remaining backlog outcomes;
-- every Milestone exit criterion maps to contributing tasks, expected proof, or an explicit gap;
-- hard dependencies and the ready set are visible;
+- a Milestone selection has a user-confirmed batch, durable ownership for every confirmed task, and reconciled ownership for selected and remaining backlog outcomes;
+- every Milestone exit criterion links to its contributing tasks;
+- real hard dependencies are visible without turning list order into a dependency;
+- task-local details live in their task artifacts when the repository uses them, while the Milestone remains a linked global map;
 - open decisions and future questions preserve their actual uncertainty;
 - task-level specification, technical design, and implementation sequencing remain deferred until their owning work begins.
 

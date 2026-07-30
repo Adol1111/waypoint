@@ -21,7 +21,6 @@ For work stopping or handing off:
 ```md
 ## Recovery checkpoint
 
-- Now: <where work paused>
 - Remaining: <unresolved acceptance, decision, or review finding>
 - Next: <next meaningful action>
 

@@ -9,17 +9,17 @@ Use this compact shape only when milestone management is requested and the repos
 
 ### <Milestone>
 
-Status: <planned | in-progress | blocked>
+Status: <planned | in-progress | blocked | completed>
 
 #### Outcome
 
 <The selected engineering or product results.>
 
-#### Selection
+#### Constraints
 
-- Task-count target: <user request or confirmed proposal>
-- Optional external constraint: <timebox, deadline, or release boundary only when supplied>
-- Explicitly later: <important excluded work>
+- <Only a cross-task constraint or key global non-goal>
+
+#### Selection
 
 | Backlog outcome | Score at selection | Why selected |
 | --- | ---: | --- |
@@ -27,57 +27,41 @@ Status: <planned | in-progress | blocked>
 
 #### Exit criteria
 
-- [ ] <Observable criterion>
-
-#### Current focus
-
-- Task or slice: <selected work>
-- Next waypoint: <atomic skill or immediate action>
-- Blocked by: <blocker, if any>
+- [ ] <Observable criterion> — <task links when ownership is clear>
 
 #### Tasks
 
-##### <Atomic task>
-
-- Status: <planned | in-progress | blocked | completed>
-- Outcome: <bounded and verifiable stage result>
-- Rough scope: <included and excluded>
-- Depends on: <hard dependency, or none>
-- Stage proof: <task-level success signal>
-
-#### Ready tasks
-
-- <Task with no unsatisfied dependency>
-
-#### Delivery coverage
-
-| Exit criterion | Contributing tasks | Cross-task proof or remaining gap |
-| --- | --- | --- |
-| <criterion> | <durable task links> | <integration proof only when task proof is insufficient> |
-
-#### Discovered work
-
-##### <Finding>
-
-- Impact: <why it matters>
-- Source: <task, verification, or event>
-- Disposition: <untriaged | current milestone | resolved | later milestone | backlog | future question | accepted limitation | discarded>
-- Destination: <artifact or tracker link for later milestone, backlog, or another durable placement; omit otherwise>
-- Resolution: <completion evidence, future-question reconsideration signal, or accepted/discarded rationale; omit while untriaged or current milestone>
-
-#### Completion evidence
-
-- <command, result, review, release, or other proof>
-
-#### Future directions
-
-- <Goal-shaped question, why it matters, and reconsideration signal>
+- `<planned | in-progress | blocked | completed>` [<atomic task>](<durable task artifact>)
 
 ## Completed
 
-- <Milestone and durable link>
+- [<Milestone>](<durable link>)
 ```
 
-Omit unused example entries, including Current focus when no work is selected. Record the selection and task map returned by `roadmap-planning`; this artifact does not redefine its scoring or atomic-task rules. Write each task's spec and any warranted design or plan when development begins.
+Record the selection and linked task map returned by `roadmap-planning`; this artifact does not redefine its scoring, atomic-task, or task-handoff rules.
 
-For an open Milestone, keep enough Delivery coverage to show how every exit criterion can be satisfied; it is a planning map, not duplicated task detail or a guarantee that the plan cannot evolve. Add cross-task integration proof only when task-local proof is insufficient, and create an integration task only when that work is substantial. Keep findings required by the current task's acceptance in that task. Record durable out-of-task, cross-task, separately scheduled, or uncertain findings in Discovered work before routing them, defaulting to `untriaged` when placement is not explicit. A destination task counts only when its durable acceptance, scope, or state explicitly owns the finding. Preserve resolved entries as source history. Closure requires an individually checked disposition plus any required destination, evidence, or rationale; an empty section is not proof. Keep concrete deferred outcomes in a backlog and goal-shaped uncertainty under Future directions.
+Use status as current truth, not history:
+
+- `planned`: tasks exist and none has started;
+- `in-progress`: at least one task is active or another progress path remains;
+- `blocked`: the whole Milestone has no progress path;
+- `completed`: exit criteria, required tasks, and Discovered Work closure checks are satisfied.
+
+A blocked task does not block the Milestone while another task can progress. Update status in place without dates or transition logs.
+
+Add only the conditional section whose trigger exists:
+
+- `Dependency graph`: when at least one cross-task start or completion dependency exists; use Mermaid and label completion or verification gates distinctly.
+- `Open Decisions`: only for an unresolved choice that affects the Milestone boundary, multiple tasks, dependency relationships, or exit criteria; remove it after resolution or transfer to its owning artifact.
+- `Discovered Work`: only after the first durable out-of-scope or unowned finding that this Milestone cannot handle now.
+- `Completion Evidence`: only for cross-task integration, release, or migration proof that no individual task owns.
+
+Omit `Constraints` and every conditional section when empty. Link every exit criterion directly to the task or tasks that satisfy it; do not add a separate coverage table. Treat each `roadmap-planning` handoff as the authoritative task-local source. The Milestone task list contains links and status only, ordered by the recommended execution sequence. This order remains advisory; the optional Mermaid graph carries real cross-task dependencies. Omit the graph when every task is independent. Do not add Current Focus, task-count targets, planning baselines, confirmation flags, or process notes.
+
+Add cross-task integration proof only when task-local proof is insufficient, and create an integration task only when that work is substantial. Keep findings required by the current task in that task. Put a finding explicitly owned by another current task directly in that task. Use Discovered Work only for concerns the Milestone cannot handle now or whose owner is uncertain.
+
+After the Discovered Work audit passes, compact the completed Milestone to Outcome, necessary global Constraints, Selection, checked Exit Criteria, completed task links, and final dispositions. Remove the dependency graph and resolved or transferred Open Decisions. Keep Completion Evidence only when its cross-task proof has no task owner.
+
+Freeze completed scope. Permit factual corrections and cross-task evidence links; route new work to an open Milestone, backlog, or Future Directions.
+
+When the repository intentionally keeps all Milestone work in one file and has no separate task items, let each compact task section be that task's durable owner. Preserve the same planning handoff fields there rather than creating a directory solely to match this example.

@@ -1,5 +1,11 @@
 # waypoint-skills
 
+## 0.2.4
+
+### Patch Changes
+
+- [#10](https://github.com/Adol1111/waypoint/pull/10) [`0d6cc89`](https://github.com/Adol1111/waypoint/commit/0d6cc891260cd49ed6751f32bcca0377dc70b02a) Thanks [@Adol1111](https://github.com/Adol1111)! - Shape standalone goals or backlog outcomes into verifiable slices, optionally enrich and score Milestone candidates, and return a user-confirmed atomic task batch with durable dependencies and complete coverage to the coordinating workflow.
+
 ## 0.2.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # waypoint-skills
 
+## 0.2.5
+
+### Patch Changes
+
+- [#12](https://github.com/Adol1111/waypoint/pull/12) [`2a7312a`](https://github.com/Adol1111/waypoint/commit/2a7312af25d9e58ed5fc73993c2543e484ae888b) Thanks [@Adol1111](https://github.com/Adol1111)! - Load Milestone backlog, discovered-work, and closure rules only for the branches that need them, with sharper completion criteria and a single owner for each task-artifact transition.
+
 ## 0.2.4
 
 ### Patch Changes

@@ -42,7 +42,7 @@ Choosing `milestone-workflow` does not make its lifecycle mandatory for other us
 | Artifact or action | Owner |
 | --- | --- |
 | Glossary entry and qualifying ADR | `domain-context` |
-| Goal decomposition and delivery slices | `roadmap-planning` |
+| Optional candidate enrichment, backlog scoring, Milestone task-batch selection, atomic decomposition, and planning-level coverage | `roadmap-planning` |
 | Reviewable task behavior, requirements, and proof | `task-spec` |
 | Review-critical architecture, interfaces, data and state models, algorithms, quality attributes, and verification seams | `technical-design` |
 | Risk-driven execution order and rollback | `implementation-plan` |
@@ -50,7 +50,7 @@ Choosing `milestone-workflow` does not make its lifecycle mandatory for other us
 | Code changes, execution verification, adaptive isolation, and task-scoped Git checkpoints | `task-execution-simple` |
 | Optional docs scaffold only | `docs-workflow-bootstrap` |
 | One next-skill recommendation only | `waypoint-workflow` |
-| Milestone definition, global placement, discoveries, evidence, and closure | `milestone-workflow` |
+| Milestone definition, global task placement and state, discoveries, evidence, and closure | `milestone-workflow` |
 
 Templates live only with the skill that owns the artifact or scaffold. They are fallbacks when the repository has no stronger convention, not schemas to enforce. The bootstrap skill owns its two scaffold conventions but does not generate substantive artifacts for other skills. `milestone-workflow` owns the fallback Milestone artifact shape and its global state.
 
@@ -58,9 +58,13 @@ Artifact ownership is semantic rather than file-prescriptive. `task-spec` and `t
 
 ## Milestone governance
 
-A Milestone is optional and justified by a shared delivery outcome, release or migration boundary, or common exit criteria. The workflow does not require numeric names, one active Milestone, or serial execution.
+A Milestone is optional and bounded by selected candidate outcomes, a user-confirmed approximate atomic-task count, and observable exit criteria. A user or repository may add a timebox, deadline, or release boundary, but Waypoint does not invent one. The workflow does not require a functional theme, numeric names, one active Milestone, or serial execution.
 
-Findings required to satisfy the current task stay in that task's acceptance, state, and correction loop. Durable out-of-task, cross-task, separately scheduled, or uncertain findings first enter the active Milestone's Discovered work, defaulting to `untriaged` when no placement is explicit. A destination task counts only when its durable acceptance, scope, or state explicitly owns the finding. Closure audits entries individually as resolved with evidence, placed in a durable later-Milestone or backlog destination, preserved as a future question or accepted limitation with rationale, or discarded with a concrete reason. Concrete task-shaped deferrals go to a backlog; goal-shaped uncertainty remains a future direction until it has a meaningful promotion signal. Backlog is an active unresolved queue: promotion or durable resolution removes an item, while a review with no changed outcome leaves it untouched. Source discoveries and completed tasks retain history. Closure requires satisfied exit criteria, completion evidence, a complete disposition for every finding, and no unresolved current-Milestone work. Follow-up work already placed elsewhere does not block closure.
+Findings required to satisfy the current task stay in that task's acceptance, state, and correction loop. Durable out-of-task, cross-task, separately scheduled, or uncertain findings first enter the active Milestone's Discovered work, defaulting to `untriaged` when no placement is explicit. A destination task counts only when its durable acceptance, scope, or state explicitly owns the finding. Closure audits entries individually as resolved with evidence, placed in a durable later-Milestone or backlog destination, preserved as a future question or accepted limitation with rationale, or discarded with a concrete reason.
+
+Backlog is an active queue of candidate outcomes. Waypoint follows a repository scoring model or recommends a holistic `0–10` score with one evidence-based rationale. Candidate enrichment is optional and user-directed; vague ideas remain Future Directions. Full-backlog scans remove stale work, while only changed evidence rewrites scores. Leading candidates are expanded at planning granularity into atomic tasks, and one candidate may consume several places in the confirmed batch. A task is the smallest meaningful one-spec engineering delivery that includes its implementation, necessary docs, verification, and review correction; it may be a non-user-visible but safe and verifiable stage. Milestone tasks carry dependencies and a ready set, not scores.
+
+Selection or durable resolution removes a whole candidate. Partial selection rewrites and rescores the remaining outcome. Closure requires satisfied exit criteria, completion evidence, a complete disposition for every finding, and no unresolved current-Milestone work; it reconciles affected backlog scores but does not automatically create another Milestone. Follow-up work already placed elsewhere does not block closure.
 
 Completed Milestone scope is frozen. Factual corrections and evidence links remain allowed; new scope goes elsewhere.
 

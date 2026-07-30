@@ -33,7 +33,7 @@ Install or invoke only the skill needed for the current outcome.
 | Skill | Use it to |
 | --- | --- |
 | [`domain-context`](skills/waypoints/domain-context/SKILL.md) | Maintain durable terminology and create only qualifying ADRs |
-| [`roadmap-planning`](skills/waypoints/roadmap-planning/SKILL.md) | Turn goals into independently verifiable delivery slices |
+| [`roadmap-planning`](skills/waypoints/roadmap-planning/SKILL.md) | Shape goals into verifiable slices, or score backlog outcomes and plan a confirmed Milestone task batch |
 | [`task-spec`](skills/waypoints/task-spec/SKILL.md) | Define reviewable task behavior and requirements without prescribing implementation |
 | [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Make review-critical architecture and implementation choices durable before coding |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | Plan real sequencing, migration, compatibility, or rollout risk |
@@ -151,7 +151,7 @@ Teams that want shared repository-local documentation can invoke `docs-workflow-
 
 Both choices may include `docs/context/` and `docs/architecture/decisions/`. Task-local `spec.md`, optional `design.md`, and optional `plan.md` files may live beside a task; a repository may instead keep distinct specification and technical-design sections in one artifact. Existing repository locations always take precedence, and bootstrap does not create placeholder Milestones.
 
-In the Milestone convention, backlog is an active queue rather than a history log. Items carry a reconsideration signal, are removed after promotion or durable resolution, and remain unchanged when review finds no new outcome; source discoveries and completed tasks retain history.
+In the Milestone convention, backlog is an active queue of scored candidate outcomes rather than a history log. Waypoint follows an existing scoring system or suggests an evidence-backed `0–10` score and rationale. Before scoring, the user may optionally discuss product gaps and add concrete candidates; sparse or stale backlogs receive one non-blocking reminder. The user chooses an approximate Milestone task count, or confirms an agent proposal. Leading candidates are expanded only far enough to reveal atomic tasks: one backlog outcome that becomes three tasks uses three places. Tasks are meaningful one-spec delivery units that include implementation and verification, not isolated actions. Timeboxes are optional external constraints, not defaults. Selected outcomes leave backlog only after durable ownership; unchanged scores receive no review log.
 
 ## Companion skills
 
@@ -219,7 +219,7 @@ Run the focused contract suite with Python's standard library:
 python3 -m unittest discover -s tests -v
 ```
 
-The suite validates independent no-`docs/` usage, both bootstrap choices, lightweight coordinator recommendations, Milestone discovery and closure rules, separation of chat-independent behavioral specifications from technical designs, destructive closing confirmation, frontmatter, `agents/openai.yaml`, template ownership, and fixture pairing. See [ARCHITECTURE.md](ARCHITECTURE.md) for the atomic-skill contract and safety boundaries.
+The suite validates independent no-`docs/` usage, both bootstrap choices, lightweight coordinator recommendations, optional backlog enrichment, scored atomic-task Milestone selection, Milestone discovery and closure rules, separation of chat-independent behavioral specifications from technical designs, destructive closing confirmation, frontmatter, `agents/openai.yaml`, template ownership, and fixture pairing. See [ARCHITECTURE.md](ARCHITECTURE.md) for the atomic-skill contract and safety boundaries.
 
 ## Releases
 

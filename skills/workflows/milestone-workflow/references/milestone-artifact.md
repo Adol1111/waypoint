@@ -13,7 +13,17 @@ Status: <planned | in-progress | blocked>
 
 #### Outcome
 
-<The shared delivery result.>
+<The selected engineering or product results.>
+
+#### Selection
+
+- Task-count target: <user request or confirmed proposal>
+- Optional external constraint: <timebox, deadline, or release boundary only when supplied>
+- Explicitly later: <important excluded work>
+
+| Backlog outcome | Score at selection | Why selected |
+| --- | ---: | --- |
+| <outcome> | <0–10 or repository-native priority> | <evidence-backed rationale> |
 
 #### Exit criteria
 
@@ -25,11 +35,25 @@ Status: <planned | in-progress | blocked>
 - Next waypoint: <atomic skill or immediate action>
 - Blocked by: <blocker, if any>
 
-#### Tasks or delivery slices
+#### Tasks
 
-- `completed`: <item>
-- `in-progress`: <item>
-- `planned`: <item>
+##### <Atomic task>
+
+- Status: <planned | in-progress | blocked | completed>
+- Outcome: <bounded and verifiable stage result>
+- Rough scope: <included and excluded>
+- Depends on: <hard dependency, or none>
+- Stage proof: <task-level success signal>
+
+#### Ready tasks
+
+- <Task with no unsatisfied dependency>
+
+#### Delivery coverage
+
+| Exit criterion | Contributing tasks | Cross-task proof or remaining gap |
+| --- | --- | --- |
+| <criterion> | <durable task links> | <integration proof only when task proof is insufficient> |
 
 #### Discovered work
 
@@ -54,4 +78,6 @@ Status: <planned | in-progress | blocked>
 - <Milestone and durable link>
 ```
 
-Omit unused example entries, including Current focus when no work is selected. Keep findings required by the current task's acceptance in that task. Record durable out-of-task, cross-task, separately scheduled, or uncertain findings in Discovered work before routing them, defaulting to `untriaged` when placement is not explicit. A destination task counts only when its durable acceptance, scope, or state explicitly owns the finding. Preserve resolved entries as source history. Closure requires an individually checked disposition plus any required destination, evidence, or rationale; an empty section is not proof. Keep concrete deferred tasks in a backlog and goal-shaped uncertainty under Future directions.
+Omit unused example entries, including Current focus when no work is selected. Record the selection and task map returned by `roadmap-planning`; this artifact does not redefine its scoring or atomic-task rules. Write each task's spec and any warranted design or plan when development begins.
+
+For an open Milestone, keep enough Delivery coverage to show how every exit criterion can be satisfied; it is a planning map, not duplicated task detail or a guarantee that the plan cannot evolve. Add cross-task integration proof only when task-local proof is insufficient, and create an integration task only when that work is substantial. Keep findings required by the current task's acceptance in that task. Record durable out-of-task, cross-task, separately scheduled, or uncertain findings in Discovered work before routing them, defaulting to `untriaged` when placement is not explicit. A destination task counts only when its durable acceptance, scope, or state explicitly owns the finding. Preserve resolved entries as source history. Closure requires an individually checked disposition plus any required destination, evidence, or rationale; an empty section is not proof. Keep concrete deferred outcomes in a backlog and goal-shaped uncertainty under Future directions.

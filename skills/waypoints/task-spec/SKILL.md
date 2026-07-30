@@ -17,7 +17,7 @@ Create the smallest specification from which a reviewer can understand and chall
 
 Do not require a roadmap, tracker, docs directory, branch, plan, or review ceremony.
 
-Before writing, test the task boundary. If the requested acceptance contains multiple outcomes that can be delivered, reviewed, or rejected independently, do not hide them inside one specification. Return the boundary issue to the supplied roadmap or chosen workflow, or propose separate specs when the user asked for that decomposition.
+Before writing, test the task boundary in both directions. If the requested acceptance contains multiple outcomes that can be delivered, reviewed, or rejected independently, do not hide them inside one specification. If it is only a file edit, endpoint, test step, migration action, or other fragment with no meaningful stage result by itself, return the undersized boundary instead of manufacturing a task spec. Route either issue to the supplied roadmap or chosen workflow, or propose separate specs when the user asked for decomposition.
 
 ## Required information, adaptive structure
 

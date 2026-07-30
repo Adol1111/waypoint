@@ -1,36 +1,110 @@
 ---
 name: roadmap-planning
-description: Turn product or engineering goals into independently verifiable delivery slices while preserving unresolved decisions. Use when a roadmap, milestone outline, delivery sequence, or coarse task breakdown is needed; prefer vertical user-facing slices and allow named preparatory work only when it unblocks a capability.
+description: Shape goals or backlog outcomes into independently verifiable delivery slices. Use for coarse roadmap decomposition, product-gap or backlog review, scoring candidate outcomes, selecting the next Milestone, or completing a Milestone delivery map without writing task-level specs or designs.
 ---
 
 # Roadmap Planning
 
 Shape direction into outcomes that can be delivered and verified independently.
 
-## Work independently
+## Establish the planning boundary
 
 1. Read repository instructions, existing roadmaps or issue conventions, relevant product context, and the current request.
 2. Update the existing roadmap artifact when one fits. Otherwise propose the smallest useful Markdown artifact in a repository-consistent location.
 3. State the goal, constraints, current evidence, and success signals before decomposing.
-4. Produce only enough slices to make delivery order and proof visible.
-5. Preserve open decisions precisely and vague future questions at their current level of uncertainty.
+4. Select the branch that matches the request:
+   - for a standalone goal, shape a few independently verifiable delivery slices directly;
+   - for a new Milestone, prepare and score candidates before forming the task batch;
+   - for an existing Milestone, reconcile its complete delivery map and coverage.
+5. Preserve precise open decisions and keep vague future questions at their current level of uncertainty.
 
-Do not require a docs layout, task tracker, labels, milestone hierarchy, workflow stage, or confirmation state.
+Remain usable without a docs layout, task tracker, labels, milestone hierarchy, workflow stage, or confirmation state.
 
-When `milestone-workflow` supplies a milestone outcome or exit criteria, use them as planning context and return candidate slices without taking ownership of global milestone status, discovered-work routing, or closure.
+When `milestone-workflow` supplies a Milestone outcome or exit criteria, return a complete candidate delivery map at planning granularity. Global Milestone status, task placement, discovered-work routing, and closure remain with that workflow.
 
-## Slice well
+## Prepare candidate work
 
-- Prefer vertical slices that expose a user- or operator-visible capability across the necessary layers.
-- Give each slice an observable outcome, boundaries, dependencies, and independent verification.
-- Separate slices when they can ship, be reviewed, or fail independently.
-- Keep them together when separation would create infrastructure with no independently useful outcome.
-- Add refactor, migration, spike, or risk-reduction work only when it explicitly unblocks a named capability. State that link and its exit evidence.
-- Keep ordering adaptive. Distinguish hard dependencies from a preferred sequence.
+Build a new Milestone batch from durable evidence and the full candidate set, rather than only the latest prompt or first backlog item.
 
-Do not turn every uncertainty into tasks. Record a specific unresolved choice as an open decision with its impact and decision point. Preserve a vague future question without inventing owners, dates, or a large speculative tree.
+1. Recover completed and open Milestones, user feedback, capability gaps, incidents, research, Future Directions, open decisions, dependencies, and the full backlog.
+2. Optionally enrich the candidate set before scoring. Do this when the user asks, or offer one brief reminder when the backlog is empty, sparse, or visibly stale. A decline continues planning without another gate.
+3. Use discussion, `grilling`, or `research` when chosen to explore product gaps, repeated requests, operational risks, and natural follow-ons from completed work.
+4. Add only schedulable candidate outcomes with a rough boundary and plausible stage proof. Keep goal-shaped or vague ideas under Future Directions.
+5. Reconcile duplicates, superseded work, and outcomes already completed elsewhere before scoring.
 
-Use [references/roadmap-template.md](references/roadmap-template.md) only when no local form exists.
+Candidate enrichment is opt-in. Add concrete user-approved or evidence-backed outcomes; leave speculative possibilities out of the active backlog.
+
+## Score backlog candidates
+
+Follow an existing repository scoring system when one exists. Otherwise use one evidence-backed holistic score from `0` to `10`:
+
+- `9–10`: delay has significant and near-term cost;
+- `7–8`: high value that deserves near-term consideration;
+- `4–6`: clear value with limited current delay cost;
+- `1–3`: low-impact, low-delay-cost, or opportunistic;
+- `0`: recommend removal or closure, or preserve it as a Future Question instead of active backlog work.
+
+Score the backlog candidate outcome, not the execution tasks later derived from it. Record one concise rationale based on user or business impact, delay cost, explicit commitments, strategic value, operational or security risk, and unblocking value. Do not require a component formula; use a repository's existing WSJF, RICE, or other model when present.
+
+Keep dependencies explicit and separate from numeric priority. A prerequisite may receive the same or a higher score because it unlocks important work, especially when it unlocks several outcomes, while `Depends on` determines execution order.
+
+Scan the full backlog before a Milestone selection. Rescore only when evidence changed; leave unchanged scores untouched and append no scoring history. When maintaining local Markdown without a stronger convention, sort by current score descending and keep equal-score order stable.
+
+Agent-generated scores are recommendations. Ask the user when business value or strategic tradeoffs cannot be established from repository evidence, and let the user confirm the final Milestone boundary.
+
+## Form a Milestone batch
+
+1. Read the user's desired task count when supplied. Otherwise propose a compact batch after inspecting the leading candidates and ask the user to confirm it. Treat the number as a soft planning boundary, never a fixed repository default.
+2. Treat a timebox, deadline, or release window as an optional constraint only when supplied by the user or repository.
+3. Starting with the highest-scoring candidates, expand only the likely selections at planning granularity. One backlog outcome may become two or three Milestone tasks and consumes that many places in the batch.
+4. Let atomicity and dependencies determine task boundaries. A smaller or larger set needs a visible reason and user agreement when it materially departs from the requested count.
+5. Theme similarity is secondary. A Milestone may contain unrelated high-scoring outcomes when each selected task has a meaningful boundary.
+6. Preserve the selected candidate scores and selection rationale once in the Milestone. Milestone tasks do not inherit scores; order them only through real dependencies and identify the ready set.
+7. Transfer a candidate out of backlog after the Milestone durably owns its full selected outcome. When only a verifiable part is selected, rewrite the backlog entry as the remaining outcome and rescore it.
+
+Milestone planning defines task boundaries, rough scope, success signals, dependencies, and any genuine cross-task integration need. Create the task spec and any warranted design or plan when development of the individual task begins.
+
+## Complete the Milestone map
+
+Cover the whole Milestone before recommending its next ready task:
+
+1. Check that the selected outcomes, user-confirmed task-count boundary, optional external constraints, exit criteria, and material constraints are explicit.
+2. Inventory completed, active, and proposed tasks that contribute to the selected outcomes. Preserve valid completed work rather than replanning it.
+3. Map every exit criterion to the tasks and proof expected to satisfy it. Identify uncovered criteria, redundant tasks, and work that does not support the Milestone.
+4. Add the smallest missing meaningful tasks needed for complete coverage. Keep each at outcome level so task behavior and technical design remain with their owning skills.
+5. Show hard dependencies, meaningful parallel paths, and any preparatory work that unblocks a named capability.
+6. Preserve planning gaps as open decisions or future questions instead of hiding them inside an apparently complete task list.
+
+A Milestone plan makes its full delivery shape and closure path reviewable. Highlight a ready or current task only after that map is complete.
+
+Replan when selected outcomes or exit criteria change, discovered work changes coverage, a completed task invalidates an assumption, or a closure audit reveals a gap. Reconcile the affected remaining map while preserving stable completed work. Closing a Milestone reconciles and rescores affected backlog work; a new Milestone begins only with user direction.
+
+## Shape atomic tasks
+
+- Treat one task as the smallest meaningful engineering delivery that one spec can describe and that can be implemented, reviewed, handed off, verified, and completed independently.
+- Permit a non-user-visible or partial capability only when it creates a bounded, verifiable state that is safe to retain and directly supports later work.
+- Keep implementation, tests, necessary documentation, task-level verification, and review corrections inside the task.
+- Keep file edits, endpoints, migration commands, test-writing steps, and other isolated actions inside the meaningful delivery they support.
+- Split only when each result supports an independent spec and meaningful stage proof. Combine work that has value only as one outcome.
+- When a backlog candidate expands into several tasks, count each atomic task toward the user-confirmed batch.
+- Keep priority on backlog candidates and selected-outcome rationale. Express Milestone execution through hard dependencies and a ready set.
+- Add Milestone-level integration proof only when task-local verification cannot cover a real cross-task interaction, compatibility, migration, release, or end-to-end risk. Make it a separate task only when the integration work is substantial.
+
+Record a specific unresolved choice as an open decision with its impact and decision point. Preserve a vague future question without inventing owners, dates, or a speculative task tree.
+
+Use [references/roadmap-template.md](references/roadmap-template.md) only when no local form exists. Include its Milestone coverage section only for Milestone-scoped planning.
+
+## Completion criteria
+
+Planning is complete when:
+
+- the artifact reflects the requested branch and its durable evidence;
+- each slice or atomic task has a meaningful outcome, rough boundary, and stage proof;
+- a Milestone selection has a user-confirmed task-count boundary and durable ownership for selected and remaining backlog outcomes;
+- every Milestone exit criterion maps to contributing tasks, expected proof, or an explicit gap;
+- hard dependencies and the ready set are visible;
+- open decisions and future questions preserve their actual uncertainty;
+- task-level specification, technical design, and implementation sequencing remain deferred until their owning work begins.
 
 ## Companion skills
 

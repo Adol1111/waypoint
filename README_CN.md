@@ -33,7 +33,7 @@ Agent 对话是临时的，工程决策和完成证据不应该是。每个 atom
 | Skill | 用途 |
 | --- | --- |
 | [`domain-context`](skills/waypoints/domain-context/SKILL.md) | 维护持久术语，并且只为符合门槛的决策创建 ADR |
-| [`roadmap-planning`](skills/waypoints/roadmap-planning/SKILL.md) | 把目标转化为可独立验证的交付切片 |
+| [`roadmap-planning`](skills/waypoints/roadmap-planning/SKILL.md) | 将目标拆成可验证切片，或评分 backlog outcome 并规划经确认的 Milestone task 批次 |
 | [`task-spec`](skills/waypoints/task-spec/SKILL.md) | 定义可评审的任务行为和需求，不规定技术实现 |
 | [`technical-design`](skills/waypoints/technical-design/SKILL.md) | 在编码前持久化需要评审的架构和技术方案选择 |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | 规划真实的顺序、迁移、兼容或 rollout 风险 |
@@ -151,7 +151,7 @@ npx skills add Adol1111/waypoint --skill docs-workflow-bootstrap
 
 两种选择都可以包含 `docs/context/` 和 `docs/architecture/decisions/`。Task-local `spec.md`、可选 `design.md` 和可选 `plan.md` 可以放在 task 旁边；仓库也可以在同一个 artifact 中保留彼此独立的 specification 和 technical-design sections。仓库已有位置始终优先；bootstrap 不创建 placeholder Milestones。
 
-在 Milestone convention 中，backlog 是活动队列，而不是历史日志。条目带有 reconsideration signal，在提升或已有持久解决证据后删除；复查没有产生新结果时保持原样。来源 discovery 和已完成 task 负责保留历史。
+在 Milestone convention 中，backlog 是带评分的候选结果活动队列，而不是历史日志。Waypoint 会沿用已有评分体系，否则建议带证据理由的 `0–10` 整体评分。评分前，用户可以选择先讨论产品缺口并补充具体候选；backlog 为空、过少或陈旧时，agent 只做一次非阻塞提醒。用户指定大致的 Milestone task 数量，或者确认 agent 的提议。领先候选只展开到能识别原子 task 的程度：一个 backlog outcome 拆成三个 task，就占三个名额。Task 是包含实现与验证、可由一个 spec 表达的有意义交付单元，而不是孤立动作。时间窗口只是可选外部约束，不是默认要求。候选只有在被 Milestone 持久接收后才移出 backlog；未变化的评分不写复查日志。
 
 ## Companion Skills
 
@@ -219,7 +219,7 @@ Waypoint 不是：
 python3 -m unittest discover -s tests -v
 ```
 
-测试覆盖无 `docs/` 的独立调用、两套 bootstrap、轻量 coordinator 推荐、Milestone 发现项与关闭规则、无需聊天历史的行为 specification 与 technical design 分离、破坏性收尾确认、frontmatter、`agents/openai.yaml`、模板所有权和 fixture 配对。Atomic-skill 契约与安全边界见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+测试覆盖无 `docs/` 的独立调用、两套 bootstrap、轻量 coordinator 推荐、可选 backlog 候选补充、带评分的原子 task Milestone 选择、Milestone 发现项与关闭规则、无需聊天历史的行为 specification 与 technical design 分离、破坏性收尾确认、frontmatter、`agents/openai.yaml`、模板所有权和 fixture 配对。Atomic-skill 契约与安全边界见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 ## 发布
 

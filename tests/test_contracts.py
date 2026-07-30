@@ -369,13 +369,144 @@ class RepositoryContractTests(unittest.TestCase):
         ):
             self.assertIn(phrase.lower(), text.lower())
 
-        for forbidden in (
-            "Roadmap confirmed",
-            "mandatory commits",
-            "single current milestone",
-            "serial milestone execution",
+        for adaptive_rule in (
+            "Parallel Milestones remain available",
+            "confirmation flags",
+            "fixed Milestone sequence remain optional",
+            "When routine commits are permitted",
         ):
-            self.assertIn(forbidden.lower(), text.lower())
+            self.assertIn(adaptive_rule.lower(), text.lower())
+
+        for fixed_gate in (
+            "Roadmap confirmed: true",
+            "one active Milestone is required",
+            "commit after every stage",
+        ):
+            self.assertNotIn(fixed_gate.lower(), text.lower())
+
+    def test_roadmap_planning_covers_the_whole_milestone_before_next_task(
+        self,
+    ) -> None:
+        roadmap = (skill_dir("roadmap-planning") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        template = (
+            skill_dir("roadmap-planning")
+            / "references"
+            / "roadmap-template.md"
+        ).read_text(encoding="utf-8")
+        workflow = (skill_dir("milestone-workflow") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        expected = (
+            FIXTURES_ROOT / "roadmap" / "milestone-coverage.expected.md"
+        ).read_text(encoding="utf-8")
+
+        for phrase in (
+            "## Complete the Milestone map",
+            "Map every exit criterion",
+            "complete candidate delivery map",
+            "preserving stable completed work",
+            "## Completion criteria",
+        ):
+            self.assertIn(phrase, roadmap)
+        self.assertIn("## Milestone coverage", template)
+        self.assertIn("retain the coverage table", template)
+        self.assertIn("Require the planning result to account for", workflow)
+        self.assertIn("This step is complete when", workflow)
+        self.assertIn("plans the whole Milestone", expected)
+        self.assertIn("Every exit criterion maps", expected)
+
+    def test_roadmap_planning_selects_milestones_from_product_and_backlog_evidence(
+        self,
+    ) -> None:
+        roadmap = (skill_dir("roadmap-planning") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        workflow = (skill_dir("milestone-workflow") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        convention = (
+            skill_dir("docs-workflow-bootstrap")
+            / "references"
+            / "milestone-convention.md"
+        ).read_text(encoding="utf-8")
+        expected = (
+            FIXTURES_ROOT / "roadmap" / "next-milestone-selection.expected.md"
+        ).read_text(encoding="utf-8")
+        enrichment = (
+            FIXTURES_ROOT / "roadmap" / "candidate-enrichment.expected.md"
+        ).read_text(encoding="utf-8")
+
+        for phrase in (
+            "full candidate set",
+            "full backlog",
+            "Optionally enrich",
+            "empty, sparse, or visibly stale",
+            "evidence-backed holistic score from `0` to `10`",
+            "`0`: recommend removal or closure",
+            "Score the backlog candidate outcome",
+            "Keep dependencies explicit",
+            "Rescore only when evidence changed",
+            "desired task count",
+            "One backlog outcome may become two or three Milestone tasks",
+            "smallest meaningful engineering delivery",
+            "one spec can describe",
+            "isolated actions inside the meaningful delivery",
+            "Keep priority on backlog candidates",
+            "Add Milestone-level integration proof only when",
+            "task-level specification, technical design, and implementation sequencing remain deferred",
+        ):
+            self.assertIn(phrase, roadmap)
+        for phrase in (
+            "send completed delivery",
+            "The scoring and task-shaping rules belong to `roadmap-planning`",
+            "Reconcile that result",
+            "user-confirmed approximate task count",
+            "Tail insertion requires user agreement",
+            "does not automatically create the next Milestone",
+        ):
+            self.assertIn(phrase, workflow)
+        self.assertIn("Priority score", convention)
+        self.assertIn("bootstrap only creates the agreed storage convention", convention)
+        for duplicated_rule in (
+            "`9–10`",
+            "smallest meaningful result that one spec can describe",
+            "one backlog outcome may expand",
+        ):
+            self.assertNotIn(duplicated_rule.lower(), convention.lower())
+        self.assertIn("five-or-six-task batch", expected)
+        self.assertIn("consumes three places", expected)
+        self.assertIn("not a separate task", expected)
+        self.assertIn("No timebox is invented", expected)
+        self.assertIn("Selected items leave the backlog only after", expected)
+        self.assertIn("offers once", enrichment)
+        self.assertIn("optional and non-blocking", enrichment)
+        self.assertIn("Vague goals remain Future Directions", enrichment)
+
+    def test_roadmap_planning_owns_scoring_and_atomic_task_rules(self) -> None:
+        roadmap = (skill_dir("roadmap-planning") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        consumers = (
+            skill_dir("milestone-workflow") / "SKILL.md",
+            skill_dir("milestone-workflow")
+            / "references"
+            / "milestone-artifact.md",
+            skill_dir("docs-workflow-bootstrap")
+            / "references"
+            / "milestone-convention.md",
+            skill_dir("roadmap-planning")
+            / "references"
+            / "roadmap-template.md",
+        )
+
+        self.assertIn("`9–10`", roadmap)
+        self.assertIn("smallest meaningful engineering delivery", roadmap)
+        for path in consumers:
+            text = path.read_text(encoding="utf-8")
+            self.assertNotIn("`9–10`", text, path)
+            self.assertNotIn("smallest meaningful engineering delivery", text, path)
 
     def test_milestone_closure_fixtures_distinguish_untriaged_and_placed_work(
         self,
@@ -396,6 +527,29 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("durable destinations", cleared)
         self.assertIn("discarded items have reasons", cleared)
         self.assertIn("does not reopen", completed)
+
+    def test_urgent_work_does_not_silently_reorder_a_milestone(self) -> None:
+        workflow = (skill_dir("milestone-workflow") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        expected = (
+            FIXTURES_ROOT / "milestone" / "urgent-work.expected.md"
+        ).read_text(encoding="utf-8")
+
+        for phrase in (
+            "Do not silently reorder an active Milestone",
+            "append it to the Milestone tail",
+            "Tail insertion requires user agreement",
+            "independent urgent delivery line",
+            "does not impose Git policy",
+        ):
+            self.assertIn(phrase, workflow)
+        prompt = (
+            FIXTURES_ROOT / "milestone" / "urgent-work.prompt.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("outside the current task's acceptance", prompt)
+        self.assertIn("Milestone closure condition", expected)
+        self.assertIn("without discarding stable active work", expected)
 
     def test_milestone_discovery_intake_respects_task_scope(self) -> None:
         fixture_dir = FIXTURES_ROOT / "milestone"
@@ -428,8 +582,8 @@ class RepositoryContractTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         for phrase in (
-            "Treat backlog as an active queue, not history",
-            "Before inventing work for a new Milestone, search backlog",
+            "the full backlog",
+            "Concrete deferred work stays in an active backlog",
             "then remove the backlog entry",
             "leave the backlog entry untouched",
             "Add no review date, retained disposition, or review history",
@@ -457,6 +611,7 @@ class RepositoryContractTests(unittest.TestCase):
         )
         self.assertIn("test the task boundary", spec)
         self.assertIn("delivered, reviewed, or rejected independently", spec)
+        self.assertIn("fragment with no meaningful stage result", spec)
         for phrase in ("silently delete", "skip", "loosen", "replacement evidence"):
             self.assertIn(phrase, execution)
 

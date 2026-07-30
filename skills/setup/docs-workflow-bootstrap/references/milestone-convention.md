@@ -44,17 +44,20 @@ Suggested `docs/tasks/backlog.md`:
 ```md
 # Backlog
 
-Concrete, task-shaped deferred work that is not assigned to an open Milestone lives here. Broader goals and future questions remain under Future Directions in the roadmap or milestone artifact without invented task detail.
+Concrete deferred candidate outcomes that are not assigned to an open Milestone live here. One candidate may later expand into several atomic tasks. Broader goals and future questions remain under Future Directions in the roadmap or milestone artifact without invented task detail.
 
 ## Items
 
 ### <Outcome>
 
+- Priority score: <0–10, or repository-native priority>
+- Priority rationale: <impact, delay cost, commitment, risk, strategic value, and unblocking value>
+- Selection constraints: <readiness, confidence, dependency, proof, migration, release, or external wait when material>
 - Source: <Milestone discovery, task, issue, or request>
 - Reason deferred: <why no active artifact owns it now>
 - Reconsider when: <observable signal>
 ```
 
-Backlog is an active queue rather than history. Promote an item only after a destination Milestone, task, or slice explicitly owns it, then remove it. Remove resolved items after their evidence is durable elsewhere. Leave unchanged entries untouched; do not append review dates, retained states, or review history.
+Backlog is an active queue rather than history. These fields preserve each candidate's current priority, evidence, deferral reason, and reconsideration signal without imposing a scoring system or planning algorithm. The selected roadmap or workflow skill determines how candidates are evaluated and transferred; bootstrap only creates the agreed storage convention.
 
 Create `docs/tasks/<milestone>/index.md` only when a real Milestone is planned. Put task-local `spec.md`, optional `design.md`, and optional `plan.md` beside their task when useful, or keep distinct specification and technical-design sections in one task artifact. Do not create placeholder Milestones.

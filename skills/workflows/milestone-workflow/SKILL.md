@@ -19,14 +19,15 @@ This workflow owns milestone governance. It does not replace the atomic skill th
 
 ## Plan and place work
 
-- Define a milestone by a meaningful delivery outcome, release or migration boundary, or shared exit criteria.
-- Use `roadmap-planning` for independently verifiable slices when useful, then place those slices or tasks in the milestone artifact.
-- Keep task placement above task-local behavior, technical design, and implementation sequencing. Use their atomic owners when that detail is needed.
-- Allow parallel milestones when repository practice and delivery reality support them.
-- Keep concrete deferred work in an existing backlog or tracker. Preserve broader future questions without inventing tasks.
-- Treat backlog as an active queue, not history. Give each task-shaped item an outcome, source, reason deferred, and reconsideration signal; keep goal-shaped uncertainty under future directions.
-- Before inventing work for a new Milestone, search backlog for matching outcomes and signals that are now satisfied.
-- Do not require numeric milestone names, `Roadmap confirmed` flags, modules, or a fixed milestone sequence.
+1. Define a Milestone by selected candidate outcomes, a user-confirmed approximate task count, and observable exit criteria. Treat a timebox, deadline, or release window as an optional user or repository constraint.
+2. For a new Milestone, send completed delivery, product evidence, Future Directions, the full backlog, and the user's boundary to `roadmap-planning`. For an existing Milestone, send its outcomes, exit criteria, completed and active tasks, dependencies, and changed evidence.
+3. Require the planning result to account for candidate scoring, atomic task boundaries, selected and remaining backlog ownership, complete exit-criterion coverage, dependencies, the ready set, and genuine cross-task integration gaps. The scoring and task-shaping rules belong to `roadmap-planning`.
+4. Reconcile that result into the durable Milestone and backlog artifacts. Keep task placement above task-local behavior, technical design, and implementation sequencing.
+5. Select current focus after the known delivery boundary has coverage. Allow the map to evolve when new evidence changes it, and preserve valid completed work.
+
+Parallel Milestones remain available when repository practice and delivery reality support them. Concrete deferred work stays in an active backlog or tracker; broader uncertainty stays under Future Directions. Numeric names, confirmation flags, modules, and a fixed Milestone sequence remain optional repository choices.
+
+This step is complete when the Milestone artifact durably records its selected outcomes and rationale, task-count boundary, exit criteria, atomic task map, dependencies, ready set, backlog transfers or remainders, and explicit coverage gaps.
 
 ## Coordinate the next waypoint
 
@@ -84,7 +85,8 @@ Do not expand current scope silently. Ask when classifying a finding would chang
 
 Review backlog candidates when selecting or planning a Milestone, when a reconsideration signal is observed, when new evidence changes value, risk, or dependencies, or when the user requests backlog work.
 
-- To promote an item, first make a destination Milestone, task, or slice explicitly own its outcome through scope or acceptance. Update its source discovered-work entry when one exists, then remove the backlog entry.
+- At next-Milestone selection, scan every backlog item for changed evidence, completion, duplication, or obsolescence. Rescore changed candidates, sort by current score when the local format supports it, and expand only likely selections to atomic task boundaries.
+- To select an item, first make a destination Milestone, task, or slice explicitly own its outcome through scope or acceptance. Update its source discovered-work entry when one exists, then remove the backlog entry.
 - When an item is already resolved, first preserve its evidence in a completed task, issue, PR, commit, or source discovered-work entry, then remove the backlog entry.
 - When another durable item owns it or a decision makes it obsolete, preserve that owner or rationale at the source when useful, then remove the backlog entry.
 - When nothing changed, leave the backlog entry untouched. Add no review date, retained disposition, or review history.
@@ -113,6 +115,18 @@ Close only when:
 Follow-up work elsewhere does not block closure once its destination is durable. An `untriaged` item, unresolved current-milestone item, missing destination, or missing closure rationale does.
 
 Closing validates any backlog entries created from this Milestone but does not append backlog review history or rewrite unchanged older items.
+
+At closure, send backlog items affected by completed delivery or discovered evidence to `roadmap-planning` for reconciliation and rescoring. Closing does not automatically create the next Milestone; continue into selection only when the user asks or explicitly agrees.
+
+## Handle urgent work
+
+Do not silently reorder an active Milestone when a newly discovered item receives a high score.
+
+- If the finding is required for the current task's acceptance or correctness, keep it in that task.
+- Otherwise record it durably and discuss whether to append it to the Milestone tail, leave it in backlog, or run an independent urgent delivery line.
+- Tail insertion requires user agreement, formally expands Milestone scope, and blocks closure until the added task is complete.
+- An independent urgent delivery line does not require Milestone membership. Select branch or worktree isolation adaptively through `task-execution-simple`; this workflow does not impose Git policy.
+- Reconcile the urgent result and discoveries back into Milestone and backlog state without discarding stable active work.
 
 Closing a milestone updates delivery state and does not itself require destructive confirmation. If closing also proposes merge, branch/worktree deletion, or discard, keep those as separate explicit gates.
 

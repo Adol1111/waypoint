@@ -32,10 +32,6 @@ Use the smallest subset that leaves a reviewer independent of chat history.
 ## Constraints
 
 <Externally imposed constraint only when it limits an acceptable solution.>
-
-## Completion proof
-
-- <Evidence and what it must demonstrate>
 ```
 
-Do not add architecture, internal interfaces, database schema, algorithms, file paths, or other technical design.
+When a task artifact exists, keep the observable Acceptance checklist there rather than copying it here. When the specification is the only durable task artifact, add a compact `Acceptance` section to this template instead. Do not add architecture, internal interfaces, database schema, algorithms, file paths, or other technical design.

@@ -83,7 +83,7 @@ Waypoint 提供两个可选 workflows。它们共享相同的 atomic skills，�
 | Workflow | 适合场景 | 行为 |
 | --- | --- | --- |
 | [`waypoint-workflow`](skills/workflows/waypoint-workflow/SKILL.md) | 需要轻量、局部的下一步建议 | 读取现有证据，推荐一个 atomic skill，不维护 Milestone 状态 |
-| [`milestone-workflow`](skills/workflows/milestone-workflow/SKILL.md) | 交付跨多个 task 或会话，需要全局恢复 | 维护 Milestone outcome、exit criteria、current focus、task placement、discovered work、证据和关闭 |
+| [`milestone-workflow`](skills/workflows/milestone-workflow/SKILL.md) | 交付跨多个 task 或会话，需要全局恢复 | 维护 Milestone outcome、exit criteria、task placement 与状态、discovered work、证据和关闭 |
 
 两个 workflow 都只能由用户显式调用；安装后不会自动接管普通请求。
 
@@ -147,9 +147,11 @@ npx skills add Adol1111/waypoint --skill docs-workflow-bootstrap
 | Bootstrap 选择 | Task 结构 |
 | --- | --- |
 | Standalone | 扁平的 active/completed/deferred task index |
-| Milestone-managed | open/completed Milestone index，以及 backlog destination |
+| Milestone-managed | open/completed Milestone index、backlog，以及带链接的 task-local artifacts |
 
-两种选择都可以包含 `docs/context/` 和 `docs/architecture/decisions/`。Task-local `spec.md`、可选 `design.md` 和可选 `plan.md` 可以放在 task 旁边；仓库也可以在同一个 artifact 中保留彼此独立的 specification 和 technical-design sections。仓库已有位置始终优先；bootstrap 不创建 placeholder Milestones。
+两种选择都可以包含 `docs/context/` 和 `docs/architecture/decisions/`。在本地 Milestone convention 中，确认 task 时会创建非空的 `<milestone>/<task>/task.md` planning handoff，并由 Milestone index 链接。Index 只保留全局 outcome、selection、带 task 链接的 exit criteria，以及有序的 ``- `状态` [Task](...)`` 列表。从上到下表示建议执行顺序；只有真实跨 task 依赖存在时才添加 Mermaid。开发开始时，`task-spec` 创建或更新独立 spec，并在 `task.md` 写入唯一的 Acceptance 与已经存在的 artifact 链接，同时移除被取代的规划字段。技术设计与 plan 仍按门槛创建，并沿用仓库原有命名。仓库已有位置始终优先；bootstrap 不创建 placeholder Milestones 或 tasks。
+
+Milestone `Discovered Work` 不是开发日志。当前 task 的修正留在该 task；已由另一个当前 task 明确接收的问题直接写入该 task。只有当前 Milestone 无法处理或归属未定的工作才全局记录；关闭时将其持久移交，或说明丢弃原因。
 
 在 Milestone convention 中，backlog 是带评分的候选结果活动队列，而不是历史日志。Waypoint 会沿用已有评分体系，否则建议带证据理由的 `0–10` 整体评分。评分前，用户可以选择先讨论产品缺口并补充具体候选；backlog 为空、过少或陈旧时，agent 只做一次非阻塞提醒。用户指定大致的 Milestone task 数量，或者确认 agent 的提议。领先候选只展开到能识别原子 task 的程度：一个 backlog outcome 拆成三个 task，就占三个名额。Task 是包含实现与验证、可由一个 spec 表达的有意义交付单元，而不是孤立动作。时间窗口只是可选外部约束，不是默认要求。候选只有在被 Milestone 持久接收后才移出 backlog；未变化的评分不写复查日志。
 

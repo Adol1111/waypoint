@@ -1,6 +1,6 @@
 interface:
   display_name: "Milestone Workflow"
   short_description: "Govern multi-task delivery across milestones"
-  default_prompt: "Use $milestone-workflow to coordinate durable Milestone planning, task placement, discovered work, recovery, or safe closure through the relevant atomic skills."
+  default_prompt: "Use $milestone-workflow to coordinate a linked Milestone index and task artifacts, discovered work, recovery, or safe closure through the relevant atomic skills."
 policy:
   allow_implicit_invocation: false

@@ -1,9 +1,10 @@
 # Expected contract
 
 - The result plans the whole Milestone rather than returning only the next task.
-- Every exit criterion maps to completed, active, or proposed atomic tasks and expected proof.
+- Every exit criterion links to completed, active, or proposed atomic task owners.
+- No separate coverage table is created; an uncovered criterion requires a task, a changed criterion, or a genuinely global Open Decision.
 - Existing completed work is preserved.
 - The uncovered criterion produces the smallest missing meaningful task, not an isolated action.
-- Hard dependencies and meaningful parallel paths are visible.
+- Cross-task dependencies, completion gates, and meaningful parallel paths are visible in Mermaid; independent task batches omit the dependency section.
 - Task behavior, technical design, Milestone status, Discovered work routing, and closure remain with their owning skills or workflow.
-- A ready task may be identified only after complete planning-level coverage and dependencies are visible.
+- Task status and true dependencies show what can proceed without a separate ready-set or Current Focus field.

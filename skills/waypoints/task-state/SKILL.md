@@ -25,7 +25,7 @@ With milestone context, update only the selected task and return its result or b
 
 ## State definitions
 
-- `planned`: intent and acceptance are visible enough to select later.
+- `planned`: the outcome and planning boundary are visible enough to select later; stage proof may stand in until task specification refines acceptance.
 - `in-progress`: work has started and at least one acceptance item or recovery fact remains open.
 - `blocked`: a named condition prevents progress; record its impact and the event or decision that would unblock it.
 - `completed`: every acceptance item is satisfied and one final verification summary reflects the final implementation state.
@@ -42,13 +42,12 @@ Treat specifications, designs, plans, and research as inputs rather than progres
 
 Create a checkpoint only when work is stopping, handing off, or blocked and live repository inspection cannot recover enough context:
 
-- `Now`: where work paused;
 - `Remaining`: unresolved acceptance, decision, or review finding;
 - `Next`: the next meaningful action.
 
 During uninterrupted execution-review loops, address findings directly. At a stopping boundary, preserve only unresolved findings that would otherwise live only in chat: state the concrete finding, affected surface, and required follow-up, or link the durable PR/review comment that already owns them. Remove resolved findings instead of retaining review history.
 
-Keep task-semantic recovery in the checkpoint. Add a separate working-state note only for non-obvious branch, worktree, uncommitted, or transient state needed for safe continuation; prefer live version-control inspection for ordinary facts. Remove both when completed.
+Keep task-semantic recovery in the checkpoint. Add a separate Working State note only for non-obvious branch, worktree, uncommitted, or transient state needed for safe continuation; prefer live version-control inspection for ordinary facts. Remove Recovery and Working State when work resumes or completes.
 
 Use `handoff` when installed and cross-person continuation needs more operational detail than this checkpoint. It comes from [mattpocock/skills](https://github.com/mattpocock/skills) and can be installed with `npx skills add mattpocock/skills --skill handoff`.
 

@@ -10,10 +10,11 @@
 - Every task is a meaningful one-spec engineering delivery that can be independently implemented, verified, reviewed, handed off, and completed.
 - Implementation, necessary docs, task verification, and review correction stay in the task; files, endpoints, tests, and isolated actions do not become separate tasks.
 - A non-user-visible or partial task is allowed only when it leaves a bounded, verifiable, safe stage for later work.
-- Milestone tasks carry dependencies and a ready set, not priority scores or a forced total order.
+- Milestone tasks carry an advisory list order and real dependencies, not priority scores.
 - Task-local verification is not a separate task. Cross-task integration proof appears only for the real interaction, and becomes an integration task only if substantial.
 - No timebox is invented. Task specs, technical designs, and implementation plans wait until development of each selected task.
 - The selected score and rationale are preserved once in the Milestone.
 - Selected items leave the backlog only after the selected Milestone durably owns them.
 - A partially selected candidate is rewritten as the remaining backlog outcome and rescored.
+- Under a local Milestone folder convention, every confirmed task receives a non-empty `task.md` planning handoff and the Milestone index links it without repeating its boundary, stage proof, or local decisions.
 - Only after selection does the skill create complete exit-criterion coverage and optionally identify the next task.

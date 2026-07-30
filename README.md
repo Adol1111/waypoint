@@ -83,7 +83,7 @@ Waypoint has two optional workflows. They share the same atomic skills but provi
 | Workflow | Choose it when | Behavior |
 | --- | --- | --- |
 | [`waypoint-workflow`](skills/workflows/waypoint-workflow/SKILL.md) | You want lightweight, request-local guidance | Reads existing evidence, recommends exactly one atomic skill, and keeps no Milestone state |
-| [`milestone-workflow`](skills/workflows/milestone-workflow/SKILL.md) | Delivery spans tasks or sessions and needs global recovery | Maintains Milestone outcomes, exit criteria, current focus, task placement, discovered work, evidence, and closure |
+| [`milestone-workflow`](skills/workflows/milestone-workflow/SKILL.md) | Delivery spans tasks or sessions and needs global recovery | Maintains Milestone outcomes, exit criteria, task placement and status, discovered work, evidence, and closure |
 
 Both workflows are explicitly invoked; installing one does not let it take over ordinary requests.
 
@@ -147,9 +147,11 @@ Teams that want shared repository-local documentation can invoke `docs-workflow-
 | Bootstrap choice | Task structure |
 | --- | --- |
 | Standalone | Flat active/completed/deferred task index |
-| Milestone-managed | Open/completed Milestone index plus backlog destination |
+| Milestone-managed | Open/completed Milestone index, backlog, and linked task-local artifacts |
 
-Both choices may include `docs/context/` and `docs/architecture/decisions/`. Task-local `spec.md`, optional `design.md`, and optional `plan.md` files may live beside a task; a repository may instead keep distinct specification and technical-design sections in one artifact. Existing repository locations always take precedence, and bootstrap does not create placeholder Milestones.
+Both choices may include `docs/context/` and `docs/architecture/decisions/`. In the local Milestone convention, confirming a task creates a non-empty `<milestone>/<task>/task.md` planning handoff and links it from the Milestone index. The index contains global outcome, selection, linked exit criteria, and an ordered ``- `status` [Task](...)`` list. Top-to-bottom order suggests execution sequence; Mermaid appears only for real cross-task dependencies. When development begins, `task-spec` creates or updates a separate spec and writes canonical Acceptance plus existing artifact links to `task.md`, replacing superseded planning fields. Technical design and plan files remain threshold-driven and follow repository-native names. Existing repository locations always take precedence, and bootstrap does not create placeholder Milestones or tasks.
+
+Milestone `Discovered Work` is not a development log. Current-task corrections stay with that task, and findings already owned by another current task go directly there. Only work the Milestone cannot handle now, or whose owner is uncertain, is recorded globally; closure routes it durably or records why it was discarded.
 
 In the Milestone convention, backlog is an active queue of scored candidate outcomes rather than a history log. Waypoint follows an existing scoring system or suggests an evidence-backed `0–10` score and rationale. Before scoring, the user may optionally discuss product gaps and add concrete candidates; sparse or stale backlogs receive one non-blocking reminder. The user chooses an approximate Milestone task count, or confirms an agent proposal. Leading candidates are expanded only far enough to reveal atomic tasks: one backlog outcome that becomes three tasks uses three places. Tasks are meaningful one-spec delivery units that include implementation and verification, not isolated actions. Timeboxes are optional external constraints, not defaults. Selected outcomes leave backlog only after durable ownership; unchanged scores receive no review log.
 

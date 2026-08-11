@@ -1,5 +1,11 @@
 # waypoint-skills
 
+## 0.3.0
+
+### Minor Changes
+
+- [#14](https://github.com/Adol1111/waypoint/pull/14) [`e841376`](https://github.com/Adol1111/waypoint/commit/e841376f017480655cd389257a17f710d1c50d2b) Thanks [@Adol1111](https://github.com/Adol1111)! - Replace the stateful task workflow with a shared Milestone → Feature → Task collaboration model, Feature-owned specifications and Task graphs, an explicit repository-local tracker fallback, read-only routing, and direct reuse of Matt Pocock's implementation and handoff skills. Migrate `roadmap-planning` to `milestone-planning` and `task-spec` to `feature-spec`, while preserving retired skill snapshots under `skills/deprecated/` with an explicit uninstall command.
+
 ## 0.2.5
 
 ### Patch Changes

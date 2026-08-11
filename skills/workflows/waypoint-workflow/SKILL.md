@@ -1,48 +1,43 @@
 ---
 name: waypoint-workflow
-description: Read existing repository artifacts and recommend exactly one next Waypoint atomic skill. Use when the user wants help finding the next durable engineering waypoint among context, roadmap, behavioral specification, technical design, execution planning, task state, implementation, or optional docs bootstrap; never perform that skill's work.
+description: Read repository evidence and recommend exactly one next standalone Waypoint or installed Matt Pocock skill for shared Milestone, Feature, Task, tracking, handoff, or implementation work. Use only when the user asks what to do next; never invoke the recommendation, mutate state, or chain stages.
 ---
 
 # Waypoint Workflow
 
-Find the next useful atomic waypoint for users who do not want persistent Milestone governance.
+Act as a read-only navigator, never an orchestrator.
 
-## Inspect adaptively
+## Inspect current evidence
 
-1. Read repository instructions and the current request.
-2. Search for relevant artifacts by meaning and local convention. Read only artifacts that exist and bear on the request.
-3. Treat absent docs as absence of evidence, not a bootstrap failure.
-4. Identify the strongest current need and recommend exactly one atomic skill.
-5. Give the evidence, existing artifacts to reuse, and one unresolved choice only when it blocks that skill.
+Read repository instructions, configured tracker state, requirement pool, shared Milestone, selected Feature, child Task, relevant artifacts, blockers, assignment, branch/worktree, and current request. Do not create or update any artifact or operational state.
 
-Do not create or update artifacts, specs, plans, roadmap tasks, state, or implementation. Do not invoke the recommended skill in the same coordinator action.
+## Recommend exactly one next skill
 
-## Recommendation map
+Choose the capability closest to the user's requested outcome:
 
-- Durable ambiguous term or qualifying architecture decision: `domain-context`
-- Goal needs independently verifiable delivery slices: `roadmap-planning`
-- Concrete task needs a reviewable behavioral boundary: `task-spec`
-- Behavior is clear but review-critical architecture, interfaces, data or state models, algorithms, quality attributes, or testing seams remain unresolved: `technical-design`
-- Real sequencing, migration, compatibility, rollout, or coordination risk: `implementation-plan`
-- Acceptance, blocker, status, recovery checkpoint, final verification, or isolated-work closing needs visibility: `task-state`
-- Scoped task or spec is ready to implement, or completed stable task changes need verification and a Git checkpoint before advancing: `task-execution-simple`
-- Team explicitly wants a shared local docs convention: `docs-workflow-bootstrap`
+- shared Milestone selection, Feature ownership, requirement-pool priority, cross-Feature dependencies, or explicit replanning: `milestone-planning`;
+- one Feature's durable observable behavior: `feature-spec`;
+- a concrete review-critical architecture, ownership, data, interface, algorithm, security, performance, or verification choice: `technical-design`;
+- one Feature's user-confirmed child Task DAG, ownership surfaces, blockers, contracts, and safe parallelism: `task-planning`;
+- one already-bounded Feature or Task's durable execution strategy, migration, compatibility, rollback, or recoverable internal slices: `implementation-plan`;
+- explicit user request for repository-local tracking setup or an exact state update, after confirming no external tracker exists: `local-work-tracker`;
+- explicitly assigned implementation-ready Feature or Task: Matt Pocock's `implement` when installed;
+- cross-window or cross-harness transfer: Matt Pocock's `handoff` when installed;
+- qualifying terminology or durable architecture decision: `domain-context`;
+- explicitly requested docs convention: `docs-workflow-bootstrap`.
 
-Prefer the skill closest to the user's requested outcome. For example, missing docs do not outrank a request to implement a supplied, workable task. Do not recommend technical design merely because implementation has not started; require a real review-critical choice. When evidence ties, recommend the smallest earlier waypoint that prevents material invention.
+Require a real trigger. A missing `spec.md`, `design.md`, `task-plan.md`, or `plan.md` is not a trigger by itself. A split Feature does require one shared behavioral contract, but a small unsplit Feature may keep it in `feature.md`.
 
-Treat completed but silently uncommitted task work as unfinished delivery when repository policy and user direction permit routine commits. Recommend `task-execution-simple` to create or explicitly account for the checkpoint before recommending another task.
+Recommend implementation as immediately eligible only when the current request names an exact assigned Feature or Task, its blockers and Acceptance are clear, and no unresolved behavior, technical choice, shared contract, or execution-order risk blocks coding. When an exact Task is otherwise ready but unassigned, name Matt Pocock's `implement` only as the blocked next capability and report that the user or authorized Feature owner must explicitly assign it first. Do not substitute `local-work-tracker`, infer an assignee, or perform the assignment. `ready` alone is not assignment.
 
-## Output
+## Return and stop
 
-Return exactly these four short fields:
+Return exactly:
 
-- `Evidence`: the request and existing artifact signals;
-- `Recommended skill`: exactly one skill name;
-- `Reuse`: existing artifacts that skill should read or update, or `none`;
-- `Why now`: one concise rationale.
+- current evidence;
+- recommended skill;
+- artifact or tracker state to reuse;
+- why it is the smallest next durable outcome;
+- any blocker that prevents that skill from completing.
 
-Finish only when the recommendation names one skill from the map and `Reuse` names only artifacts that exist or says `none`.
-
-Docs conventions are opt-in and never prerequisites.
-
-This workflow does not create or manage Milestones. When the user wants persistent multi-task delivery governance, use `milestone-workflow` as the chosen workflow rather than layering Milestone state into this router.
+Do not invoke the recommendation. Do not interpret `ok`, shared-understanding confirmation, planning approval, `continue`, or automatic tool approval as authorization for another waypoint, implementation, MR merge, branch/worktree deletion, or discard.

@@ -1,6 +1,6 @@
 ---
 name: technical-design
-description: Create or revise a task-level technical design for review-critical implementation choices. Use when architecture, module or interface seams, data or state models, non-trivial algorithms, concurrency, security, performance, or testing strategy should be decided durably before coding.
+description: Decide and document review-critical technical choices for a Feature or child Task when architecture, ownership, data, state, algorithm, concurrency, security, performance, or verification has materially different plausible approaches or a non-obvious invariant. Straightforward work needs no design artifact.
 ---
 
 # Technical Design
@@ -9,7 +9,7 @@ Make consequential implementation choices reviewable without turning the design 
 
 ## Decide whether design is warranted
 
-Create or update a technical design when at least one material question cannot safely be left to implementation-time judgment:
+First identify the concrete technical questions still unresolved after reading the specification and repository conventions. A question warrants design only when it cannot safely be left to implementation-time judgment and it involves:
 
 - architecture, module responsibilities, interfaces, or seams;
 - data ownership, persistence shape, state transitions, or event flow;
@@ -18,25 +18,27 @@ Create or update a technical design when at least one material question cannot s
 - integration contracts or testing seams that shape the solution;
 - genuine technical alternatives with different long-term consequences.
 
-A question is material when plausible approaches have meaningfully different consequences, or when the choice establishes a non-obvious invariant, ownership boundary, data contract, lifecycle, concurrency model, migration rule, security boundary, or operational constraint.
+A question is material when plausible approaches have meaningfully different consequences, or when the choice establishes a non-obvious invariant, ownership boundary, data contract, lifecycle, concurrency model, migration rule, security boundary, or operational constraint. Feature size, a missing design file, or merely touching data, state, security, or multiple modules is not sufficient evidence.
 
-If the specification and repository practice already determine the approach and only mechanically derivable implementation remains, give a concise approach preview and stop without creating an artifact.
+Create a design artifact only after at least one concrete question passes this materiality gate. If the specification and repository practice already determine the approach and only mechanically derivable implementation remains, report that a concise approach preview is sufficient and stop. Create neither a design artifact nor a skipped-design marker. Do not begin implementation unless the user's current request separately assigns that exact Feature or Task.
 
 ## Work independently
 
-1. Read repository instructions, the task or behavioral spec, relevant code and tests, existing architecture and decision records, and local design conventions.
-2. Separate behavior already fixed by the task, repository facts and conventions, mechanically derivable implementation, and choices that still need technical judgment.
-3. Update an existing suitable design artifact or technical-design section when possible. Otherwise propose the smallest Markdown artifact near the task or in a repository-consistent location.
-4. Preserve the task's behavioral contract. Surface contradictions or missing requirements instead of silently redefining them.
+1. Read repository instructions, the Feature or Task contract, relevant code and tests, existing architecture and decision records, and local design conventions.
+2. Separate behavior already fixed by `feature-spec`, repository facts and conventions, mechanically derivable implementation, and concrete questions that still need technical judgment. Apply the materiality gate before creating or updating an artifact.
+3. When at least one question passes, update an existing suitable design artifact or technical-design section when possible. Otherwise propose the smallest Markdown artifact beside its Feature or Task.
+4. Preserve the Feature behavioral contract and child Task ownership. Surface contradictions or missing requirements instead of silently redefining them.
 5. For each included area, make the technical question, chosen approach, rationale, and resulting invariant or consequence reviewable; include alternatives only when they were genuine.
-6. Finish only when every section adds a review-critical implementation choice beyond the task and repository conventions. Remove assumptions that exist only in chat, repeated requirements, routine mechanics, and code-level detail that carries no durable decision.
-7. When a separate task artifact exists, add its technical-design Reference only after the design artifact exists. Link only the actual repository-native filename and do not create placeholder References.
+6. Finish only when every section adds a review-critical implementation choice beyond the Feature/Task contract and repository conventions. Remove assumptions that exist only in chat, repeated requirements, routine mechanics, and code-level detail that carries no durable decision.
+7. Add a design Reference to `feature.md` or the owning `task.md` only after the design artifact exists. Link only the actual repository-native filename and do not create placeholder References.
 
-Do not require a task spec, workflow, docs directory, tracker, branch, plan, or review ceremony. A technical design may share a file with a task specification when repository practice prefers one artifact; keep their sections and ownership distinct.
+When several executors may implement one Feature, make shared ownership, interfaces, schemas, lifecycle rules, and verification seams stable enough for `task-planning` to split work without letting parallel Tasks redefine them. If the unresolved choice affects observable behavior, return it to `feature-spec` instead of designing around it.
+
+Do not require a separate Feature spec for an unsplit Feature whose behavioral contract is already reviewable, or require a workflow, docs directory, tracker, branch, plan, or review ceremony. A technical design may share a file with a Feature specification when repository practice prefers one artifact; keep their sections and ownership distinct.
 
 ## Design at the durable level
 
-Document the decision, not the derivation. Reference the relevant behavioral requirement instead of restating it. When an unresolved choice would change user- or operator-visible behavior, compatibility, or product policy, return it to the task specification before designing its mechanism.
+Document the decision, not the derivation. Reference the relevant behavioral requirement instead of restating it. When an unresolved choice would change user- or operator-visible behavior, compatibility, or product policy, return it to `feature-spec` before designing its mechanism.
 
 Include only the material parts of:
 
@@ -62,9 +64,11 @@ Keep delivery ordering out unless it is part of the technical invariant. When se
 
 Use [references/technical-design-template.md](references/technical-design-template.md) only when no stronger local pattern exists.
 
+Finish after the material choices are reviewable. Design approval authorizes this artifact only; do not decompose Tasks, write an implementation plan, or modify production code unless the user's current request explicitly includes that separate planning outcome. Planning never authorizes implementation.
+
 ## Durable decision boundaries
 
-Keep task-level implementation choices in the technical design even when they may later qualify for an ADR. If a choice is hard to reverse, surprising without context, and based on genuine alternatives, surface it as an ADR candidate without making an ADR or another skill a prerequisite.
+Keep Feature- or Task-level implementation choices in the technical design even when they may later qualify for an ADR. If a choice is hard to reverse, surprising without context, and based on genuine alternatives, surface it as an ADR candidate without making an ADR or another skill a prerequisite.
 
 ## Companion skills
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Spec"
+  short_description: "Make feature behavior durable across collaborators"
+  default_prompt: "Use $feature-spec to capture the agreed feature behavior without prescribing implementation."

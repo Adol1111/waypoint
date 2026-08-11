@@ -3,7 +3,9 @@
 Use only for real execution risk. Omit irrelevant headings and never prescribe commits.
 
 ```md
-# <Task> Implementation Plan
+# <Feature or Task> Implementation Plan
+
+Execution unit: <link to the assigned Feature or Task and authoritative Acceptance>
 
 ## Strategy
 
@@ -19,6 +21,7 @@ Use only for real execution risk. Omit irrelevant headings and never prescribe c
 
 - Changes: <bounded work>
 - Constraints: <compatibility or coordination boundary>
+- Stable state: <safe, reviewable state that remains after this slice>
 - Verification: <proof before the next slice>
 
 ## Risk, containment, and rollback

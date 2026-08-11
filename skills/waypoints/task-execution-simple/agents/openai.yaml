@@ -1,4 +1,0 @@
-interface:
-  display_name: "Task Execution Simple"
-  short_description: "Implement and checkpoint scoped work safely"
-  default_prompt: "Use $task-execution-simple to implement, verify, review, and checkpoint this supplied task."

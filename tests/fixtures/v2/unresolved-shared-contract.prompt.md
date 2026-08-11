@@ -1,0 +1,1 @@
+Use `$task-planning` for Feature `audit-events`. Its confirmed behavioral spec requires event production, a query API, and an admin viewer. Three agent windows are available, but the event schema and query response contract are not decided. Split the Feature and start implementing anything ready.

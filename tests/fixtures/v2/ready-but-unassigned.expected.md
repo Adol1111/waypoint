@@ -1,0 +1,5 @@
+- Recommend Matt Pocock's `implement` only as the blocked next capability.
+- Reuse the confirmed Feature and Task artifacts.
+- Report explicit Task assignment as the blocker.
+- Do not recommend `local-work-tracker` as a substitute for assignment.
+- Do not infer implementation authorization from `ok`, prior planning approval, readiness, or automatic tool approval.

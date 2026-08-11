@@ -1,0 +1,6 @@
+interface:
+  display_name: "Local Work Tracker"
+  short_description: "Track collaborative work without an external service"
+  default_prompt: "Use $local-work-tracker explicitly to initialize or update the repository-local work tracker."
+policy:
+  allow_implicit_invocation: false

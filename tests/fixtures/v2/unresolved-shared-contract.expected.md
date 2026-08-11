@@ -1,0 +1,5 @@
+- Stop before Task decomposition and implementation.
+- Return event schema and query response contract to `technical-design` because they determine ownership and safe parallelism.
+- Require one stable Feature owner.
+- Do not treat available windows as assignment.
+- State that later Task-graph approval authorizes publication only.

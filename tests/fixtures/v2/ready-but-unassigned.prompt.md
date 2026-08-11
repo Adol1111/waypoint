@@ -1,0 +1,1 @@
+Use `$waypoint-workflow`. Feature `text-agent` has confirmed `feature.md`, `spec.md`, `design.md`, and `task-plan.md`. Task `runtime-loop` is ready but unassigned. The user previously approved planning and now says “ok, continue”; automatic tool approvals are enabled.

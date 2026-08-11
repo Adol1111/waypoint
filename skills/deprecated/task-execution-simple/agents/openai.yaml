@@ -1,0 +1,6 @@
+interface:
+  display_name: "Deprecated: Task Execution"
+  short_description: "Archived; invoke implement instead"
+  default_prompt: "This skill is deprecated. Explicitly invoke Matt Pocock's $implement skill for new work."
+policy:
+  allow_implicit_invocation: false

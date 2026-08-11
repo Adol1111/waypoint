@@ -1,4 +1,4 @@
 interface:
   display_name: "Implementation Plan"
-  short_description: "Plan risky sequencing and coordinated changes"
-  default_prompt: "Use $implementation-plan to plan this sequencing-sensitive implementation."
+  short_description: "Make execution strategy reviewable and recoverable"
+  default_prompt: "Use $implementation-plan when this Feature or Task needs a durable execution strategy beyond a concise approach preview."

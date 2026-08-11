@@ -3,7 +3,7 @@
 Use the smallest subset that makes review-critical implementation choices durable.
 
 ```md
-# <Task> Technical Design
+# <Feature or Task> Technical Design
 
 ## Context and constraints
 
@@ -25,6 +25,12 @@ Use the smallest subset that makes review-critical implementation choices durabl
 ## Responsibilities and interfaces
 
 - <Module, interface, seam, or integration contract>
+
+## Cross-Task contracts
+
+- Owner: <single owner of the mutable contract>
+- Consumers: <Tasks or modules that rely on it>
+- Invariant: <what parallel work must not redefine>
 
 ## Data, storage, and lifecycle
 
@@ -51,4 +57,4 @@ Use the smallest subset that makes review-critical implementation choices durabl
 - <Unresolved implementation choice, impact, and latest useful decision point; return observable behavior questions to the specification>
 ```
 
-Omit unused sections. Every included section must add a review-critical implementation choice beyond the specification and repository conventions. Leave mechanically derivable parsing, validation, normalization, mapping, and ordinary control flow to implementation. Do not expand the template into file-by-file edits, complete code, commit steps, or an implementation sequence.
+Omit unused sections, including `Cross-Task contracts` when one executor owns the whole change. Every included section must add a review-critical implementation choice beyond the specification and repository conventions. Leave mechanically derivable parsing, validation, normalization, mapping, and ordinary control flow to implementation. Do not expand the template into file-by-file edits, complete code, commit steps, or an implementation sequence.

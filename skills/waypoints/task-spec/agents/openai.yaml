@@ -1,4 +1,0 @@
-interface:
-  display_name: "Task Spec"
-  short_description: "Define reviewable task behavior and requirements"
-  default_prompt: "Use $task-spec to write a behavioral specification for this task."

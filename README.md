@@ -2,236 +2,184 @@
 
 # Waypoint Skills
 
-**Durable engineering context without a mandatory workflow**
+**Human-readable Feature planning for work that moves across people and agents**
 
-Keep agent-driven work recoverable across sessions, models, and collaborators.
-
-[中文](README_CN.md) · [Architecture](ARCHITECTURE.md) · [Skills](#standalone-skills) · [Workflows](#choose-a-workflow) · [Installation](#installation)
+[中文](README_CN.md) · [Architecture](ARCHITECTURE.md) · [Skills](#waypoint-skills) · [Installation](#installation)
 
 </div>
 
-Waypoint provides small, standalone agent skills that preserve the engineering facts worth carrying forward: terminology, consequential decisions, delivery slices, behavioral task boundaries, technical designs, risky execution strategy, verification evidence, and safe closing state.
+Waypoint adds durable Milestone, Feature, Task, ownership, and tracking contracts around Matt Pocock's clarification, implementation, review, and handoff skills. It is designed for Codex planning followed by implementation in another Codex window, OpenCode, Pi, DeepSeek, or a human collaborator.
 
 > [!IMPORTANT]
-> Every atomic skill works independently. Optional workflows coordinate them without making a fixed `docs/` layout, task tracker, branch convention, review cadence, or commit sequence mandatory.
+> Planning and execution are separate permissions. Confirming discussion, a specification, design, Task graph, or plan never authorizes implementation. Automatic tool approval changes tool mechanics, not delivery scope.
 
-During implementation, optional does not mean absent: `task-execution-simple` chooses isolation from repository and collision risk, creates cohesive verified commits before advancing when permitted, and reports why when work must remain uncommitted.
+## Collaboration model
 
-## Why Waypoint?
+```text
+Requirement pool
+  └── Shared Milestone
+      └── Feature — one stable owner
+          └── Task — one assignee, optional executor
+```
 
-Agent conversations are temporary; engineering decisions and proof should not be. Each atomic Waypoint skill follows the same lightweight contract:
+- A shared Milestone is a normally frozen batch of owned Features, not a serial task queue or Git branch.
+- A Feature is the complete behavior and final-acceptance boundary.
+- A small Feature may be implemented directly. Child Tasks exist only when work crosses collaborators, windows, harnesses, or sessions.
+- Tasks stay under their Feature and carry independent ownership, Acceptance, contracts, blockers, verification, branch, and MR.
+- Git integrates at the smallest safe Feature or Task boundary; Milestone completion never delays push or merge.
 
-1. Read the repository's existing practice and relevant artifacts.
-2. Update a suitable artifact when one already exists.
-3. Otherwise propose the smallest useful local Markdown artifact.
-4. Keep review-critical facts in the repository—not only in chat.
-
-## Standalone skills
-
-Install or invoke only the skill needed for the current outcome.
+## Waypoint skills
 
 | Skill | Use it to |
 | --- | --- |
-| [`domain-context`](skills/waypoints/domain-context/SKILL.md) | Maintain durable terminology and create only qualifying ADRs |
-| [`roadmap-planning`](skills/waypoints/roadmap-planning/SKILL.md) | Shape goals into verifiable slices, or score backlog outcomes and plan a confirmed Milestone task batch |
-| [`task-spec`](skills/waypoints/task-spec/SKILL.md) | Define reviewable task behavior and requirements without prescribing implementation |
-| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Make review-critical architecture and implementation choices durable before coding |
-| [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | Plan real sequencing, migration, compatibility, or rollout risk |
-| [`task-state`](skills/waypoints/task-state/SKILL.md) | Preserve acceptance, status, blockers, evidence, and safe closing state |
-| [`task-execution-simple`](skills/waypoints/task-execution-simple/SKILL.md) | Implement supplied scope with adaptive isolation, verification, and Git checkpoints |
-| [`docs-workflow-bootstrap`](skills/setup/docs-workflow-bootstrap/SKILL.md) | Optionally scaffold a lightweight shared docs convention |
+| [`domain-context`](skills/waypoints/domain-context/SKILL.md) | Preserve durable terminology and qualifying ADRs |
+| [`milestone-planning`](skills/waypoints/milestone-planning/SKILL.md) | Select or replan a shared, owned Feature batch from the requirement pool |
+| [`feature-spec`](skills/waypoints/feature-spec/SKILL.md) | Capture one Feature's observable behavior without prescribing implementation |
+| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Decide only review-critical technical choices and shared contracts |
+| [`task-planning`](skills/waypoints/task-planning/SKILL.md) | Adapt a Feature into a user-confirmed graph of independent child Tasks |
+| [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | Make one Feature or Task's risky internal execution strategy durable |
+| [`local-work-tracker`](skills/setup/local-work-tracker/SKILL.md) | Explicitly initialize or update local tracking when no external tracker exists |
+| [`docs-workflow-bootstrap`](skills/setup/docs-workflow-bootstrap/SKILL.md) | Explicitly scaffold the optional Feature-centered docs convention |
+| [`waypoint-workflow`](skills/workflows/waypoint-workflow/SKILL.md) | Read evidence, recommend exactly one next skill, and stop |
+
+Every skill remains independently useful. The workflow is only a read-only navigator and never invokes its recommendation.
 
 Example invocations:
 
 ```text
-Use $task-spec to make this change reviewable without relying on this chat.
-Use $technical-design to design the technical approach without writing a coding recipe.
-Use $roadmap-planning to turn this goal into independently verifiable slices.
-Use $task-execution-simple to implement the supplied task.
+Use $milestone-planning to select the next shared Feature batch and owners.
+Use $feature-spec to record this Feature's agreed behavior.
+Use $task-planning to split this Feature across collaborators and stop before assignment.
+Use $local-work-tracker to initialize local tracking because this repository has no external tracker.
+Use $waypoint-workflow to recommend one next skill without doing its work.
 ```
+
+## Tracking and human-readable docs
+
+Operational state has one authority:
+
+- use the configured external tracker when one exists;
+- otherwise invoke `local-work-tracker` manually;
+- do not maintain both as competing live state.
+
+Tracking reaches Task granularity for assignment and conflict detection, while the default global dashboard remains Feature-first. Every split `feature.md` contains a generated linked Task checklist regardless of tracker choice.
+
+The optional fallback layout is:
+
+```text
+docs/work/
+├── index.md
+├── requirements.md
+├── milestones/<milestone>.md
+└── features/<feature>/
+    ├── feature.md
+    ├── spec.md
+    ├── design.md
+    ├── task-plan.md
+    ├── plan.md
+    └── tasks/<task>/
+        ├── task.md
+        └── plan.md
+```
+
+Only `feature.md` is the normal Feature entry point. A split Feature requires one shared spec; design, Task plan, and execution plan remain threshold-driven.
+
+`local-work-tracker` creates committed `.waypoint/config.yaml`, ignored `.waypoint/local.yaml`, and committed operational records. It includes a dependency-free script for identity, revision-checked assignment, state transitions, validation, and generated views. Because Git cannot provide strong claims across unsynchronized machines, the local fallback uses one coordinator as its writer.
+
+## Reuse from Matt Pocock
+
+Waypoint deliberately uses [mattpocock/skills](https://github.com/mattpocock/skills) rather than copying general-purpose protocols:
+
+| Matt skill | Responsibility |
+| --- | --- |
+| `grilling` | Resolve intent before planning |
+| `to-tickets` | Source tracer-bullet and Task-DAG methodology adapted by `task-planning` |
+| `implement` | Implement one explicitly assigned, implementation-ready Feature or Task |
+| `tdd` | Test-first execution |
+| `code-review` | Independent implementation review |
+| `handoff` | Cross-window or cross-harness transfer without copying durable docs |
+| `codebase-design` | Module and seam reasoning |
+| `research` | External research |
+
+Waypoint keeps its own Feature spec because Matt's spec combines implementation and testing decisions and assumes tracker publication. Waypoint keeps `task-planning` only for Feature nesting, ownership contracts, tracker-neutral IDs, repo-local handoffs, and assignment boundaries.
+
+## Git and authorization
+
+- Use a short-lived Feature branch for an unsplit Feature and independent Task branches for a split Feature.
+- Executors may commit, push, create or update an MR, verify, and respond to review.
+- Merge safe Tasks to `main` early. Use a temporary integration branch only when independent merge cannot keep the target correct.
+- A Task is completed only after Acceptance, verification, review, and safe integration.
+- Merging a specific MR, deleting a branch/worktree, and discarding work each require separate target-specific confirmation.
+- `ok`, `continue`, shared-understanding confirmation, planning approval, `ready`, and automatic tool approval do not authorize implementation or merge.
 
 ## Installation
 
-The commands below install from the published `Adol1111/waypoint` repository. Contributors working from a local checkout can use `./skills` as the source; that intentionally excludes ignored development-only skills elsewhere in the working tree.
-
-List the skills available from a source:
+List available Waypoint skills:
 
 ```bash
 npx skills add Adol1111/waypoint --list
 ```
 
-Install one standalone skill:
+Install the core planning set:
 
 ```bash
-npx skills add Adol1111/waypoint --skill task-spec
+npx skills add Adol1111/waypoint \
+  --skill milestone-planning \
+  --skill feature-spec \
+  --skill technical-design \
+  --skill task-planning \
+  --skill implementation-plan
 ```
 
-Repeat `--skill` to install a selected set. Installation is project-local by default; add `-g` for a user-level installation or `-a codex` to target a specific supported agent.
-
-Install every Waypoint skill:
+Add optional navigation, context, docs, or local tracking individually:
 
 ```bash
-npx skills add Adol1111/waypoint --skill '*'
+npx skills add Adol1111/waypoint --skill waypoint-workflow
+npx skills add Adol1111/waypoint --skill domain-context
+npx skills add Adol1111/waypoint --skill docs-workflow-bootstrap
+npx skills add Adol1111/waypoint --skill local-work-tracker
+```
+
+Install Matt skills separately:
+
+```bash
+npx skills add mattpocock/skills \
+  --skill grilling \
+  --skill to-tickets \
+  --skill implement \
+  --skill tdd \
+  --skill code-review \
+  --skill handoff \
+  --skill codebase-design \
+  --skill research
 ```
 
 The [`skills` CLI](https://github.com/vercel-labs/skills) supports Codex, Claude Code, Cursor, and other Agent Skills-compatible tools.
 
-## Choose a workflow
+## Migration from the previous catalog
 
-Waypoint has two optional workflows. They share the same atomic skills but provide different amounts of coordination.
+- `roadmap-planning` → `milestone-planning`
+- `task-spec` → `feature-spec`
+- `task-state` → external tracker or explicit `local-work-tracker`
+- `task-execution-simple` → Matt `implement`
+- `milestone-workflow` → shared Milestone artifacts plus tracker; no stateful workflow replacement
 
-| Workflow | Choose it when | Behavior |
-| --- | --- | --- |
-| [`waypoint-workflow`](skills/workflows/waypoint-workflow/SKILL.md) | You want lightweight, request-local guidance | Reads existing evidence, recommends exactly one atomic skill, and keeps no Milestone state |
-| [`milestone-workflow`](skills/workflows/milestone-workflow/SKILL.md) | Delivery spans tasks or sessions and needs global recovery | Maintains Milestone outcomes, exit criteria, task placement and status, discovered work, evidence, and closure |
-
-Both workflows are explicitly invoked; installing one does not let it take over ordinary requests.
-
-### Lightweight workflow bundle
-
-Installing only `waypoint-workflow` is technically valid, but it may recommend an atomic skill that is not installed. For complete routing coverage, install the workflow plus all seven engineering waypoints:
+The retired snapshots live under [`skills/deprecated/`](skills/deprecated/README.md) for migration reference and are not part of the active catalog. Generic recursive skill installers may still display these canonical snapshots, so do not select them for new installations. Remove project-scoped installed copies from every agent with:
 
 ```bash
-npx skills add Adol1111/waypoint \
-  --skill waypoint-workflow \
-  --skill domain-context \
-  --skill roadmap-planning \
-  --skill task-spec \
-  --skill technical-design \
-  --skill implementation-plan \
-  --skill task-state \
-  --skill task-execution-simple
+npx skills@latest remove roadmap-planning task-spec task-state task-execution-simple milestone-workflow --agent '*'
 ```
 
-Invoke it with:
-
-```text
-Use $waypoint-workflow to recommend the next atomic waypoint.
-```
-
-### Milestone-managed workflow bundle
-
-`milestone-workflow` coordinates the same seven atomic waypoints and adds durable Milestone governance:
-
-```bash
-npx skills add Adol1111/waypoint \
-  --skill milestone-workflow \
-  --skill domain-context \
-  --skill roadmap-planning \
-  --skill task-spec \
-  --skill technical-design \
-  --skill implementation-plan \
-  --skill task-state \
-  --skill task-execution-simple
-```
-
-Invoke it with:
-
-```text
-Use $milestone-workflow to plan, continue, or close this delivery.
-```
-
-Add `docs-workflow-bootstrap` to either bundle only when the team wants Waypoint to initialize a shared local docs convention:
-
-```bash
-npx skills add Adol1111/waypoint --skill docs-workflow-bootstrap
-```
-
-> [!NOTE]
-> Milestone management and docs bootstrap are opt-in. Missing docs never select either one automatically, and neither workflow prevents direct use of an atomic skill. If you want no workflow, install only the standalone skills you choose.
-
-## Optional docs convention
-
-Teams that want shared repository-local documentation can invoke `docs-workflow-bootstrap`. If the request does not already say whether Milestones are wanted, bootstrap asks before creating task docs.
-
-| Bootstrap choice | Task structure |
-| --- | --- |
-| Standalone | Flat active/completed/deferred task index |
-| Milestone-managed | Open/completed Milestone index, backlog, and linked task-local artifacts |
-
-Both choices may include `docs/context/` and `docs/architecture/decisions/`. In the local Milestone convention, confirming a task creates a non-empty `<milestone>/<task>/task.md` planning handoff and links it from the Milestone index. The index contains global outcome, selection, linked exit criteria, and an ordered ``- `status` [Task](...)`` list. Top-to-bottom order suggests execution sequence; Mermaid appears only for real cross-task dependencies. When development begins, `task-spec` creates or updates a separate spec and writes canonical Acceptance plus existing artifact links to `task.md`, replacing superseded planning fields. Technical design and plan files remain threshold-driven and follow repository-native names. Existing repository locations always take precedence, and bootstrap does not create placeholder Milestones or tasks.
-
-Milestone `Discovered Work` is not a development log. Current-task corrections stay with that task, and findings already owned by another current task go directly there. Only work the Milestone cannot handle now, or whose owner is uncertain, is recorded globally; closure routes it durably or records why it was discarded.
-
-In the Milestone convention, backlog is an active queue of scored candidate outcomes rather than a history log. Waypoint follows an existing scoring system or suggests an evidence-backed `0–10` score and rationale. Before scoring, the user may optionally discuss product gaps and add concrete candidates; sparse or stale backlogs receive one non-blocking reminder. The user chooses an approximate Milestone task count, or confirms an agent proposal. Leading candidates are expanded only far enough to reveal atomic tasks: one backlog outcome that becomes three tasks uses three places. Tasks are meaningful one-spec delivery units that include implementation and verification, not isolated actions. Timeboxes are optional external constraints, not defaults. Selected outcomes leave backlog only after durable ownership; unchanged scores receive no review log.
-
-## Companion skills
-
-Waypoint deliberately does not copy general-purpose protocols. The following optional companions come from [**mattpocock/skills**](https://github.com/mattpocock/skills):
-
-| Skill | Purpose | Details |
-| --- | --- | --- |
-| `grilling` | Sustained clarification and stress-testing | [skills.sh](https://www.skills.sh/mattpocock/skills/grilling) |
-| `research` | Research grounded in primary sources | [skills.sh](https://www.skills.sh/mattpocock/skills/research) |
-| `codebase-design` | Module, interface, seam, and deep-design reasoning | [skills.sh](https://www.skills.sh/mattpocock/skills/codebase-design) |
-| `tdd` | Red-green-refactor implementation | [skills.sh](https://www.skills.sh/mattpocock/skills/tdd) |
-| `code-review` | Independent standards and specification review | [skills.sh](https://www.skills.sh/mattpocock/skills/code-review) |
-| `handoff` | Cross-session or cross-collaborator continuation | [skills.sh](https://www.skills.sh/mattpocock/skills/handoff) |
-
-### Installing across both repositories
-
-Waypoint and its companions have different sources, so install them with separate commands. The companions are not required for either workflow; install only the protocols you want available.
-
-Install all six companions:
-
-```bash
-npx skills add mattpocock/skills \
-  --skill grilling \
-  --skill research \
-  --skill codebase-design \
-  --skill tdd \
-  --skill code-review \
-  --skill handoff
-```
-
-Or replace the repeated `--skill` arguments with the single companion you need. They are optional integrations, not Waypoint dependencies.
-
-For a complete local Waypoint installation plus all companions:
-
-```bash
-npx skills add Adol1111/waypoint --skill '*'
-npx skills add mattpocock/skills \
-  --skill grilling \
-  --skill research \
-  --skill codebase-design \
-  --skill tdd \
-  --skill code-review \
-  --skill handoff
-```
-
-## Non-goals and safety
-
-Waypoint is not:
-
-- a Superpowers/OpenSpec-style mandatory lifecycle;
-- a tracker state machine, label system, or Milestone requirement for every user;
-- a fixed review cadence, commit per phase, or prescribed commit sequence;
-- a branch or worktree policy;
-- a replacement for interviewing, research, TDD, review, or handoff skills.
-
-Explicit confirmation is reserved for consequential closing operations: merge, deleting a branch or worktree, and discarding work. Confirmation must identify the action and target; “continue” or “finish” is not enough.
-
-This does not leave stable work indefinitely uncommitted. Routine isolation and cohesive task commits use repository practice, task risk, and user direction; only their sequence is not prescribed.
+Add `--global` when removing global installations. Review the targets shown by the CLI before confirming.
 
 ## Validation
 
-Run the focused contract suite with Python's standard library:
-
 ```bash
-python3 -m unittest discover -s tests -v
+scripts/validate.sh
 ```
 
-The suite validates independent no-`docs/` usage, both bootstrap choices, lightweight coordinator recommendations, optional backlog enrichment, scored atomic-task Milestone selection, Milestone discovery and closure rules, separation of chat-independent behavioral specifications from technical designs, destructive closing confirmation, frontmatter, `agents/openai.yaml`, template ownership, and fixture pairing. See [ARCHITECTURE.md](ARCHITECTURE.md) for the atomic-skill contract and safety boundaries.
+The suite validates skill metadata, independent usage, template ownership, authorization boundaries, Feature/Task semantics, and the local tracker script.
 
 ## Releases
 
-Waypoint uses [Changesets](https://github.com/changesets/changesets) to collect release notes and create versioned GitHub changelogs.
-
-For a user-visible skill or workflow change:
-
-```bash
-pnpm install --frozen-lockfile
-pnpm changeset
-```
-
-Commit the generated `.changeset/*.md` fragment with the change. After it reaches `main`, the release workflow creates or updates a Version PR. Merging that PR updates `CHANGELOG.md`, removes consumed fragments, creates the version tag, and publishes the corresponding GitHub release. Documentation-only, test-only, and internal maintenance changes do not normally need a fragment.
+Waypoint uses [Changesets](https://github.com/changesets/changesets). Add one `.changeset/*.md` fragment for every user-visible skill change.

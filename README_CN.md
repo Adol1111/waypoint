@@ -2,236 +2,184 @@
 
 # Waypoint Skills
 
-**不强制 workflow，也能保留持久的工程上下文**
+**面向真人与多 agent 流转的人类可读 Feature 规划**
 
-让 agent 驱动的工作可以跨会话、模型和协作者恢复。
-
-[English](README.md) · [架构](ARCHITECTURE.md) · [Skills](#独立-skills) · [Workflows](#选择-workflow) · [安装](#安装)
+[English](README.md) · [架构](ARCHITECTURE.md) · [Skills](#waypoint-skills) · [安装](#安装)
 
 </div>
 
-Waypoint 提供一组小型、独立的 agent skills，用来保存值得延续的工程事实：术语、重要决策、交付切片、任务行为边界、技术设计、高风险执行策略、验证证据和安全收尾状态。
+Waypoint 在 Matt Pocock 的澄清、实现、评审和 handoff skills 外围补充持久的 Milestone、Feature、Task、ownership 与 tracker 契约。它适合由 Codex 规划，再交给另一个 Codex 窗口、OpenCode、Pi、DeepSeek 或真人协作者执行。
 
 > [!IMPORTANT]
-> 每个 atomic skill 都能独立工作。可选 workflows 负责协调，但不会把固定 `docs/` 布局、任务跟踪器、分支约定、review 节奏或 commit 序列变成强制要求。
+> 规划与执行是不同权限。确认讨论、spec、design、Task graph 或 plan 都不会授权实现。工具自动审批只改变工具调用方式，不改变交付范围。
 
-在实现期间，“可选”并不等于“不执行”：`task-execution-simple` 根据仓库实践和冲突风险选择隔离方式，在允许时于推进前创建 cohesive、已验证的 commit；必须保留未提交工作时则说明原因。
+## 协作模型
 
-## 为什么使用 Waypoint？
+```text
+需求池
+  └── 共享 Milestone
+      └── Feature — 一个稳定 owner
+          └── Task — 一个 assignee，可选临时 executor
+```
 
-Agent 对话是临时的，工程决策和完成证据不应该是。每个 atomic Waypoint skill 都遵循同一份轻量契约：
+- 共享 Milestone 是默认冻结的 Feature 批次，不是串行 Task 队列或 Git 分支。
+- Feature 是完整行为与最终验收边界。
+- 小 Feature 可以直接实现；只有跨协作者、窗口、harness 或 session 时才创建子 Task。
+- Task 嵌入所属 Feature，并拥有独立 ownership、Acceptance、契约、blocker、验证、分支和 MR。
+- Git 按最小安全 Feature/Task 边界集成；不会等 Milestone 完成才 push 或 merge。
 
-1. 读取仓库现有实践和相关 artifacts。
-2. 已有合适 artifact 时直接更新。
-3. 没有时提出最小且有用的本地 Markdown artifact。
-4. 把评审关键事实留在仓库中，而不是只留在聊天里。
-
-## 独立 Skills
-
-只安装或调用当前结果所需的 skill。
+## Waypoint Skills
 
 | Skill | 用途 |
 | --- | --- |
-| [`domain-context`](skills/waypoints/domain-context/SKILL.md) | 维护持久术语，并且只为符合门槛的决策创建 ADR |
-| [`roadmap-planning`](skills/waypoints/roadmap-planning/SKILL.md) | 将目标拆成可验证切片，或评分 backlog outcome 并规划经确认的 Milestone task 批次 |
-| [`task-spec`](skills/waypoints/task-spec/SKILL.md) | 定义可评审的任务行为和需求，不规定技术实现 |
-| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | 在编码前持久化需要评审的架构和技术方案选择 |
-| [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | 规划真实的顺序、迁移、兼容或 rollout 风险 |
-| [`task-state`](skills/waypoints/task-state/SKILL.md) | 保存验收、状态、阻塞、证据和安全收尾状态 |
-| [`task-execution-simple`](skills/waypoints/task-execution-simple/SKILL.md) | 使用自适应隔离、验证和 Git checkpoint 实现给定范围 |
-| [`docs-workflow-bootstrap`](skills/setup/docs-workflow-bootstrap/SKILL.md) | 可选地创建轻量共享 docs 约定 |
+| [`domain-context`](skills/waypoints/domain-context/SKILL.md) | 保存持久术语和符合门槛的 ADR |
+| [`milestone-planning`](skills/waypoints/milestone-planning/SKILL.md) | 从需求池选择或重规划共享、已分配 owner 的 Feature 批次 |
+| [`feature-spec`](skills/waypoints/feature-spec/SKILL.md) | 记录一个 Feature 的可观察行为，不规定实现 |
+| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | 只决定需要评审的重大技术选择和共享契约 |
+| [`task-planning`](skills/waypoints/task-planning/SKILL.md) | 把 Feature 适配成经用户确认的独立子 Task 图 |
+| [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | 持久化一个 Feature/Task 内部的高风险执行策略 |
+| [`local-work-tracker`](skills/setup/local-work-tracker/SKILL.md) | 没有外部 tracker 时，显式初始化或更新本地 tracker |
+| [`docs-workflow-bootstrap`](skills/setup/docs-workflow-bootstrap/SKILL.md) | 显式创建可选的 Feature-centered 文档约定 |
+| [`waypoint-workflow`](skills/workflows/waypoint-workflow/SKILL.md) | 读取证据，只推荐一个下一 skill，然后停止 |
+
+每个 skill 都能独立使用。Workflow 只是只读导航器，绝不会调用自己的推荐结果。
 
 调用示例：
 
 ```text
-Use $task-spec to make this change reviewable without relying on this chat.
-Use $technical-design to design the technical approach without writing a coding recipe.
-Use $roadmap-planning to turn this goal into independently verifiable slices.
-Use $task-execution-simple to implement the supplied task.
+Use $milestone-planning to select the next shared Feature batch and owners.
+Use $feature-spec to record this Feature's agreed behavior.
+Use $task-planning to split this Feature across collaborators and stop before assignment.
+Use $local-work-tracker to initialize local tracking because this repository has no external tracker.
+Use $waypoint-workflow to recommend one next skill without doing its work.
 ```
+
+## Tracker 与人类可读文档
+
+实时状态只有一个权威来源：
+
+- 已有外部 tracker 时直接使用；
+- 没有时才显式调用 `local-work-tracker`；
+- 不同时维护两套竞争的实时状态。
+
+数据跟踪到 Task，以支持 assignment 和冲突检测；默认全局 dashboard 仍只展示 Feature。无论 tracker 类型，每个拆分后的 `feature.md` 都包含生成的带链接 Task checklist。
+
+可选 fallback 布局：
+
+```text
+docs/work/
+├── index.md
+├── requirements.md
+├── milestones/<milestone>.md
+└── features/<feature>/
+    ├── feature.md
+    ├── spec.md
+    ├── design.md
+    ├── task-plan.md
+    ├── plan.md
+    └── tasks/<task>/
+        ├── task.md
+        └── plan.md
+```
+
+`feature.md` 是正常入口。拆分后的 Feature 必须共享同一 spec；design、Task plan 和 execution plan 都按门槛创建。
+
+`local-work-tracker` 会创建提交 Git 的 `.waypoint/config.yaml`、被忽略的 `.waypoint/local.yaml` 和提交 Git 的运行状态记录。它附带无第三方依赖的身份、revision assignment、状态迁移、校验和视图生成脚本。Git 无法在未同步机器间提供强一致 claim，因此本地 fallback 采用单一 coordinator 写入。
+
+## 直接复用 Matt Pocock
+
+Waypoint 直接使用 [mattpocock/skills](https://github.com/mattpocock/skills)，不复制通用流程：
+
+| Matt skill | 职责 |
+| --- | --- |
+| `grilling` | 规划前澄清意图 |
+| `to-tickets` | 为 `task-planning` 提供 tracer-bullet 与 Task DAG 方法 |
+| `implement` | 实现一个显式分配、已经 ready 的 Feature 或 Task |
+| `tdd` | 测试优先执行 |
+| `code-review` | 独立实现评审 |
+| `handoff` | 跨窗口或 harness 交接，不复制持久文档 |
+| `codebase-design` | 模块与 seam 推理 |
+| `research` | 外部研究 |
+
+Waypoint 保留自己的 Feature spec，因为 Matt spec 会混入 implementation/testing decisions，并假定发布到 tracker。`task-planning` 只保留 Feature 嵌套、ownership contracts、tracker-neutral ID、repo-local handoff 和 assignment 边界等差异。
+
+## Git 与授权
+
+- 未拆分的小 Feature 使用短生命周期 Feature branch；拆分 Feature 的每个 Task 使用独立 branch。
+- 执行者可以 commit、push、创建或更新 MR、验证和响应 review。
+- 可安全独立集成的 Task 应尽早通过 MR 合入 `main`；只有无法保持目标正确时才使用临时 integration branch。
+- Task 只有在 Acceptance、验证、review 和安全集成都完成后才算 completed。
+- 合并具体 MR、删除 branch/worktree、丢弃工作分别需要针对目标的独立确认。
+- `ok`、`continue`、共同理解确认、规划批准、`ready` 和自动工具审批都不会授权实现或 merge。
 
 ## 安装
 
-下面的命令从已发布的 `Adol1111/waypoint` 仓库安装。Contributor 在本地 checkout 中可以改用 `./skills` 作为来源，这会主动排除工作树其他位置中已 ignore、仅供开发使用的 skills。
-
-列出一个来源中的可用 skills：
+列出 Waypoint skills：
 
 ```bash
 npx skills add Adol1111/waypoint --list
 ```
 
-安装一个独立 skill：
+安装核心规划组合：
 
 ```bash
-npx skills add Adol1111/waypoint --skill task-spec
+npx skills add Adol1111/waypoint \
+  --skill milestone-planning \
+  --skill feature-spec \
+  --skill technical-design \
+  --skill task-planning \
+  --skill implementation-plan
 ```
 
-重复 `--skill` 可以安装一组选定 skills。默认安装到当前项目；添加 `-g` 可进行用户级安装，添加 `-a codex` 可指定受支持的 agent。
-
-安装所有 Waypoint skills：
+按需增加导航、上下文、文档或本地 tracker：
 
 ```bash
-npx skills add Adol1111/waypoint --skill '*'
+npx skills add Adol1111/waypoint --skill waypoint-workflow
+npx skills add Adol1111/waypoint --skill domain-context
+npx skills add Adol1111/waypoint --skill docs-workflow-bootstrap
+npx skills add Adol1111/waypoint --skill local-work-tracker
+```
+
+单独安装 Matt skills：
+
+```bash
+npx skills add mattpocock/skills \
+  --skill grilling \
+  --skill to-tickets \
+  --skill implement \
+  --skill tdd \
+  --skill code-review \
+  --skill handoff \
+  --skill codebase-design \
+  --skill research
 ```
 
 [`skills` CLI](https://github.com/vercel-labs/skills) 支持 Codex、Claude Code、Cursor 和其他兼容 Agent Skills 的工具。
 
-## 选择 Workflow
+## 从旧目录迁移
 
-Waypoint 提供两个可选 workflows。它们共享相同的 atomic skills，但统筹程度不同。
+- `roadmap-planning` → `milestone-planning`
+- `task-spec` → `feature-spec`
+- `task-state` → 外部 tracker 或显式 `local-work-tracker`
+- `task-execution-simple` → Matt `implement`
+- `milestone-workflow` → 共享 Milestone artifacts 与 tracker；不再提供有状态 workflow 替代品
 
-| Workflow | 适合场景 | 行为 |
-| --- | --- | --- |
-| [`waypoint-workflow`](skills/workflows/waypoint-workflow/SKILL.md) | 需要轻量、局部的下一步建议 | 读取现有证据，推荐一个 atomic skill，不维护 Milestone 状态 |
-| [`milestone-workflow`](skills/workflows/milestone-workflow/SKILL.md) | 交付跨多个 task 或会话，需要全局恢复 | 维护 Milestone outcome、exit criteria、task placement 与状态、discovered work、证据和关闭 |
-
-两个 workflow 都只能由用户显式调用；安装后不会自动接管普通请求。
-
-### 轻量 Workflow 组合
-
-技术上可以只安装 `waypoint-workflow`，但它可能推荐一个尚未安装的 atomic skill。为了让所有推荐都能直接执行，建议同时安装 workflow 和七个工程 waypoints：
+退休 skill 的快照保存在 [`skills/deprecated/`](skills/deprecated/README.md)，只用于迁移参考，不属于当前 active catalog。通用递归式 skill 安装器仍可能展示这些保留 `SKILL.md` 的快照，请勿将它们用于新安装。使用下面一条命令从所有 agent 移除项目级旧安装：
 
 ```bash
-npx skills add Adol1111/waypoint \
-  --skill waypoint-workflow \
-  --skill domain-context \
-  --skill roadmap-planning \
-  --skill task-spec \
-  --skill technical-design \
-  --skill implementation-plan \
-  --skill task-state \
-  --skill task-execution-simple
+npx skills@latest remove roadmap-planning task-spec task-state task-execution-simple milestone-workflow --agent '*'
 ```
 
-调用方式：
-
-```text
-Use $waypoint-workflow to recommend the next atomic waypoint.
-```
-
-### Milestone-managed Workflow 组合
-
-`milestone-workflow` 统筹相同的七个 atomic waypoints，并增加持久的 Milestone 治理：
-
-```bash
-npx skills add Adol1111/waypoint \
-  --skill milestone-workflow \
-  --skill domain-context \
-  --skill roadmap-planning \
-  --skill task-spec \
-  --skill technical-design \
-  --skill implementation-plan \
-  --skill task-state \
-  --skill task-execution-simple
-```
-
-调用方式：
-
-```text
-Use $milestone-workflow to plan, continue, or close this delivery.
-```
-
-只有当团队希望 Waypoint 初始化共享的本地 docs 约定时，才需要在任一组合中额外安装 `docs-workflow-bootstrap`：
-
-```bash
-npx skills add Adol1111/waypoint --skill docs-workflow-bootstrap
-```
-
-> [!NOTE]
-> Milestone 管理和 docs bootstrap 都是 opt-in。缺少 docs 不会自动选择它们；两种 workflow 都不妨碍用户直接调用 atomic skill。如果不想使用任何 workflow，只安装自己选择的独立 skills 即可。
-
-## 可选 Docs 约定
-
-希望共享仓库内文档的团队可以调用 `docs-workflow-bootstrap`。如果请求没有说明是否使用 Milestone，bootstrap 会在创建 task docs 前先询问。
-
-| Bootstrap 选择 | Task 结构 |
-| --- | --- |
-| Standalone | 扁平的 active/completed/deferred task index |
-| Milestone-managed | open/completed Milestone index、backlog，以及带链接的 task-local artifacts |
-
-两种选择都可以包含 `docs/context/` 和 `docs/architecture/decisions/`。在本地 Milestone convention 中，确认 task 时会创建非空的 `<milestone>/<task>/task.md` planning handoff，并由 Milestone index 链接。Index 只保留全局 outcome、selection、带 task 链接的 exit criteria，以及有序的 ``- `状态` [Task](...)`` 列表。从上到下表示建议执行顺序；只有真实跨 task 依赖存在时才添加 Mermaid。开发开始时，`task-spec` 创建或更新独立 spec，并在 `task.md` 写入唯一的 Acceptance 与已经存在的 artifact 链接，同时移除被取代的规划字段。技术设计与 plan 仍按门槛创建，并沿用仓库原有命名。仓库已有位置始终优先；bootstrap 不创建 placeholder Milestones 或 tasks。
-
-Milestone `Discovered Work` 不是开发日志。当前 task 的修正留在该 task；已由另一个当前 task 明确接收的问题直接写入该 task。只有当前 Milestone 无法处理或归属未定的工作才全局记录；关闭时将其持久移交，或说明丢弃原因。
-
-在 Milestone convention 中，backlog 是带评分的候选结果活动队列，而不是历史日志。Waypoint 会沿用已有评分体系，否则建议带证据理由的 `0–10` 整体评分。评分前，用户可以选择先讨论产品缺口并补充具体候选；backlog 为空、过少或陈旧时，agent 只做一次非阻塞提醒。用户指定大致的 Milestone task 数量，或者确认 agent 的提议。领先候选只展开到能识别原子 task 的程度：一个 backlog outcome 拆成三个 task，就占三个名额。Task 是包含实现与验证、可由一个 spec 表达的有意义交付单元，而不是孤立动作。时间窗口只是可选外部约束，不是默认要求。候选只有在被 Milestone 持久接收后才移出 backlog；未变化的评分不写复查日志。
-
-## Companion Skills
-
-Waypoint 不复制通用协议。以下可选 companions 均来自 [**mattpocock/skills**](https://github.com/mattpocock/skills)：
-
-| Skill | 用途 | 详情 |
-| --- | --- | --- |
-| `grilling` | 持续澄清和压力测试 | [skills.sh](https://www.skills.sh/mattpocock/skills/grilling) |
-| `research` | 基于第一方来源开展研究 | [skills.sh](https://www.skills.sh/mattpocock/skills/research) |
-| `codebase-design` | 进行 module、interface、seam 和 deep-design 推理 | [skills.sh](https://www.skills.sh/mattpocock/skills/codebase-design) |
-| `tdd` | Red-green-refactor 实现 | [skills.sh](https://www.skills.sh/mattpocock/skills/tdd) |
-| `code-review` | 独立检查规范和实现一致性 | [skills.sh](https://www.skills.sh/mattpocock/skills/code-review) |
-| `handoff` | 跨会话或跨协作者继续工作 | [skills.sh](https://www.skills.sh/mattpocock/skills/handoff) |
-
-### 跨两个仓库安装
-
-Waypoint 和 companions 来自不同来源，因此需要分别运行安装命令。Companions 不是任一 workflow 的硬依赖；只安装自己希望使用的通用协议即可。
-
-一次安装全部六个 companions：
-
-```bash
-npx skills add mattpocock/skills \
-  --skill grilling \
-  --skill research \
-  --skill codebase-design \
-  --skill tdd \
-  --skill code-review \
-  --skill handoff
-```
-
-也可以只保留所需 companion 对应的一个 `--skill` 参数。它们是可选集成，不是 Waypoint 的依赖。
-
-完整安装本地 Waypoint 和全部 companions：
-
-```bash
-npx skills add Adol1111/waypoint --skill '*'
-npx skills add mattpocock/skills \
-  --skill grilling \
-  --skill research \
-  --skill codebase-design \
-  --skill tdd \
-  --skill code-review \
-  --skill handoff
-```
-
-## 非目标与安全边界
-
-Waypoint 不是：
-
-- Superpowers/OpenSpec 风格的强制生命周期；
-- tracker 状态机、label 系统，或要求所有用户采用 Milestone；
-- 固定 review 节奏、每阶段一个 commit，或预设 commit 序列；
-- branch 或 worktree 策略；
-- 访谈、研究、TDD、评审或交接 skills 的替代品。
-
-只有后果重大的收尾操作保留明确确认：merge、删除 branch/worktree，以及丢弃工作。确认必须指出操作和目标；“继续”或“完成”并不足够。
-
-这不意味着让稳定工作长期保持未提交。日常隔离和 cohesive task commit 根据仓库实践、任务风险和用户方向执行，只是不预设固定顺序。
+移除全局安装时增加 `--global`。确认前请检查 CLI 展示的具体目标。
 
 ## 验证
 
-使用 Python 标准库运行聚焦的契约测试：
-
 ```bash
-python3 -m unittest discover -s tests -v
+scripts/validate.sh
 ```
 
-测试覆盖无 `docs/` 的独立调用、两套 bootstrap、轻量 coordinator 推荐、可选 backlog 候选补充、带评分的原子 task Milestone 选择、Milestone 发现项与关闭规则、无需聊天历史的行为 specification 与 technical design 分离、破坏性收尾确认、frontmatter、`agents/openai.yaml`、模板所有权和 fixture 配对。Atomic-skill 契约与安全边界见 [ARCHITECTURE.md](ARCHITECTURE.md)。
+测试会验证 skill metadata、独立使用、模板 ownership、授权边界、Feature/Task 语义和 local tracker 脚本。
 
 ## 发布
 
-Waypoint 使用 [Changesets](https://github.com/changesets/changesets) 收集 release notes，并生成带版本的 GitHub changelog。
-
-当 skill 或 workflow 发生用户可见变化时：
-
-```bash
-pnpm install --frozen-lockfile
-pnpm changeset
-```
-
-将生成的 `.changeset/*.md` fragment 与变更一起提交。它进入 `main` 后，release workflow 会创建或更新 Version PR。合并该 PR 后会更新 `CHANGELOG.md`、删除已消费的 fragments、创建版本 tag，并发布对应的 GitHub Release。仅文档、仅测试或内部维护变更通常不需要 fragment。
+Waypoint 使用 [Changesets](https://github.com/changesets/changesets)。每个用户可见的 skill 修改都需要一个 `.changeset/*.md` fragment。

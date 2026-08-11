@@ -1,0 +1,6 @@
+interface:
+  display_name: "Deprecated: Roadmap Planning"
+  short_description: "Archived; use milestone-planning instead"
+  default_prompt: "This skill is deprecated. Use $milestone-planning for new work."
+policy:
+  allow_implicit_invocation: false

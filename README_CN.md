@@ -169,7 +169,7 @@ npx skills add mattpocock/skills \
 - `task-execution-simple` → Matt `implement`
 - `milestone-workflow` → 共享 Milestone artifacts 与 tracker；不再提供有状态 workflow 替代品
 
-退休 skill 的快照保存在 [`skills/deprecated/`](skills/deprecated/README.md)，只用于迁移参考，不属于当前 active catalog。通用递归式 skill 安装器仍可能展示这些保留 `SKILL.md` 的快照，请勿将它们用于新安装。使用下面一条命令从所有 agent 移除项目级旧安装：
+退休实现已在 `0.3.x` 迁移窗口后删除。[`skills/deprecated/`](skills/deprecated/README.md) 现在只保留替代关系和卸载说明，不再包含可安装 skill。使用下面一条命令从所有 agent 移除项目级旧安装：
 
 ```bash
 npx skills@latest remove roadmap-planning task-spec task-state task-execution-simple milestone-workflow --agent '*'

@@ -1,5 +1,11 @@
 # waypoint-skills
 
+## 0.4.0
+
+### Minor Changes
+
+- Add the requirement-to-Feature-to-completed lifecycle, a generated completed Feature index for local tracking, and safe identity and target resolution through `.waypoint/local.yaml` before user clarification. Remove retired skill implementations after their `0.3.x` migration window while retaining replacement and uninstall guidance.
+
 ## 0.3.0
 
 ### Minor Changes

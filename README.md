@@ -169,7 +169,7 @@ The [`skills` CLI](https://github.com/vercel-labs/skills) supports Codex, Claude
 - `task-execution-simple` → Matt `implement`
 - `milestone-workflow` → shared Milestone artifacts plus tracker; no stateful workflow replacement
 
-The retired snapshots live under [`skills/deprecated/`](skills/deprecated/README.md) for migration reference and are not part of the active catalog. Generic recursive skill installers may still display these canonical snapshots, so do not select them for new installations. Remove project-scoped installed copies from every agent with:
+Retired implementations were removed after the `0.3.x` migration window. [`skills/deprecated/`](skills/deprecated/README.md) now contains replacement and uninstall guidance only, with no installable skills. Remove project-scoped installed copies from every agent with:
 
 ```bash
 npx skills@latest remove roadmap-planning task-spec task-state task-execution-simple milestone-workflow --agent '*'

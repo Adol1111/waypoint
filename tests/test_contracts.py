@@ -394,28 +394,27 @@ class RepositoryContractTests(unittest.TestCase):
         removal = "npx skills@latest remove roadmap-planning task-spec task-state task-execution-simple milestone-workflow --agent '*'"
         self.assertIn(removal, english)
         self.assertIn(removal, chinese)
-        self.assertIn("Generic recursive skill installers", english)
-        self.assertIn("通用递归式 skill 安装器", chinese)
+        self.assertIn("with no installable skills", english)
+        self.assertIn("不再包含可安装 skill", chinese)
         self.assertIn("mattpocock/skills", english)
         self.assertIn("mattpocock/skills", chinese)
 
-    def test_changeset_is_valid_and_minor(self) -> None:
+    def test_release_metadata_is_valid(self) -> None:
         fragments = [
             path
             for path in (ROOT / ".changeset").glob("*.md")
             if path.name != "README.md"
         ]
-        self.assertTrue(fragments)
         texts = [path.read_text(encoding="utf-8") for path in fragments]
         for text in texts:
             self.assertRegex(
                 text, r'\A---\n"waypoint-skills": (patch|minor|major)\n---\n\n\S'
             )
-        self.assertTrue(
-            any('"waypoint-skills": minor' in text for text in texts)
-        )
         package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
         self.assertEqual("waypoint-skills", package["name"])
+        self.assertRegex(package["version"], r"^\d+\.\d+\.\d+$")
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        self.assertIn(f'## {package["version"]}', changelog)
 
     def test_fixture_pairs_remain_complete(self) -> None:
         prompts = {

@@ -223,7 +223,7 @@ def command_register_feature(args: argparse.Namespace, root: Path) -> None:
                 "title": args.title,
                 "summary": args.summary or "",
                 "owner": owner,
-                "milestone": args.milestone,
+                "milestone": args.milestone or "",
                 "status": "planned",
                 "path": str(feature_path.relative_to(root)),
                 "evidence": "",
@@ -388,6 +388,72 @@ def command_transition_feature(args: argparse.Namespace, root: Path) -> None:
     print(f"transitioned Feature {feature_id} to {target} revision {record['revision']}")
 
 
+def command_replan_feature(args: argparse.Namespace, root: Path) -> None:
+    require_initialized(root)
+    feature_id = validate_id(args.feature, "Feature ID")
+    milestone = "" if args.standalone else validate_id(args.to_milestone, "Milestone ID")
+    path = feature_record_path(root, feature_id)
+    with mutation_lock(root):
+        record = parse_flat_yaml(path)
+        require_revision(record, args.expect_revision)
+        status = str(record.get("status"))
+        if status in {"completed", "cancelled"}:
+            raise TrackerError(f"cannot replan a {status} Feature")
+
+        task_updates: list[tuple[Path, dict[str, object]]] = []
+        if args.path is not None:
+            if status != "planned":
+                raise TrackerError(
+                    "cannot move a Feature after execution begins; omit --path and keep its document path stable"
+                )
+            tasks = load_tasks(root, feature_id)
+            non_planned = [
+                str(task["task_id"])
+                for task in tasks
+                if task.get("status") != "planned"
+            ]
+            if non_planned:
+                raise TrackerError(
+                    "cannot move a Feature with active Tasks: " + ", ".join(non_planned)
+                )
+            old_feature = (root / str(record["path"])).resolve()
+            try:
+                old_feature.relative_to(root)
+            except ValueError as error:
+                raise TrackerError(
+                    f"current Feature path must stay inside repository: {record['path']}"
+                ) from error
+            new_feature = repository_relative_path(root, args.path, "Feature path")
+            for task in tasks:
+                old_task = root / str(task["path"])
+                try:
+                    relative_task = old_task.relative_to(old_feature.parent)
+                except ValueError as error:
+                    raise TrackerError(
+                        f"Task path is outside its Feature directory: {task['task_id']}"
+                    ) from error
+                new_task = repository_relative_path(
+                    root,
+                    str(new_feature.parent / relative_task),
+                    f"Task path for {task['task_id']}",
+                )
+                task["path"] = str(new_task.relative_to(root))
+                task["revision"] = int(task["revision"]) + 1
+                task_updates.append(
+                    (task_record_path(root, feature_id, str(task["task_id"])), task)
+                )
+            record["path"] = str(new_feature.relative_to(root))
+
+        record["milestone"] = milestone
+        record["replan_reason"] = args.reason
+        record["revision"] = int(record["revision"]) + 1
+        write_flat_yaml(path, record)
+        for task_path, task in task_updates:
+            write_flat_yaml(task_path, task)
+    destination = milestone or "standalone"
+    print(f"replanned Feature {feature_id} to {destination} revision {record['revision']}")
+
+
 def command_close_feature(args: argparse.Namespace, root: Path) -> None:
     require_initialized(root)
     feature_id = validate_id(args.feature, "Feature ID")
@@ -491,7 +557,7 @@ def render_dashboard(root: Path, config: dict[str, object], features: list[dict[
     path = docs_root / "index.md"
     path.parent.mkdir(parents=True, exist_ok=True)
     current = path.read_text(encoding="utf-8") if path.exists() else "# Work\n"
-    lines = ["| Feature | Owner | Milestone | Status | Tasks |", "| --- | --- | --- | --- | --- |"]
+    grouped: dict[str, list[str]] = {}
     for feature in features:
         if feature.get("status") in {"completed", "cancelled"}:
             continue
@@ -504,7 +570,24 @@ def render_dashboard(root: Path, config: dict[str, object], features: list[dict[
         feature_path = root / str(feature["path"])
         link = os.path.relpath(feature_path, path.parent)
         status = feature_summary(root, feature, tasks)
-        lines.append(f"| [{feature['title']}]({link}) | {feature['owner']} | {feature['milestone']} | {status} | {summary} |")
+        milestone = str(feature.get("milestone") or "Unscheduled")
+        grouped.setdefault(milestone, []).append(
+            f"| [{feature['title']}]({link}) | {feature['owner']} | {status} | {summary} |"
+        )
+    table_header = [
+        "| Feature | Owner | Status | Tasks |",
+        "| --- | --- | --- | --- |",
+    ]
+    if set(grouped) == {"Unscheduled"}:
+        lines = [*table_header, *grouped["Unscheduled"]]
+    else:
+        lines = []
+        for milestone in sorted(grouped):
+            if lines:
+                lines.append("")
+            lines.extend([f"### {milestone}", "", *table_header, *grouped[milestone]])
+    if not grouped:
+        lines = ["No active Features."]
     path.write_text(replace_region(current, DASHBOARD_START, DASHBOARD_END, "Feature dashboard", "\n".join(lines)), encoding="utf-8")
     return path
 
@@ -624,7 +707,7 @@ def build_parser() -> argparse.ArgumentParser:
     register_feature.add_argument("--title", required=True)
     register_feature.add_argument("--summary")
     register_feature.add_argument("--owner", required=True)
-    register_feature.add_argument("--milestone", required=True)
+    register_feature.add_argument("--milestone")
     register_feature.add_argument("--path", required=True)
     register_feature.set_defaults(handler=command_register_feature)
 
@@ -662,6 +745,16 @@ def build_parser() -> argparse.ArgumentParser:
     transition_feature.add_argument("--expect-revision", required=True, type=int)
     transition_feature.add_argument("--reason")
     transition_feature.set_defaults(handler=command_transition_feature)
+
+    replan_feature = subparsers.add_parser("replan-feature")
+    replan_feature.add_argument("--feature", required=True)
+    replan_destination = replan_feature.add_mutually_exclusive_group(required=True)
+    replan_destination.add_argument("--to-milestone")
+    replan_destination.add_argument("--standalone", action="store_true")
+    replan_feature.add_argument("--path")
+    replan_feature.add_argument("--expect-revision", required=True, type=int)
+    replan_feature.add_argument("--reason", required=True)
+    replan_feature.set_defaults(handler=command_replan_feature)
 
     close_feature = subparsers.add_parser("close-feature")
     close_feature.add_argument("--feature", required=True)

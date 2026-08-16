@@ -190,7 +190,7 @@ class RepositoryContractTests(unittest.TestCase):
             "Shared Milestone",
             "Feature — one stable owner",
             "Task — one assignee",
-            "There is no second authoritative global Task directory",
+            "There is no second authoritative copy of a Feature or global Task directory",
         ):
             self.assertIn(phrase, architecture)
         self.assertIn("Default to a frozen Feature batch", milestone)
@@ -215,6 +215,25 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("Child Tasks remain inside their Feature", planning)
         self.assertIn("Cross-Feature dependencies", planning)
         self.assertIn("do not initialize tracking", planning)
+        convention = (
+            skill_dir("docs-workflow-bootstrap")
+            / "references"
+            / "feature-convention.md"
+        ).read_text(encoding="utf-8")
+        for phrase in (
+            "milestones/",
+            "features/",
+            "globally unique stable ID",
+            "Do not duplicate a Feature",
+            "keep the directory stable",
+            "For standalone delivery without Milestones",
+            "Milestones are optional",
+        ):
+            self.assertIn(phrase, convention)
+        bootstrap = (skill_dir("docs-workflow-bootstrap") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Never introduce Milestones merely to choose a directory layout", bootstrap)
 
     def test_requirement_feature_completion_lifecycle_is_single_sourced(self) -> None:
         milestone = (skill_dir("milestone-planning") / "SKILL.md").read_text(
@@ -242,7 +261,8 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("YYYY-MM-DD", completed)
         self.assertIn("completed.md", convention)
         self.assertIn(
-            "`requirements.md` → active Feature → `completed.md`", architecture
+            "`requirements.md` → active Feature → `completed.md`",
+            architecture,
         )
 
     def test_owner_resolution_reads_local_identity_before_asking(self) -> None:
@@ -370,6 +390,10 @@ class RepositoryContractTests(unittest.TestCase):
             "does not assign it",
             "global Feature dashboard",
             "newest-first completed Feature index",
+            "global Feature dashboard grouped by Milestone when present",
+            "flat `.waypoint/tracker/features/` records",
+            "replan-feature",
+            "rebases registered child Task paths and revisions",
         ):
             self.assertIn(phrase, tracker)
         self.assertIn("<!-- waypoint:tasks:start -->", feature_template)
@@ -414,6 +438,10 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("不再包含可安装 skill", chinese)
         self.assertIn("mattpocock/skills", english)
         self.assertIn("mattpocock/skills", chinese)
+        self.assertIn("milestones/<milestone>/", english)
+        self.assertIn("milestones/<milestone>/", chinese)
+        self.assertIn("docs/work/features/<feature>/", english)
+        self.assertIn("docs/work/features/<feature>/", chinese)
 
     def test_release_metadata_is_valid(self) -> None:
         fragments = [

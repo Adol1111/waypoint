@@ -64,28 +64,31 @@ Use $waypoint-workflow to recommend one next skill without doing its work.
 
 数据跟踪到 Task，以支持 assignment 和冲突检测；默认全局 dashboard 仍只展示 Feature。无论 tracker 类型，每个拆分后的 `feature.md` 都包含生成的带链接 Task checklist。
 
-可选 fallback 布局：
+采用 Milestone 时的可选 fallback 布局：
 
 ```text
 docs/work/
 ├── index.md
 ├── requirements.md
 ├── completed.md
-├── milestones/<milestone>.md
-└── features/<feature>/
-    ├── feature.md
-    ├── spec.md
-    ├── design.md
-    ├── task-plan.md
-    ├── plan.md
-    └── tasks/<task>/
-        ├── task.md
-        └── plan.md
+└── milestones/<milestone>/
+    ├── milestone.md
+    └── features/<feature>/
+        ├── feature.md
+        ├── spec.md
+        ├── design.md
+        ├── task-plan.md
+        ├── plan.md
+        └── tasks/<task>/
+            ├── task.md
+            └── plan.md
 ```
+
+不使用 Milestone 时，相同的 Feature 内容直接放在 `docs/work/features/<feature>/`。目录约定由用户选择；Waypoint 不会仅为了目录分组而创建 Milestone。
 
 `feature.md` 是正常入口。拆分后的 Feature 必须共享同一 spec；design、Task plan 和 execution plan 都按门槛创建。
 
-全局生命周期是 `requirements.md` → active Feature → `completed.md`。完整候选物化为 Feature 时从活动需求池移除；部分选择只改写剩余部分。完成后保留 Feature 目录，`completed.md` 不分组、按时间倒序只记录日期、链接和可选的一句结果。
+全局生命周期是 `requirements.md` → active Feature → `completed.md`。完整候选物化为 Feature 时从活动需求池移除；部分选择只改写剩余部分。Feature ID 全局唯一；用户采用 Milestone 时文档按 Milestone 分组，否则保持扁平。完成后保留 Feature 目录，`completed.md` 不分组、按时间倒序只记录日期、链接和可选的一句结果。
 
 `local-work-tracker` 会创建提交 Git 的 `.waypoint/config.yaml`、被忽略的 `.waypoint/local.yaml` 和提交 Git 的运行状态记录。它附带无第三方依赖的身份、revision assignment、状态迁移、校验以及 active/completed 视图生成脚本。其他 Waypoint skill 在需要当前 actor 时直接读取 `.waypoint/local.yaml`；若既没有持久 owner、显式身份，也没有有效本地 actor 可以确定 ownership，就询问用户，而不是从 Git 或执行环境信息猜测。Git 无法在未同步机器间提供强一致 claim，因此本地 fallback 采用单一 coordinator 写入。
 

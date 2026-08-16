@@ -37,15 +37,16 @@ Read [references/local-tracker-format.md](references/local-tracker-format.md) be
 
 ## Register and update exact targets
 
-Use stable IDs independent of tracker issue numbers. Register a Feature only after Milestone selection created its durable Feature record; register a child Task only after the user approved its Task graph.
+Use stable IDs independent of tracker issue numbers. Register a Feature after its durable Feature record exists, whether it is standalone or selected into a Milestone; register a child Task only after the user approved its Task graph.
 
 Every mutation names an exact Feature or Task. Assignment additionally requires the expected record revision. A Task becoming dependency-ready does not assign it, and no executor may claim it merely because it is ready.
 
 Typical operations:
 
 ```bash
-python3 <script> register-feature --id <feature> --title <title> --summary <one-line outcome> --owner <actor> --milestone <milestone> --path <feature.md>
+python3 <script> register-feature --id <feature> --title <title> --summary <one-line outcome> --owner <actor> [--milestone <milestone>] --path <feature.md>
 python3 <script> register-task --feature <feature> --id <task> --title <title> --path <task.md> --blocked-by <task-id>
+python3 <script> replan-feature --feature <feature> [--to-milestone <milestone> | --standalone] [--path <new-feature.md-before-execution-only>] --expect-revision <n> --reason <why>
 python3 <script> assign --feature <feature> --task <task> --assignee <actor> --executor <harness/label> --branch <branch> --expect-revision <n>
 python3 <script> transition --feature <feature> --task <task> --to <state> --expect-revision <n> --reason <why> --branch <branch> --mr <link> --evidence <proof>
 python3 <script> transition-feature --feature <feature> --to <state> --expect-revision <n> --reason <why>
@@ -58,14 +59,16 @@ Task states are `planned`, derived `ready`, `assigned`, `in-progress`, `blocked`
 
 Keep stable assignee responsibility separate from the optional temporary executor. Only the Feature owner may confirm Task-graph or shared-contract changes. Only the Milestone coordinator may change Milestone scope.
 
+Use `replan-feature` only when assigning, removing, or moving a Feature across Milestone scope after the Milestone coordinator approves the change. Select `--to-milestone` or `--standalone`. Before execution, move the whole Feature directory first and pass its new `feature.md` path; the command rebases registered child Task paths and revisions. After execution begins, omit `--path`: the tracker may change grouping while the durable document path stays stable. Standalone Features need no Milestone value.
+
 ## Render human views
 
 Run `render` after each accepted state change. It updates generated marker regions rather than replacing human-authored content:
 
-- a global Feature dashboard in `docs/work/index.md` or the configured work root;
+- a global Feature dashboard grouped by Milestone when present and flat when all Features are standalone; a mixed view places standalone Features under `Unscheduled`;
 - a newest-first completed Feature index in `docs/work/completed.md` containing only date, Feature link, and optional one-line outcome;
 - a linked Task checklist in every split `feature.md`.
 
-The active dashboard excludes completed and cancelled Features and summarizes child Task counts. The completed index receives a Feature only after owner-confirmed closure; the Feature directory remains the detailed record. Feature detail exposes Task status, assignee, executor, blockers, and MR. `[x]` means a Task is verified and safely integrated, never merely coded.
+The active dashboard excludes completed and cancelled Features and summarizes child Task counts. Human-readable Feature documents may be flat or nested under Milestones while flat `.waypoint/tracker/features/` records provide global ID lookup. The completed index receives a Feature only after owner-confirmed closure; the Feature directory remains the detailed record at its stable path. Feature detail exposes Task status, assignee, executor, blockers, and MR. `[x]` means a Task is verified and safely integrated, never merely coded.
 
 Finish after reporting changed records, revisions, generated views, and any synchronization limitation. Do not assign unspecified work, modify Feature contracts, run implementation, merge an MR, or delete branches/worktrees.

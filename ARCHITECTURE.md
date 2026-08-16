@@ -8,13 +8,15 @@ Waypoint preserves the engineering contracts needed when planning and execution 
 
 ```text
 Requirement pool
-  └── Shared Milestone
+  ├── Feature — one stable owner
+  │   └── Task — one assignee, optional temporary executor
+  └── Shared Milestone — optional Feature grouping
       └── Feature — one stable owner
           └── Task — one assignee, optional temporary executor
 ```
 
 - A requirement-pool entry is a lightweight candidate outcome.
-- A Milestone is a shared, normally frozen Feature batch with one coordinator and potentially many Feature owners. It is not a serial queue or Git boundary.
+- A Milestone is an optional shared, normally frozen Feature batch with one coordinator and potentially many Feature owners. It is not a prerequisite for Feature work, a serial queue, or a Git boundary.
 - A Feature is a complete behavioral and final-acceptance boundary with one stable owner.
 - A Task is an optional Feature-owned execution unit used only when work spans people, windows, harnesses, or sessions. Small Features remain unsplit.
 
@@ -60,25 +62,29 @@ Waypoint does not duplicate these protocols.
 
 ## Feature documentation
 
-Artifact ownership is semantic, not filename-prescriptive. The fallback convention is:
+Artifact ownership is semantic, not filename-prescriptive. The Milestone-grouped fallback convention is:
 
 ```text
 docs/work/
 ├── index.md
 ├── requirements.md
 ├── completed.md
-└── features/<feature>/
-    ├── feature.md
-    ├── spec.md
-    ├── design.md
-    ├── task-plan.md
-    ├── plan.md
-    └── tasks/<task>/
-        ├── task.md
-        └── plan.md
+└── milestones/<milestone>/
+    ├── milestone.md
+    └── features/<feature>/
+        ├── feature.md
+        ├── spec.md
+        ├── design.md
+        ├── task-plan.md
+        ├── plan.md
+        └── tasks/<task>/
+            ├── task.md
+            └── plan.md
 ```
 
-`feature.md` is always the human entry point after a Feature is materialized. It owns stable identity, Feature owner, outcome, canonical Acceptance, references, and a generated linked Task checklist when the Feature is split.
+Milestones are optional. Without them, use the same Feature contents under `docs/work/features/<feature>/`. The repository or user chooses one placement convention; no atomic Feature or Task skill requires a Milestone.
+
+`feature.md` is always the human entry point after a Feature is materialized. It owns a globally unique stable identity, Feature owner, outcome, canonical Acceptance, references, and a generated linked Task checklist when the Feature is split. The containing Milestone groups human-readable documents but does not own Feature execution.
 
 Other artifacts are threshold-driven:
 
@@ -87,7 +93,7 @@ Other artifacts are threshold-driven:
 - `task-plan.md` exists only after the user confirms a real child Task graph;
 - `plan.md` exists only when one already-bounded execution unit needs durable strategy or recovery beyond an approach preview.
 
-Child Tasks remain under their Feature. There is no second authoritative global Task directory.
+Child Tasks remain under their Feature. Features are grouped beneath Milestones only when the repository adopts that convention; otherwise they remain in the flat Feature root. There is no second authoritative copy of a Feature or global Task directory. Explicit replanning may move an unstarted Feature and its references atomically; after execution begins, later Milestones link a carried Feature at its stable original path.
 
 The global lifecycle is `requirements.md` → active Feature → `completed.md`. A wholly selected requirement leaves the active pool when its Feature is materialized; partial selection rewrites and rescores only the remainder. Completion removes the Feature from the active view but never moves or deletes its directory. `completed.md` is an ungrouped, newest-first history containing only date, Feature link, and optional one-line outcome.
 

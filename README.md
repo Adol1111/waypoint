@@ -64,28 +64,31 @@ Operational state has one authority:
 
 Tracking reaches Task granularity for assignment and conflict detection, while the default global dashboard remains Feature-first. Every split `feature.md` contains a generated linked Task checklist regardless of tracker choice.
 
-The optional fallback layout is:
+The optional Milestone-grouped fallback layout is:
 
 ```text
 docs/work/
 ├── index.md
 ├── requirements.md
 ├── completed.md
-├── milestones/<milestone>.md
-└── features/<feature>/
-    ├── feature.md
-    ├── spec.md
-    ├── design.md
-    ├── task-plan.md
-    ├── plan.md
-    └── tasks/<task>/
-        ├── task.md
-        └── plan.md
+└── milestones/<milestone>/
+    ├── milestone.md
+    └── features/<feature>/
+        ├── feature.md
+        ├── spec.md
+        ├── design.md
+        ├── task-plan.md
+        ├── plan.md
+        └── tasks/<task>/
+            ├── task.md
+            └── plan.md
 ```
+
+Without Milestones, use the same Feature contents under `docs/work/features/<feature>/`. The user chooses the convention; Waypoint never creates a Milestone only to obtain a directory.
 
 Only `feature.md` is the normal Feature entry point. A split Feature requires one shared spec; design, Task plan, and execution plan remain threshold-driven.
 
-The global lifecycle is `requirements.md` → active Feature → `completed.md`. Materializing a complete candidate removes it from the active requirement pool; partial selection rewrites only the remainder. Completed Feature directories stay in place, while `completed.md` lists date, link, and an optional one-line outcome newest-first without grouping.
+The global lifecycle is `requirements.md` → active Feature → `completed.md`. Materializing a complete candidate removes it from the active requirement pool; partial selection rewrites only the remainder. Feature IDs stay globally unique. Their documents are grouped under Milestones when the user adopts Milestones and stay flat otherwise. Completed Feature directories stay in place, while `completed.md` lists date, link, and an optional one-line outcome newest-first without grouping.
 
 `local-work-tracker` creates committed `.waypoint/config.yaml`, ignored `.waypoint/local.yaml`, and committed operational records. It includes a dependency-free script for identity, revision-checked assignment, state transitions, validation, active and completed views. Other Waypoint skills read `.waypoint/local.yaml` directly when they need the current actor; if no durable owner, explicit identity, or valid local actor resolves ownership, they ask instead of guessing from Git or execution metadata. Because Git cannot provide strong claims across unsynchronized machines, the local fallback uses one coordinator as its writer.
 

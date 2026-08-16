@@ -22,7 +22,15 @@ class LocalWorkTrackerTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.repo = Path(self.temporary.name)
         (self.repo / ".git").mkdir()
-        feature_dir = self.repo / "docs" / "work" / "features" / "agent-foundation"
+        feature_dir = (
+            self.repo
+            / "docs"
+            / "work"
+            / "milestones"
+            / "m1"
+            / "features"
+            / "agent-foundation"
+        )
         (feature_dir / "tasks" / "contract").mkdir(parents=True)
         (feature_dir / "tasks" / "runtime").mkdir(parents=True)
         (feature_dir / "feature.md").write_text(
@@ -76,7 +84,7 @@ class LocalWorkTrackerTests(unittest.TestCase):
             "--milestone",
             "m1",
             "--path",
-            "docs/work/features/agent-foundation/feature.md",
+            "docs/work/milestones/m1/features/agent-foundation/feature.md",
         )
         self.run_tracker(
             "register-task",
@@ -87,7 +95,7 @@ class LocalWorkTrackerTests(unittest.TestCase):
             "--title",
             "Freeze contract",
             "--path",
-            "docs/work/features/agent-foundation/tasks/contract/task.md",
+            "docs/work/milestones/m1/features/agent-foundation/tasks/contract/task.md",
         )
         self.run_tracker(
             "register-task",
@@ -98,7 +106,7 @@ class LocalWorkTrackerTests(unittest.TestCase):
             "--title",
             "Runtime loop",
             "--path",
-            "docs/work/features/agent-foundation/tasks/runtime/task.md",
+            "docs/work/milestones/m1/features/agent-foundation/tasks/runtime/task.md",
             "--blocked-by",
             "contract",
         )
@@ -110,6 +118,85 @@ class LocalWorkTrackerTests(unittest.TestCase):
         self.assertTrue((self.repo / ".waypoint" / "config.yaml").exists())
         whoami = self.run_tracker("whoami").stdout
         self.assertIn('"actor_id": "gaoxiaoyi"', whoami)
+
+    def test_standalone_feature_does_not_require_milestone(self) -> None:
+        self.run_tracker("init", "--actor", "gaoxiaoyi")
+        feature = self.repo / "docs" / "work" / "features" / "standalone" / "feature.md"
+        feature.parent.mkdir(parents=True)
+        feature.write_text("# Standalone\n", encoding="utf-8")
+        self.run_tracker(
+            "register-feature",
+            "--id",
+            "standalone",
+            "--title",
+            "Standalone",
+            "--owner",
+            "gaoxiaoyi",
+            "--path",
+            "docs/work/features/standalone/feature.md",
+        )
+        self.run_tracker("render")
+        self.run_tracker("check")
+        dashboard = (self.repo / "docs" / "work" / "index.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("### Unscheduled", dashboard)
+        self.assertIn("| Feature | Owner | Status | Tasks |", dashboard)
+        self.assertIn("features/standalone/feature.md", dashboard)
+
+    def test_planned_feature_move_rebases_task_paths(self) -> None:
+        self.initialize_and_register()
+        old_directory = (
+            self.repo
+            / "docs"
+            / "work"
+            / "milestones"
+            / "m1"
+            / "features"
+            / "agent-foundation"
+        )
+        new_directory = (
+            self.repo
+            / "docs"
+            / "work"
+            / "milestones"
+            / "m2"
+            / "features"
+            / "agent-foundation"
+        )
+        new_directory.parent.mkdir(parents=True)
+        old_directory.rename(new_directory)
+        self.run_tracker(
+            "replan-feature",
+            "--feature",
+            "agent-foundation",
+            "--to-milestone",
+            "m2",
+            "--path",
+            "docs/work/milestones/m2/features/agent-foundation/feature.md",
+            "--expect-revision",
+            "0",
+            "--reason",
+            "Move the planned Feature",
+        )
+        self.run_tracker("render")
+        self.run_tracker("check")
+
+        task_record = (
+            self.repo
+            / ".waypoint"
+            / "tracker"
+            / "tasks"
+            / "agent-foundation"
+            / "contract.yaml"
+        ).read_text(encoding="utf-8")
+        self.assertIn(
+            'path: "docs/work/milestones/m2/features/agent-foundation/tasks/contract/task.md"',
+            task_record,
+        )
+        self.assertIn("revision: 1", task_record)
+        feature = (new_directory / "feature.md").read_text(encoding="utf-8")
+        self.assertIn("[Freeze contract](tasks/contract/task.md)", feature)
 
     def test_revision_assignment_dependency_and_rendering(self) -> None:
         self.initialize_and_register()
@@ -250,7 +337,14 @@ class LocalWorkTrackerTests(unittest.TestCase):
         self.run_tracker("check")
 
         feature = (
-            self.repo / "docs" / "work" / "features" / "agent-foundation" / "feature.md"
+            self.repo
+            / "docs"
+            / "work"
+            / "milestones"
+            / "m1"
+            / "features"
+            / "agent-foundation"
+            / "feature.md"
         ).read_text(encoding="utf-8")
         dashboard = (self.repo / "docs" / "work" / "index.md").read_text(
             encoding="utf-8"
@@ -265,7 +359,7 @@ class LocalWorkTrackerTests(unittest.TestCase):
         self.assertIn("branch: feature/agent-foundation/runtime", feature)
         self.assertNotIn("Agent Foundation", dashboard)
         self.assertIn(
-            "2026-08-16 — [Agent Foundation](features/agent-foundation/feature.md) — Enable shared agent delivery",
+            "2026-08-16 — [Agent Foundation](milestones/m1/features/agent-foundation/feature.md) — Enable shared agent delivery",
             completed,
         )
 
@@ -282,7 +376,40 @@ class LocalWorkTrackerTests(unittest.TestCase):
             "--milestone",
             "m1",
             "--path",
-            "docs/work/features/agent-foundation/feature.md",
+            "docs/work/milestones/m1/features/agent-foundation/feature.md",
+        )
+        old_directory = (
+            self.repo
+            / "docs"
+            / "work"
+            / "milestones"
+            / "m1"
+            / "features"
+            / "agent-foundation"
+        )
+        new_directory = (
+            self.repo
+            / "docs"
+            / "work"
+            / "milestones"
+            / "m2"
+            / "features"
+            / "agent-foundation"
+        )
+        new_directory.parent.mkdir(parents=True)
+        old_directory.rename(new_directory)
+        self.run_tracker(
+            "replan-feature",
+            "--feature",
+            "agent-foundation",
+            "--to-milestone",
+            "m2",
+            "--path",
+            "docs/work/milestones/m2/features/agent-foundation/feature.md",
+            "--expect-revision",
+            "0",
+            "--reason",
+            "Move before execution",
         )
         self.run_tracker(
             "transition-feature",
@@ -291,13 +418,47 @@ class LocalWorkTrackerTests(unittest.TestCase):
             "--to",
             "in-progress",
             "--expect-revision",
-            "0",
+            "1",
+        )
+        self.run_tracker(
+            "replan-feature",
+            "--feature",
+            "agent-foundation",
+            "--to-milestone",
+            "m3",
+            "--expect-revision",
+            "2",
+            "--reason",
+            "Carry active work without moving it",
+        )
+        self.run_tracker(
+            "replan-feature",
+            "--feature",
+            "agent-foundation",
+            "--standalone",
+            "--expect-revision",
+            "3",
+            "--reason",
+            "Remove it from Milestone scope without moving active work",
         )
         self.run_tracker("render")
         dashboard = (self.repo / "docs" / "work" / "index.md").read_text(
             encoding="utf-8"
         )
+        self.assertNotIn("### m3", dashboard)
+        self.assertNotIn("### Unscheduled", dashboard)
         self.assertIn("in-progress", dashboard)
+        feature_record = (
+            self.repo
+            / ".waypoint"
+            / "tracker"
+            / "features"
+            / "agent-foundation.yaml"
+        ).read_text(encoding="utf-8")
+        self.assertIn(
+            'path: "docs/work/milestones/m2/features/agent-foundation/feature.md"',
+            feature_record,
+        )
 
     def test_completed_index_is_newest_first(self) -> None:
         self.run_tracker("init", "--actor", "gaoxiaoyi")
@@ -312,7 +473,7 @@ class LocalWorkTrackerTests(unittest.TestCase):
             "--milestone",
             "m1",
             "--path",
-            "docs/work/features/agent-foundation/feature.md",
+            "docs/work/milestones/m1/features/agent-foundation/feature.md",
         )
         self.run_tracker(
             "close-feature",
@@ -328,7 +489,16 @@ class LocalWorkTrackerTests(unittest.TestCase):
             "2026-08-15",
         )
 
-        newer = self.repo / "docs" / "work" / "features" / "newer" / "feature.md"
+        newer = (
+            self.repo
+            / "docs"
+            / "work"
+            / "milestones"
+            / "m1"
+            / "features"
+            / "newer"
+            / "feature.md"
+        )
         newer.parent.mkdir(parents=True)
         newer.write_text("# Newer Feature\n", encoding="utf-8")
         self.run_tracker(
@@ -342,7 +512,7 @@ class LocalWorkTrackerTests(unittest.TestCase):
             "--milestone",
             "m1",
             "--path",
-            "docs/work/features/newer/feature.md",
+            "docs/work/milestones/m1/features/newer/feature.md",
         )
         self.run_tracker(
             "close-feature",

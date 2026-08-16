@@ -1,8 +1,9 @@
 # Expected behavior
 
 - It uses the Milestone-managed convention.
-- The task index contains Open Milestones and Completed Milestones.
-- It creates or proposes a backlog destination for concrete deferred work.
+- It proposes `milestones/<milestone>/milestone.md` with Feature directories nested below that Milestone, rather than one project-wide flat Feature directory.
+- Feature IDs remain globally unique and child Tasks remain nested under their Feature.
+- The global active dashboard is grouped by Milestone, while `completed.md` remains a concise chronological index.
 - It may add accepted context and decision locations.
 - It does not invent or create a placeholder Milestone.
-- The convention states that a later confirmed Milestone receives linked, non-empty task-local `task.md` planning handoffs.
+- It does not initialize a tracker or create placeholder Features or Tasks.

@@ -11,7 +11,7 @@ Create only the durable documentation convention the repository will actually us
 
 1. Read repository instructions and existing documentation, ADR, issue, roadmap, Feature, and tracker conventions.
 2. Reuse existing locations. Do not create a parallel `docs/` tree beside a working convention.
-3. Show the exact roots and files that would be created or adapted. Ask the user to confirm before scaffolding.
+3. Determine whether the user wants Milestone-grouped Features or standalone flat Features. Show the exact roots and files that would be created or adapted, then ask the user to confirm before scaffolding. Never introduce Milestones merely to choose a directory layout.
 4. Create no placeholder Milestones, Features, Tasks, specs, designs, plans, or tracker records.
 
 Use [references/feature-convention.md](references/feature-convention.md) only when no stronger local form exists. The same Feature layout works with an external tracker, the optional `local-work-tracker`, or no operational tracker. This setup skill does not choose or initialize a tracker.

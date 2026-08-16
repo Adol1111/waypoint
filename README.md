@@ -24,7 +24,7 @@ Requirement pool
 
 - A shared Milestone is a normally frozen batch of owned Features, not a serial task queue or Git branch.
 - A Feature is the complete behavior and final-acceptance boundary.
-- A small Feature may be implemented directly. Child Tasks exist only when work crosses collaborators, windows, harnesses, or sessions.
+- A small Feature may be implemented directly. Create child Tasks when work is too large for one safe fresh context or needs independent delivery boundaries across collaborators, windows, harnesses, or sessions.
 - Tasks stay under their Feature and carry independent ownership, Acceptance, contracts, blockers, verification, branch, and MR.
 - Git integrates at the smallest safe Feature or Task boundary; Milestone completion never delays push or merge.
 
@@ -70,6 +70,7 @@ The optional fallback layout is:
 docs/work/
 ├── index.md
 ├── requirements.md
+├── completed.md
 ├── milestones/<milestone>.md
 └── features/<feature>/
     ├── feature.md
@@ -84,7 +85,11 @@ docs/work/
 
 Only `feature.md` is the normal Feature entry point. A split Feature requires one shared spec; design, Task plan, and execution plan remain threshold-driven.
 
-`local-work-tracker` creates committed `.waypoint/config.yaml`, ignored `.waypoint/local.yaml`, and committed operational records. It includes a dependency-free script for identity, revision-checked assignment, state transitions, validation, and generated views. Because Git cannot provide strong claims across unsynchronized machines, the local fallback uses one coordinator as its writer.
+The global lifecycle is `requirements.md` → active Feature → `completed.md`. Materializing a complete candidate removes it from the active requirement pool; partial selection rewrites only the remainder. Completed Feature directories stay in place, while `completed.md` lists date, link, and an optional one-line outcome newest-first without grouping.
+
+`local-work-tracker` creates committed `.waypoint/config.yaml`, ignored `.waypoint/local.yaml`, and committed operational records. It includes a dependency-free script for identity, revision-checked assignment, state transitions, validation, active and completed views. Other Waypoint skills read `.waypoint/local.yaml` directly when they need the current actor; if no durable owner, explicit identity, or valid local actor resolves ownership, they ask instead of guessing from Git or execution metadata. Because Git cannot provide strong claims across unsynchronized machines, the local fallback uses one coordinator as its writer.
+
+Identity does not imply a target. A target-specific skill first uses an exact Feature or Task named by the request; otherwise it filters active ownership or assignment by `.waypoint/local.yaml`. It continues only when exactly one target remains and asks when the result is empty or ambiguous. It never selects another actor's work just because it is ready, first, recent, or branch-adjacent.
 
 ## Reuse from Matt Pocock
 

@@ -69,6 +69,8 @@ class LocalWorkTrackerTests(unittest.TestCase):
             "agent-foundation",
             "--title",
             "Agent Foundation",
+            "--summary",
+            "Enable shared agent delivery",
             "--owner",
             "gaoxiaoyi",
             "--milestone",
@@ -241,6 +243,8 @@ class LocalWorkTrackerTests(unittest.TestCase):
             "gaoxiaoyi",
             "--evidence",
             "Feature acceptance and integration passed",
+            "--completed-at",
+            "2026-08-16",
         )
         self.run_tracker("render")
         self.run_tracker("check")
@@ -251,13 +255,19 @@ class LocalWorkTrackerTests(unittest.TestCase):
         dashboard = (self.repo / "docs" / "work" / "index.md").read_text(
             encoding="utf-8"
         )
+        completed = (self.repo / "docs" / "work" / "completed.md").read_text(
+            encoding="utf-8"
+        )
         self.assertIn("Human-owned context.", feature)
         self.assertIn("- [x] [Freeze contract]", feature)
         self.assertIn("- [x] [Runtime loop]", feature)
         self.assertIn("assignee: bob", feature)
         self.assertIn("branch: feature/agent-foundation/runtime", feature)
-        self.assertIn("Agent Foundation", dashboard)
-        self.assertIn("completed", dashboard)
+        self.assertNotIn("Agent Foundation", dashboard)
+        self.assertIn(
+            "2026-08-16 — [Agent Foundation](features/agent-foundation/feature.md) — Enable shared agent delivery",
+            completed,
+        )
 
     def test_unsplit_feature_has_explicit_lifecycle(self) -> None:
         self.run_tracker("init", "--actor", "gaoxiaoyi")
@@ -288,6 +298,73 @@ class LocalWorkTrackerTests(unittest.TestCase):
             encoding="utf-8"
         )
         self.assertIn("in-progress", dashboard)
+
+    def test_completed_index_is_newest_first(self) -> None:
+        self.run_tracker("init", "--actor", "gaoxiaoyi")
+        self.run_tracker(
+            "register-feature",
+            "--id",
+            "agent-foundation",
+            "--title",
+            "Agent Foundation",
+            "--owner",
+            "gaoxiaoyi",
+            "--milestone",
+            "m1",
+            "--path",
+            "docs/work/features/agent-foundation/feature.md",
+        )
+        self.run_tracker(
+            "close-feature",
+            "--feature",
+            "agent-foundation",
+            "--expect-revision",
+            "0",
+            "--confirmed-by",
+            "gaoxiaoyi",
+            "--evidence",
+            "Acceptance passed",
+            "--completed-at",
+            "2026-08-15",
+        )
+
+        newer = self.repo / "docs" / "work" / "features" / "newer" / "feature.md"
+        newer.parent.mkdir(parents=True)
+        newer.write_text("# Newer Feature\n", encoding="utf-8")
+        self.run_tracker(
+            "register-feature",
+            "--id",
+            "newer",
+            "--title",
+            "Newer Feature",
+            "--owner",
+            "gaoxiaoyi",
+            "--milestone",
+            "m1",
+            "--path",
+            "docs/work/features/newer/feature.md",
+        )
+        self.run_tracker(
+            "close-feature",
+            "--feature",
+            "newer",
+            "--expect-revision",
+            "0",
+            "--confirmed-by",
+            "gaoxiaoyi",
+            "--evidence",
+            "Acceptance passed",
+            "--completed-at",
+            "2026-08-16",
+        )
+        self.run_tracker("render")
+
+        completed = (self.repo / "docs" / "work" / "completed.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertLess(
+            completed.index("Newer Feature"), completed.index("Agent Foundation")
+        )
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 ---
 name: docs-workflow-bootstrap
-description: Explicitly scaffold or adapt an optional repository-local Markdown convention for shared Milestones, Feature-owned specifications and designs, and nested child Task contracts. Use only when a team asks Waypoint to initialize human-readable engineering documentation without requiring local tracking or a fixed workflow.
+description: Explicitly scaffold or adapt an optional repository-local Markdown convention for requirement and completion indexes, shared Milestones, Feature-owned specifications and designs, and nested child Task contracts. Use only when a team asks Waypoint to initialize human-readable engineering documentation without requiring local tracking or a fixed workflow.
 ---
 
 # Docs Workflow Bootstrap

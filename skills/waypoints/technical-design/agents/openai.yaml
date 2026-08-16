@@ -1,4 +1,4 @@
 interface:
   display_name: "Technical Design"
   short_description: "Decide material technical choices before coding"
-  default_prompt: "Use $technical-design to decide whether this Feature or Task has a material technical choice and document it only when warranted."
+  default_prompt: "Use $technical-design for the explicitly targeted Feature or Task; ask if no unique current owned or assigned target can be resolved."

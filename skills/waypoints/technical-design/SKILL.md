@@ -1,6 +1,6 @@
 ---
 name: technical-design
-description: Decide and document review-critical technical choices for a Feature or child Task when architecture, ownership, data, state, algorithm, concurrency, security, performance, or verification has materially different plausible approaches or a non-obvious invariant. Straightforward work needs no design artifact.
+description: Decide and document review-critical technical choices for one explicitly targeted or unambiguously current Feature or child Task when architecture, ownership, data, state, algorithm, concurrency, security, performance, or verification has materially different plausible approaches or a non-obvious invariant. Straightforward work needs no design artifact.
 ---
 
 # Technical Design
@@ -24,13 +24,14 @@ Create a design artifact only after at least one concrete question passes this m
 
 ## Work independently
 
-1. Read repository instructions, the Feature or Task contract, relevant code and tests, existing architecture and decision records, and local design conventions.
-2. Separate behavior already fixed by `feature-spec`, repository facts and conventions, mechanically derivable implementation, and concrete questions that still need technical judgment. Apply the materiality gate before creating or updating an artifact.
-3. When at least one question passes, update an existing suitable design artifact or technical-design section when possible. Otherwise propose the smallest Markdown artifact beside its Feature or Task.
-4. Preserve the Feature behavioral contract and child Task ownership. Surface contradictions or missing requirements instead of silently redefining them.
-5. For each included area, make the technical question, chosen approach, rationale, and resulting invariant or consequence reviewable; include alternatives only when they were genuine.
-6. Finish only when every section adds a review-critical implementation choice beyond the Feature/Task contract and repository conventions. Remove assumptions that exist only in chat, repeated requirements, routine mechanics, and code-level detail that carries no durable decision.
-7. Add a design Reference to `feature.md` or the owning `task.md` only after the design artifact exists. Link only the actual repository-native filename and do not create placeholder References.
+1. Resolve one exact Feature or Task before designing. Prefer an ID, link, path, or artifact from the request. Otherwise read `.waypoint/local.yaml` and filter active owned Features or assigned Tasks by `actor_id`. Continue only when exactly one candidate remains; otherwise ask. Never fall back to another actor's work, queue order, recency, Git history, or the current branch.
+2. Read repository instructions, the resolved Feature or Task contract, relevant code and tests, existing architecture and decision records, and local design conventions.
+3. Separate behavior already fixed by `feature-spec`, repository facts and conventions, mechanically derivable implementation, and concrete questions that still need technical judgment. Apply the materiality gate before creating or updating an artifact.
+4. When at least one question passes, update an existing suitable design artifact or technical-design section when possible. Otherwise propose the smallest Markdown artifact beside its Feature or Task.
+5. Preserve the Feature behavioral contract and child Task ownership. Surface contradictions or missing requirements instead of silently redefining them.
+6. For each included area, make the technical question, chosen approach, rationale, and resulting invariant or consequence reviewable; include alternatives only when they were genuine.
+7. Finish only when every section adds a review-critical implementation choice beyond the Feature/Task contract and repository conventions. Remove assumptions that exist only in chat, repeated requirements, routine mechanics, and code-level detail that carries no durable decision.
+8. Add a design Reference to `feature.md` or the owning `task.md` only after the design artifact exists. Link only the actual repository-native filename and do not create placeholder References.
 
 When several executors may implement one Feature, make shared ownership, interfaces, schemas, lifecycle rules, and verification seams stable enough for `task-planning` to split work without letting parallel Tasks redefine them. If the unresolved choice affects observable behavior, return it to `feature-spec` instead of designing around it.
 

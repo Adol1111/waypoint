@@ -9,6 +9,7 @@ import json
 import os
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 
@@ -42,6 +43,8 @@ TRANSITIONS = {
 }
 DASHBOARD_START = "<!-- waypoint:dashboard:start -->"
 DASHBOARD_END = "<!-- waypoint:dashboard:end -->"
+COMPLETED_START = "<!-- waypoint:completed:start -->"
+COMPLETED_END = "<!-- waypoint:completed:end -->"
 TASKS_START = "<!-- waypoint:tasks:start -->"
 TASKS_END = "<!-- waypoint:tasks:end -->"
 
@@ -84,6 +87,16 @@ def write_flat_yaml(path: Path, values: dict[str, object]) -> None:
 def validate_id(value: str, label: str) -> str:
     if not VALID_ID.fullmatch(value):
         raise TrackerError(f"invalid {label} {value!r}; use lowercase letters, digits, ., _, or -")
+    return value
+
+
+def validate_date(value: str, label: str) -> str:
+    try:
+        parsed = date.fromisoformat(value)
+    except ValueError as error:
+        raise TrackerError(f"invalid {label} {value!r}; use YYYY-MM-DD") from error
+    if parsed.isoformat() != value:
+        raise TrackerError(f"invalid {label} {value!r}; use YYYY-MM-DD")
     return value
 
 
@@ -208,6 +221,7 @@ def command_register_feature(args: argparse.Namespace, root: Path) -> None:
                 "version": 1,
                 "feature_id": feature_id,
                 "title": args.title,
+                "summary": args.summary or "",
                 "owner": owner,
                 "milestone": args.milestone,
                 "status": "planned",
@@ -395,6 +409,9 @@ def command_close_feature(args: argparse.Namespace, root: Path) -> None:
             {
                 "status": "completed",
                 "evidence": args.evidence,
+                "completed_at": validate_date(
+                    args.completed_at or date.today().isoformat(), "completion date"
+                ),
                 "revision": int(record["revision"]) + 1,
             }
         )
@@ -476,6 +493,8 @@ def render_dashboard(root: Path, config: dict[str, object], features: list[dict[
     current = path.read_text(encoding="utf-8") if path.exists() else "# Work\n"
     lines = ["| Feature | Owner | Milestone | Status | Tasks |", "| --- | --- | --- | --- | --- |"]
     for feature in features:
+        if feature.get("status") in {"completed", "cancelled"}:
+            continue
         tasks = load_tasks(root, str(feature["feature_id"]))
         counts: dict[str, int] = {}
         for task in tasks:
@@ -490,6 +509,35 @@ def render_dashboard(root: Path, config: dict[str, object], features: list[dict[
     return path
 
 
+def render_completed(root: Path, config: dict[str, object], features: list[dict[str, object]]) -> Path:
+    docs_root = root / str(config.get("docs_root", "docs/work"))
+    path = docs_root / "completed.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    current = path.read_text(encoding="utf-8") if path.exists() else "# Completed Features\n"
+    completed = [feature for feature in features if feature.get("status") == "completed"]
+    completed.sort(
+        key=lambda feature: (
+            validate_date(str(feature.get("completed_at", "")), "completion date"),
+            str(feature.get("feature_id", "")),
+        ),
+        reverse=True,
+    )
+    lines = []
+    for feature in completed:
+        feature_path = root / str(feature["path"])
+        link = os.path.relpath(feature_path, path.parent)
+        entry = f"- {feature['completed_at']} — [{feature['title']}]({link})"
+        if feature.get("summary"):
+            entry += f" — {feature['summary']}"
+        lines.append(entry)
+    body = "\n".join(lines) if lines else "No completed Features yet."
+    path.write_text(
+        replace_region(current, COMPLETED_START, COMPLETED_END, "Timeline", body),
+        encoding="utf-8",
+    )
+    return path
+
+
 def command_render(args: argparse.Namespace, root: Path) -> None:
     config = require_initialized(root)
     features = load_features(root)
@@ -497,7 +545,11 @@ def command_render(args: argparse.Namespace, root: Path) -> None:
         for feature in features:
             render_feature(root, feature, load_tasks(root, str(feature["feature_id"])))
         dashboard = render_dashboard(root, config, features)
-    print(f"rendered {len(features)} Features to {dashboard.relative_to(root)}")
+        completed = render_completed(root, config, features)
+    print(
+        f"rendered {len(features)} Features to {dashboard.relative_to(root)} "
+        f"and {completed.relative_to(root)}"
+    )
 
 
 def command_check(args: argparse.Namespace, root: Path) -> None:
@@ -519,6 +571,11 @@ def command_check(args: argparse.Namespace, root: Path) -> None:
             repository_relative_path(root, str(feature["path"]), "Feature path")
         except TrackerError as error:
             errors.append(str(error))
+        if feature.get("status") == "completed":
+            try:
+                validate_date(str(feature.get("completed_at", "")), "completion date")
+            except TrackerError as error:
+                errors.append(str(error))
     for task in load_tasks(root):
         feature_id = str(task.get("feature_id"))
         task_id = str(task.get("task_id"))
@@ -565,6 +622,7 @@ def build_parser() -> argparse.ArgumentParser:
     register_feature = subparsers.add_parser("register-feature")
     register_feature.add_argument("--id", required=True)
     register_feature.add_argument("--title", required=True)
+    register_feature.add_argument("--summary")
     register_feature.add_argument("--owner", required=True)
     register_feature.add_argument("--milestone", required=True)
     register_feature.add_argument("--path", required=True)
@@ -610,6 +668,7 @@ def build_parser() -> argparse.ArgumentParser:
     close_feature.add_argument("--expect-revision", required=True, type=int)
     close_feature.add_argument("--confirmed-by", required=True)
     close_feature.add_argument("--evidence", required=True)
+    close_feature.add_argument("--completed-at")
     close_feature.set_defaults(handler=command_close_feature)
 
     render = subparsers.add_parser("render")

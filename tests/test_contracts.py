@@ -32,6 +32,7 @@ EXPLICIT_ONLY = SETUP_SKILLS | WORKFLOW_SKILLS | {"task-planning"}
 OWNED_TEMPLATES = {
     "domain-context": {"adr-template.md", "glossary-template.md"},
     "milestone-planning": {
+        "completed-feature-index.md",
         "requirement-pool-template.md",
         "milestone-template.md",
         "feature-handoff-template.md",
@@ -211,6 +212,76 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("Cross-Feature dependencies", planning)
         self.assertIn("do not initialize tracking", planning)
 
+    def test_requirement_feature_completion_lifecycle_is_single_sourced(self) -> None:
+        milestone = (skill_dir("milestone-planning") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        completed = (
+            skill_dir("milestone-planning")
+            / "references"
+            / "completed-feature-index.md"
+        ).read_text(encoding="utf-8")
+        convention = (
+            skill_dir("docs-workflow-bootstrap")
+            / "references"
+            / "feature-convention.md"
+        ).read_text(encoding="utf-8")
+        architecture = (ROOT / "ARCHITECTURE.md").read_text(encoding="utf-8")
+        for phrase in (
+            "Remove a wholly selected requirement",
+            "rewrite the unselected remainder",
+            "keep the Feature directory",
+            "ungrouped and newest-first",
+            "history, not a second live-status authority",
+        ):
+            self.assertIn(phrase, milestone)
+        self.assertIn("YYYY-MM-DD", completed)
+        self.assertIn("completed.md", convention)
+        self.assertIn(
+            "`requirements.md` → active Feature → `completed.md`", architecture
+        )
+
+    def test_owner_resolution_reads_local_identity_before_asking(self) -> None:
+        for name in ("milestone-planning", "feature-spec", "task-planning"):
+            with self.subTest(skill=name):
+                text = (skill_dir(name) / "SKILL.md").read_text(encoding="utf-8")
+                self.assertIn("`.waypoint/local.yaml`", text)
+                self.assertIn("ask the user", text)
+                self.assertIn("Git author metadata", text)
+        planning = (skill_dir("task-planning") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("too large for one safe fresh context", planning)
+        self.assertIn("one owner executes them sequentially", planning)
+
+    def test_target_specific_skills_resolve_owned_work_without_guessing(self) -> None:
+        for name in (
+            "feature-spec",
+            "task-planning",
+            "technical-design",
+            "implementation-plan",
+        ):
+            with self.subTest(skill=name):
+                text = (skill_dir(name) / "SKILL.md").read_text(encoding="utf-8")
+                metadata = read_frontmatter(skill_dir(name) / "SKILL.md")
+                self.assertIn("explicitly targeted or unambiguously current", metadata["description"])
+                self.assertIn("`.waypoint/local.yaml`", text)
+                self.assertIn("exactly one candidate remains", text)
+                self.assertIn("current branch", text)
+        spec = (skill_dir("feature-spec") / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("Never fall back to another owner's Feature", spec)
+        expected = (
+            FIXTURES_ROOT / "v2" / "new-window-owned-target.expected.md"
+        ).read_text(encoding="utf-8")
+        for phrase in (
+            "resolve the current actor as `alice`",
+            "select `F-alice` only",
+            "Never select `F-bob`",
+            "zero or multiple active Features",
+            "Git history or the current branch",
+        ):
+            self.assertIn(phrase, expected)
+
     def test_feature_spec_and_design_are_distinct_and_threshold_driven(self) -> None:
         spec = (skill_dir("feature-spec") / "SKILL.md").read_text(encoding="utf-8")
         design = (skill_dir("technical-design") / "SKILL.md").read_text(
@@ -284,6 +355,7 @@ class RepositoryContractTests(unittest.TestCase):
             "expected record revision",
             "does not assign it",
             "global Feature dashboard",
+            "newest-first completed Feature index",
         ):
             self.assertIn(phrase, tracker)
         self.assertIn("<!-- waypoint:tasks:start -->", feature_template)
@@ -330,9 +402,20 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("mattpocock/skills", chinese)
 
     def test_changeset_is_valid_and_minor(self) -> None:
-        path = ROOT / ".changeset" / "risk-driven-design.md"
-        text = path.read_text(encoding="utf-8")
-        self.assertRegex(text, r'\A---\n"waypoint-skills": minor\n---\n\n\S')
+        fragments = [
+            path
+            for path in (ROOT / ".changeset").glob("*.md")
+            if path.name != "README.md"
+        ]
+        self.assertTrue(fragments)
+        texts = [path.read_text(encoding="utf-8") for path in fragments]
+        for text in texts:
+            self.assertRegex(
+                text, r'\A---\n"waypoint-skills": (patch|minor|major)\n---\n\n\S'
+            )
+        self.assertTrue(
+            any('"waypoint-skills": minor' in text for text in texts)
+        )
         package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
         self.assertEqual("waypoint-skills", package["name"])
 

@@ -1,6 +1,6 @@
 ---
 name: task-planning
-description: Adapt an agreed Feature into a user-confirmed graph of independent, agent-ready child Tasks. Use when a Feature spans people, agent windows, harnesses, or sessions and needs durable ownership surfaces, blockers, shared contracts, safe parallelism, and independently verifiable handoffs before implementation.
+description: Adapt one explicitly targeted or unambiguously current agreed Feature into a user-confirmed graph of independent, agent-ready child Tasks. Use when a Feature is too large for one safe fresh context or spans people, agent windows, harnesses, or sessions and needs durable delivery boundaries, ownership surfaces, blockers, shared contracts, safe parallelism, or independently verifiable handoffs before implementation.
 ---
 
 # Task Planning
@@ -9,12 +9,17 @@ Apply Matt Pocock's `to-tickets` tracer-bullet principles to Waypoint's Feature-
 
 ## Establish readiness
 
-1. Read repository instructions, `feature.md`, the agreed Feature specification, relevant technical design and code, tracker conventions, and current Feature state.
-2. Require one stable Feature owner and a tracker-neutral Feature ID.
-3. Stop when unresolved behavior would change Task Acceptance, or when an unresolved technical choice would change ownership, shared contracts, ordering, or safe parallelism. Return the decision to `feature-spec` or `technical-design`.
-4. Treat approved behavior, public contracts, and repository facts as fixed inputs. Do not redesign them while splitting work.
+1. Resolve one exact Feature before planning:
+   - prefer an ID, link, path, or name from the request;
+   - otherwise resolve the actor from the request, `.waypoint/local.yaml`, or external tracker, then filter active Features by owner;
+   - continue only when exactly one candidate remains; otherwise ask.
+   Never fall back to another owner's Feature, list order, recency, Git history, or the current branch.
+2. Read repository instructions, that `feature.md`, the agreed Feature specification, relevant technical design and code, tracker conventions, and current Feature state.
+3. Require one stable Feature owner and a tracker-neutral Feature ID. Reuse the owner from `feature.md` or the configured external tracker, then an explicit current request. If still missing, read `.waypoint/local.yaml` directly when it exists and use its `actor_id` as the current actor; if that does not establish the Feature owner, ask the user. Never infer ownership from Git author metadata, harness, machine, branch, or window identity.
+4. Stop when unresolved behavior would change Task Acceptance, or when an unresolved technical choice would change ownership, shared contracts, ordering, or safe parallelism. Return the decision to `feature-spec` or `technical-design`.
+5. Treat approved behavior, public contracts, and repository facts as fixed inputs. Do not redesign them while splitting work.
 
-A small Feature that one executor can safely complete in one fresh context does not need child Tasks. Do not require a tracker, Milestone, docs tree, branch convention, or implementation plan.
+A small Feature that one executor can safely complete in one fresh context does not need child Tasks. A large Feature may need child Tasks even when one owner executes them sequentially: split when the results can be independently assigned, retained, reviewed, verified, or safely integrated. Keep inseparable coding steps inside one Task or its optional `implementation-plan`. Do not require a tracker, Milestone, docs tree, branch convention, or implementation plan.
 
 ## Draft tracer-bullet Tasks
 

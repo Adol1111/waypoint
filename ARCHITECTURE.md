@@ -27,12 +27,12 @@ skills/
 ├── waypoints/   # independently useful durable engineering outcomes
 ├── workflows/   # explicitly invoked read-only navigation
 ├── setup/       # opt-in repository scaffolding or local tracking
-└── deprecated/  # archived migration snapshots, excluded from the active catalog
+└── deprecated/  # replacement and uninstall guidance only
 ```
 
 Every atomic skill remains usable without a workflow, bootstrap, fixed docs tree, tracker, branch policy, or commit sequence. A template is a fallback owned only by the skill that creates that artifact.
 
-Deprecated snapshots preserve the last published shape for migration reference. They are not routed, bundled, or treated as active artifact owners.
+The deprecated directory contains no installable skills. It preserves replacement and uninstall guidance after retired implementations leave the repository.
 
 ## Artifact ownership
 

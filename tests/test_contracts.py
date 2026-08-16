@@ -20,13 +20,7 @@ WAYPOINT_SKILLS = {
 SETUP_SKILLS = {"docs-workflow-bootstrap", "local-work-tracker"}
 WORKFLOW_SKILLS = {"waypoint-workflow"}
 ALL_SKILLS = WAYPOINT_SKILLS | SETUP_SKILLS | WORKFLOW_SKILLS
-DEPRECATED_SKILLS = {
-    "roadmap-planning",
-    "task-spec",
-    "task-state",
-    "task-execution-simple",
-    "milestone-workflow",
-}
+DEPRECATED_SKILLS: set[str] = set()
 EXPLICIT_ONLY = SETUP_SKILLS | WORKFLOW_SKILLS | {"task-planning"}
 
 OWNED_TEMPLATES = {
@@ -117,7 +111,7 @@ class RepositoryContractTests(unittest.TestCase):
             actual,
         )
 
-    def test_deprecated_skills_are_archived_outside_active_catalog(self) -> None:
+    def test_deprecated_directory_contains_guidance_not_skills(self) -> None:
         directory = SKILLS_ROOT / "deprecated"
         archived = {
             child.name
@@ -126,22 +120,16 @@ class RepositoryContractTests(unittest.TestCase):
         }
         self.assertEqual(DEPRECATED_SKILLS, archived)
         readme = (directory / "README.md").read_text(encoding="utf-8")
-        for name in DEPRECATED_SKILLS:
-            with self.subTest(skill=name):
-                self.assertIn(name, readme)
-                skill_text = (directory / name / "SKILL.md").read_text(
-                    encoding="utf-8"
-                )
-                self.assertIn("Deprecated snapshot", skill_text)
-                metadata = read_frontmatter(directory / name / "SKILL.md")
-                self.assertEqual(name, metadata["name"])
-                self.assertTrue(metadata["description"].startswith("Deprecated"))
-                _, policy = read_openai_metadata(
-                    directory / name / "agents" / "openai.yaml"
-                )
-                self.assertFalse(policy.get("allow_implicit_invocation", True))
+        for name in (
+            "roadmap-planning",
+            "task-spec",
+            "task-state",
+            "task-execution-simple",
+            "milestone-workflow",
+        ):
+            self.assertIn(name, readme)
+        self.assertIn("contains no installable skills", readme)
         self.assertIn("npx skills@latest remove", readme)
-        self.assertIn("generic recursive skill installer", readme)
 
     def test_frontmatter_is_minimal_and_complete(self) -> None:
         for name in sorted(ALL_SKILLS):

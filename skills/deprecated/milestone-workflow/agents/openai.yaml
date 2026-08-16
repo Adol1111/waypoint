@@ -1,6 +1,0 @@
-interface:
-  display_name: "Deprecated: Milestone Workflow"
-  short_description: "Archived; use milestone planning instead"
-  default_prompt: "This skill is deprecated. Use $milestone-planning and $waypoint-workflow for new work."
-policy:
-  allow_implicit_invocation: false

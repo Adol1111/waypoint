@@ -35,7 +35,7 @@ Requirement pool
 | [`domain-context`](skills/waypoints/domain-context/SKILL.md) | Preserve durable terminology and qualifying ADRs |
 | [`milestone-planning`](skills/waypoints/milestone-planning/SKILL.md) | Select or replan a shared, owned Feature batch from the requirement pool |
 | [`feature-spec`](skills/waypoints/feature-spec/SKILL.md) | Capture one Feature's observable behavior without prescribing implementation |
-| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Decide only review-critical technical choices and shared contracts |
+| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Decide review-critical technical choices and express material schemas, states, and interactions concretely |
 | [`task-planning`](skills/waypoints/task-planning/SKILL.md) | Adapt a Feature into a user-confirmed graph of independent child Tasks |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | Make one Feature or Task's risky internal execution strategy durable |
 | [`local-work-tracker`](skills/setup/local-work-tracker/SKILL.md) | Explicitly initialize or update local tracking when no external tracker exists |

@@ -281,6 +281,16 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("missing design file", design)
         self.assertIn("materiality gate", design)
         self.assertIn("return it to `feature-spec`", design)
+        for phrase in (
+            "primary and foreign keys",
+            "migration or compatibility implications",
+            "state table or state diagram",
+            "sequence diagram",
+            "component or container diagram",
+            "Mermaid diagrams",
+            "diagram is not decoration",
+        ):
+            self.assertIn(phrase, design)
 
     def test_task_planning_adapts_matt_and_stops_before_assignment(self) -> None:
         planning = (skill_dir("task-planning") / "SKILL.md").read_text(

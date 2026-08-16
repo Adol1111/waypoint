@@ -53,13 +53,22 @@ Include only the material parts of:
 - verification seams and observability needed to prove the design;
 - unresolved technical decisions and their impact.
 
+Choose the representation that makes each material decision easiest to review. Do not omit concrete structure merely to keep the artifact short:
+
+- For relational persistence changes, show the affected tables, columns and logical types, primary and foreign keys, nullability or defaults, uniqueness and other constraints, indexes justified by access paths, ownership, and migration or compatibility implications. Use a compact table or DDL-like sketch; do not invent physical details the decision does not require.
+- For document, event, cache, or wire formats, show the durable shape, identity and versioning rules, producer and consumer ownership, compatibility expectations, and representative payloads when they clarify the contract.
+- For lifecycle-heavy behavior, use a state table or state diagram that names valid transitions, guards, side effects, terminal states, and invalid transitions.
+- For branching business or system logic, use a flowchart when prose would hide decisions, loops, or failure paths.
+- For interaction across actors, modules, services, transactions, queues, or time boundaries, use a sequence diagram that exposes ordering, sync versus async calls, retries, acknowledgements, timeouts, and failure ownership when material.
+- For architecture or deployment boundaries, use a component or container diagram when ownership, direction of dependency, trust boundary, or data movement is otherwise hard to see.
+
+Prefer repository-native text, Markdown tables, and Mermaid diagrams when supported so the source remains diffable and reviewable. Give every diagram a short title, use the same names as the surrounding design, and explain the decision or invariant it proves; a diagram is not decoration and does not replace necessary constraints. If the repository cannot render Mermaid, use its established diagram format or a compact text diagram.
+
 Leave routine parsing, validation, normalization, mapping, and ordinary control flow to implementation. Record them only when their semantics define a durable contract or affect identity, persistence, invalidation, compatibility, security, or another material invariant. Describe that invariant and chosen representation, not the obvious processing steps.
 
 Prefer stable module, interface, contract, and data concepts over file-by-file instructions. Mention an existing path only when it locates an important owner; do not prescribe private functions, line edits, complete code, commit steps, or mechanical test cases.
 
-Use pseudocode, a state table, or a compact schema only when it expresses a non-trivial algorithm, protocol, invariant, or transition more precisely than prose. Keep it decision-rich rather than executable.
-
-Use a flow or interaction diagram when branches, cycles, concurrency, multiple actors, or cross-boundary relationships are materially easier to review visually. Express a single linear sequence as concise prose or a short ordered list.
+Use pseudocode only when it expresses a non-trivial algorithm or protocol more precisely than prose. Keep it decision-rich rather than executable. Express a single linear sequence as concise prose or a short ordered list.
 
 Keep delivery ordering out unless it is part of the technical invariant. When sequencing, migration, compatibility, rollout, or rollback risk is material, leave the design stable and use `implementation-plan` separately.
 

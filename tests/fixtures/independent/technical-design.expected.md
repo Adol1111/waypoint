@@ -7,6 +7,9 @@
 - Every included section adds a review-critical implementation choice, material invariant, or consequence beyond the specification and repository conventions.
 - It captures current constraints, module and interface responsibilities, data ownership and lifecycle, execution and side-effect boundaries, concurrency and failure mechanisms, genuine alternatives and rationale, and verification seams.
 - It leaves mechanically derivable parsing, validation, normalization, mapping, and ordinary control flow to implementation unless their semantics define a material invariant.
-- It uses pseudocode or a compact schema only if a non-trivial invariant or transition needs more precision than prose.
-- It uses a flow or interaction diagram only when branching, cycles, concurrency, multiple actors, or cross-boundary relationships benefit materially; a single linear sequence stays prose or a short ordered list.
+- For material relational persistence changes, it records tables, logical column types, keys, nullability/defaults, constraints, justified indexes, ownership, and migration or compatibility impact.
+- For material durable payloads, it records shape, identity/versioning, producer/consumer ownership, compatibility, and a representative payload when useful.
+- It uses a state table or diagram for material lifecycle transitions, a flowchart for branching or failure paths, a sequence diagram for cross-boundary ordering and async behavior, and a component diagram for ownership or dependency boundaries.
+- Diagrams use repository-native diffable formats such as Mermaid when supported, consistent terminology, and an explanation of the decision or invariant they clarify; a single linear sequence stays prose or a short ordered list.
+- It uses pseudocode only if a non-trivial algorithm or protocol needs more precision than prose.
 - It does not expand into complete code, file-by-file edits, commits, or migration sequencing.

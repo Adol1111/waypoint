@@ -20,11 +20,11 @@ Status: <planned | in-progress | blocked | completed | cancelled>
 
 ## Cross-Feature dependencies
 
-<Only Feature-to-Feature or public-contract dependencies. Omit when none.>
+<When at least one real blocking edge exists, add a Mermaid `flowchart LR` DAG. Include every required Feature as a node, including disconnected Features that can proceed in parallel. Draw prerequisite --> dependent, label non-obvious edges with the public contract or completion gate, and add concise notes only when the graph cannot explain the dependency. Omit this section when no blocking edges exist.>
 
 ## Scope changes
 
 - <Added, removed, or transferred Feature and explicit reason. Omit until replanning occurs.>
 ```
 
-The Feature list is frozen after confirmation except through explicit replanning. Do not add child Tasks, current focus, branch policy, commit state, or a serial execution cursor.
+The Feature list and DAG are frozen after confirmation except through explicit replanning. The DAG contains stable Feature dependencies only: never derive edges from priority, list order, shared ownership, delivery preference, or internal Tasks, and never encode live status in it. Do not add child Tasks, current focus, branch policy, commit state, or a serial execution cursor.

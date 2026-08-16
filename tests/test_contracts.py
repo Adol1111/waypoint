@@ -196,6 +196,22 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("Default to a frozen Feature batch", milestone)
         self.assertIn("does not contain child Tasks", milestone)
         self.assertIn("never initialize tracking implicitly", milestone)
+        for phrase in (
+            "Feature dependency DAG",
+            "every required Feature as a node",
+            "prerequisite to dependent",
+            "disconnected nodes make parallel work visible",
+            "not a serial execution queue",
+            "encode live status in the DAG",
+        ):
+            self.assertIn(phrase, milestone)
+        milestone_template = (
+            skill_dir("milestone-planning")
+            / "references"
+            / "milestone-template.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("Mermaid `flowchart LR` DAG", milestone_template)
+        self.assertIn("prerequisite --> dependent", milestone_template)
         self.assertIn("Child Tasks remain inside their Feature", planning)
         self.assertIn("Cross-Feature dependencies", planning)
         self.assertIn("do not initialize tracking", planning)

@@ -39,7 +39,7 @@ The deprecated directory contains no installable skills. It preserves replacemen
 | Artifact or action | Owner |
 | --- | --- |
 | Glossary entry and qualifying ADR | `domain-context` |
-| Requirement-pool scoring and consumption, shared Milestone Feature selection, ownership, cross-Feature dependencies, replanning, and completed-Feature index | `milestone-planning` |
+| Requirement-pool scoring and consumption, shared Milestone Feature selection, ownership, Feature dependency DAG, replanning, and completed-Feature index | `milestone-planning` |
 | Feature behavioral contract | `feature-spec` |
 | Review-critical technical choices and shared implementation contracts | `technical-design` |
 | Feature-owned child Task DAG, ownership surfaces, blockers, safe parallelism, and integration proof | `task-planning` |

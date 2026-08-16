@@ -39,6 +39,8 @@ Default to a frozen Feature batch. Do not refill it when one contributor becomes
 
 Present the proposed Feature set, owners, dependencies, exit coverage, and material selection tradeoffs before publishing. Iterate until the user confirms the batch. Approval authorizes the Milestone artifact and Feature handoffs only, never Feature planning or implementation.
 
+After the batch is confirmed, add a Feature dependency DAG when at least one real blocking edge exists. Include every required Feature as a node so disconnected nodes make parallel work visible. Draw each edge from prerequisite to dependent and label it with the public contract or completion gate when the relationship is not obvious. Never infer an edge from priority, list order, shared ownership, delivery preference, or an internal Task. The graph explains stable coordination structure; it is not a serial execution queue or a live status board.
+
 ## Publish without duplicating state
 
 Follow the repository's tracker and documentation convention. Otherwise use:
@@ -46,7 +48,7 @@ Follow the repository's tracker and documentation convention. Otherwise use:
 - [references/milestone-template.md](references/milestone-template.md) for the shared Milestone;
 - [references/feature-handoff-template.md](references/feature-handoff-template.md) for each selected Feature.
 
-Keep live status, assignment, and priority in the external tracker when one exists. When the user has explicitly initialized `local-work-tracker`, use its records instead. With neither tracker, keep only the confirmed Feature owners and planning facts in repository-native Markdown, report the collaboration limitation, and never initialize tracking implicitly. Keep the Milestone as a compact linked Feature view; do not copy child Task state into it.
+Keep live status, assignment, and priority in the external tracker when one exists. When the user has explicitly initialized `local-work-tracker`, use its records instead. With neither tracker, keep only the confirmed Feature owners and planning facts in repository-native Markdown, report the collaboration limitation, and never initialize tracking implicitly. Keep the Milestone as a compact linked Feature view; do not copy child Task state into it or encode live status in the DAG. Update the graph only when explicit replanning changes a Feature or a cross-Feature dependency.
 
 Feature status may summarize child Tasks, but only the Feature owner can confirm Feature completion after Feature Acceptance and integration proof pass. The Milestone completes only when exit criteria and required Features are complete and the coordinator confirms closure.
 

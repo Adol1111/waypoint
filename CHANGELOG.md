@@ -1,5 +1,11 @@
 # waypoint-skills
 
+## 0.4.1
+
+### Patch Changes
+
+- [#16](https://github.com/Adol1111/waypoint/pull/16) [`520087b`](https://github.com/Adol1111/waypoint/commit/520087bd38a4fecddb654c2418f4c3fc7933845a) Thanks [@Adol1111](https://github.com/Adol1111)! - Require technical designs to use concrete schemas, state models, and diffable flow, sequence, or architecture diagrams when those representations materially improve reviewability.
+
 ## 0.4.0
 
 ### Minor Changes

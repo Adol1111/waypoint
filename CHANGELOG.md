@@ -1,5 +1,11 @@
 # waypoint-skills
 
+## 0.5.0
+
+### Minor Changes
+
+- [#20](https://github.com/Adol1111/waypoint/pull/20) [`1cd0892`](https://github.com/Adol1111/waypoint/commit/1cd08929a3f6ab65ac5c7f606e193f1c030a0c61) Thanks [@Adol1111](https://github.com/Adol1111)! - Let users choose flat standalone Features or Milestone-grouped Feature documentation, keep Feature IDs globally unique, adapt the local active dashboard to that choice, and preserve stable paths once execution begins.
+
 ## 0.4.2
 
 ### Patch Changes

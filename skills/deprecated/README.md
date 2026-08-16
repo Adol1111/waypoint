@@ -1,8 +1,6 @@
 # Deprecated Skills
 
-Archived snapshots of retired Waypoint skills. They remain here for migration reference and are not part of the active catalog, recommended installation bundles, routing, validation contract, or current architecture.
-
-These snapshots retain canonical `SKILL.md` files so humans can inspect their last published form. A generic recursive skill installer may therefore still display them; each snapshot is marked deprecated and disables implicit invocation, and should not be selected for a new installation.
+Retired skill implementations were archived for the `0.3.x` migration window and removed in `0.4.0`. This directory now keeps only replacement and uninstall guidance; it contains no installable skills.
 
 | Deprecated skill | Replacement |
 | --- | --- |

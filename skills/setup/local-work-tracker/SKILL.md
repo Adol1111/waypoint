@@ -29,7 +29,9 @@ Initialization creates:
 - exact ignore rules for local identity and lock files;
 - a generated dashboard region in the configured work index only after `render`.
 
-Do not store credentials, tokens, cookies, or passwords. Resolve identity in this order: explicit current request, `.waypoint/local.yaml`, authenticated external-tracker identity, then user clarification. Never silently treat Git author metadata as Feature ownership.
+Do not store credentials, tokens, cookies, or passwords. Resolve identity in this order: an owner already recorded in the target artifact or configured tracker, explicit current request, `.waypoint/local.yaml`, authenticated external-tracker identity, then user clarification. Other Waypoint skills may read `.waypoint/local.yaml` directly without invoking this skill; its `actor_id` identifies the current actor, not automatic ownership of unrelated work. Never silently treat Git author metadata, a harness, machine, branch, or window label as Feature ownership.
+
+When a Feature or Task target is omitted, use `actor_id` to filter active Feature records by `owner` and Task records by `assignee`. Continue only when exactly one candidate matches the requested operation. Ask the user when none or several match. Never fall through to another actor's work, a ready queue head, recent edits, Git history, or branch naming.
 
 Read [references/local-tracker-format.md](references/local-tracker-format.md) before changing generated paths or record semantics.
 
@@ -42,12 +44,12 @@ Every mutation names an exact Feature or Task. Assignment additionally requires 
 Typical operations:
 
 ```bash
-python3 <script> register-feature --id <feature> --title <title> --owner <actor> --milestone <milestone> --path <feature.md>
+python3 <script> register-feature --id <feature> --title <title> --summary <one-line outcome> --owner <actor> --milestone <milestone> --path <feature.md>
 python3 <script> register-task --feature <feature> --id <task> --title <title> --path <task.md> --blocked-by <task-id>
 python3 <script> assign --feature <feature> --task <task> --assignee <actor> --executor <harness/label> --branch <branch> --expect-revision <n>
 python3 <script> transition --feature <feature> --task <task> --to <state> --expect-revision <n> --reason <why> --branch <branch> --mr <link> --evidence <proof>
 python3 <script> transition-feature --feature <feature> --to <state> --expect-revision <n> --reason <why>
-python3 <script> close-feature --feature <feature> --expect-revision <n> --confirmed-by <Feature owner> --evidence <Feature acceptance and integration proof>
+python3 <script> close-feature --feature <feature> --expect-revision <n> --confirmed-by <Feature owner> --evidence <Feature acceptance and integration proof> --completed-at <YYYY-MM-DD>
 python3 <script> render
 python3 <script> check
 ```
@@ -61,8 +63,9 @@ Keep stable assignee responsibility separate from the optional temporary executo
 Run `render` after each accepted state change. It updates generated marker regions rather than replacing human-authored content:
 
 - a global Feature dashboard in `docs/work/index.md` or the configured work root;
+- a newest-first completed Feature index in `docs/work/completed.md` containing only date, Feature link, and optional one-line outcome;
 - a linked Task checklist in every split `feature.md`.
 
-The dashboard shows Features by default and summarizes child Task counts. Feature detail exposes Task status, assignee, executor, blockers, and MR. `[x]` means a Task is verified and safely integrated, never merely coded.
+The active dashboard excludes completed and cancelled Features and summarizes child Task counts. The completed index receives a Feature only after owner-confirmed closure; the Feature directory remains the detailed record. Feature detail exposes Task status, assignee, executor, blockers, and MR. `[x]` means a Task is verified and safely integrated, never merely coded.
 
 Finish after reporting changed records, revisions, generated views, and any synchronization limitation. Do not assign unspecified work, modify Feature contracts, run implementation, merge an MR, or delete branches/worktrees.

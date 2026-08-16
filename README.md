@@ -24,7 +24,7 @@ Requirement pool
 
 - A shared Milestone is a normally frozen batch of owned Features, not a serial task queue or Git branch.
 - A Feature is the complete behavior and final-acceptance boundary.
-- A small Feature may be implemented directly. Child Tasks exist only when work crosses collaborators, windows, harnesses, or sessions.
+- A small Feature may be implemented directly. Create child Tasks when work is too large for one safe fresh context or needs independent delivery boundaries across collaborators, windows, harnesses, or sessions.
 - Tasks stay under their Feature and carry independent ownership, Acceptance, contracts, blockers, verification, branch, and MR.
 - Git integrates at the smallest safe Feature or Task boundary; Milestone completion never delays push or merge.
 
@@ -35,7 +35,7 @@ Requirement pool
 | [`domain-context`](skills/waypoints/domain-context/SKILL.md) | Preserve durable terminology and qualifying ADRs |
 | [`milestone-planning`](skills/waypoints/milestone-planning/SKILL.md) | Select or replan a shared, owned Feature batch from the requirement pool |
 | [`feature-spec`](skills/waypoints/feature-spec/SKILL.md) | Capture one Feature's observable behavior without prescribing implementation |
-| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Decide only review-critical technical choices and shared contracts |
+| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Decide review-critical technical choices and express material schemas, states, and interactions concretely |
 | [`task-planning`](skills/waypoints/task-planning/SKILL.md) | Adapt a Feature into a user-confirmed graph of independent child Tasks |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | Make one Feature or Task's risky internal execution strategy durable |
 | [`local-work-tracker`](skills/setup/local-work-tracker/SKILL.md) | Explicitly initialize or update local tracking when no external tracker exists |
@@ -70,6 +70,7 @@ The optional fallback layout is:
 docs/work/
 ├── index.md
 ├── requirements.md
+├── completed.md
 ├── milestones/<milestone>.md
 └── features/<feature>/
     ├── feature.md
@@ -84,7 +85,11 @@ docs/work/
 
 Only `feature.md` is the normal Feature entry point. A split Feature requires one shared spec; design, Task plan, and execution plan remain threshold-driven.
 
-`local-work-tracker` creates committed `.waypoint/config.yaml`, ignored `.waypoint/local.yaml`, and committed operational records. It includes a dependency-free script for identity, revision-checked assignment, state transitions, validation, and generated views. Because Git cannot provide strong claims across unsynchronized machines, the local fallback uses one coordinator as its writer.
+The global lifecycle is `requirements.md` → active Feature → `completed.md`. Materializing a complete candidate removes it from the active requirement pool; partial selection rewrites only the remainder. Completed Feature directories stay in place, while `completed.md` lists date, link, and an optional one-line outcome newest-first without grouping.
+
+`local-work-tracker` creates committed `.waypoint/config.yaml`, ignored `.waypoint/local.yaml`, and committed operational records. It includes a dependency-free script for identity, revision-checked assignment, state transitions, validation, active and completed views. Other Waypoint skills read `.waypoint/local.yaml` directly when they need the current actor; if no durable owner, explicit identity, or valid local actor resolves ownership, they ask instead of guessing from Git or execution metadata. Because Git cannot provide strong claims across unsynchronized machines, the local fallback uses one coordinator as its writer.
+
+Identity does not imply a target. A target-specific skill first uses an exact Feature or Task named by the request; otherwise it filters active ownership or assignment by `.waypoint/local.yaml`. It continues only when exactly one target remains and asks when the result is empty or ambiguous. It never selects another actor's work just because it is ready, first, recent, or branch-adjacent.
 
 ## Reuse from Matt Pocock
 
@@ -164,7 +169,7 @@ The [`skills` CLI](https://github.com/vercel-labs/skills) supports Codex, Claude
 - `task-execution-simple` → Matt `implement`
 - `milestone-workflow` → shared Milestone artifacts plus tracker; no stateful workflow replacement
 
-The retired snapshots live under [`skills/deprecated/`](skills/deprecated/README.md) for migration reference and are not part of the active catalog. Generic recursive skill installers may still display these canonical snapshots, so do not select them for new installations. Remove project-scoped installed copies from every agent with:
+Retired implementations were removed after the `0.3.x` migration window. [`skills/deprecated/`](skills/deprecated/README.md) now contains replacement and uninstall guidance only, with no installable skills. Remove project-scoped installed copies from every agent with:
 
 ```bash
 npx skills@latest remove roadmap-planning task-spec task-state task-execution-simple milestone-workflow --agent '*'

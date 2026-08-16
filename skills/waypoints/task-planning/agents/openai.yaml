@@ -1,6 +1,6 @@
 interface:
   display_name: "Task Planning"
   short_description: "Split a feature into independent agent-ready tasks"
-  default_prompt: "Use $task-planning to create a human-reviewable task DAG for this feature and stop before implementation."
+  default_prompt: "Use $task-planning for the explicitly targeted Feature; if no unique current owned Feature can be resolved, ask before creating its task DAG."
 policy:
   allow_implicit_invocation: false

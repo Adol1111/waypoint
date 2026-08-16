@@ -1,4 +1,4 @@
 interface:
   display_name: "Implementation Plan"
   short_description: "Make execution strategy reviewable and recoverable"
-  default_prompt: "Use $implementation-plan when this Feature or Task needs a durable execution strategy beyond a concise approach preview."
+  default_prompt: "Use $implementation-plan for the explicitly targeted Feature or Task; ask if no unique current owned or assigned target can be resolved."

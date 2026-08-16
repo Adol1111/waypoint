@@ -20,18 +20,13 @@ WAYPOINT_SKILLS = {
 SETUP_SKILLS = {"docs-workflow-bootstrap", "local-work-tracker"}
 WORKFLOW_SKILLS = {"waypoint-workflow"}
 ALL_SKILLS = WAYPOINT_SKILLS | SETUP_SKILLS | WORKFLOW_SKILLS
-DEPRECATED_SKILLS = {
-    "roadmap-planning",
-    "task-spec",
-    "task-state",
-    "task-execution-simple",
-    "milestone-workflow",
-}
+DEPRECATED_SKILLS: set[str] = set()
 EXPLICIT_ONLY = SETUP_SKILLS | WORKFLOW_SKILLS | {"task-planning"}
 
 OWNED_TEMPLATES = {
     "domain-context": {"adr-template.md", "glossary-template.md"},
     "milestone-planning": {
+        "completed-feature-index.md",
         "requirement-pool-template.md",
         "milestone-template.md",
         "feature-handoff-template.md",
@@ -116,7 +111,7 @@ class RepositoryContractTests(unittest.TestCase):
             actual,
         )
 
-    def test_deprecated_skills_are_archived_outside_active_catalog(self) -> None:
+    def test_deprecated_directory_contains_guidance_not_skills(self) -> None:
         directory = SKILLS_ROOT / "deprecated"
         archived = {
             child.name
@@ -125,22 +120,16 @@ class RepositoryContractTests(unittest.TestCase):
         }
         self.assertEqual(DEPRECATED_SKILLS, archived)
         readme = (directory / "README.md").read_text(encoding="utf-8")
-        for name in DEPRECATED_SKILLS:
-            with self.subTest(skill=name):
-                self.assertIn(name, readme)
-                skill_text = (directory / name / "SKILL.md").read_text(
-                    encoding="utf-8"
-                )
-                self.assertIn("Deprecated snapshot", skill_text)
-                metadata = read_frontmatter(directory / name / "SKILL.md")
-                self.assertEqual(name, metadata["name"])
-                self.assertTrue(metadata["description"].startswith("Deprecated"))
-                _, policy = read_openai_metadata(
-                    directory / name / "agents" / "openai.yaml"
-                )
-                self.assertFalse(policy.get("allow_implicit_invocation", True))
+        for name in (
+            "roadmap-planning",
+            "task-spec",
+            "task-state",
+            "task-execution-simple",
+            "milestone-workflow",
+        ):
+            self.assertIn(name, readme)
+        self.assertIn("contains no installable skills", readme)
         self.assertIn("npx skills@latest remove", readme)
-        self.assertIn("generic recursive skill installer", readme)
 
     def test_frontmatter_is_minimal_and_complete(self) -> None:
         for name in sorted(ALL_SKILLS):
@@ -211,6 +200,76 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("Cross-Feature dependencies", planning)
         self.assertIn("do not initialize tracking", planning)
 
+    def test_requirement_feature_completion_lifecycle_is_single_sourced(self) -> None:
+        milestone = (skill_dir("milestone-planning") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        completed = (
+            skill_dir("milestone-planning")
+            / "references"
+            / "completed-feature-index.md"
+        ).read_text(encoding="utf-8")
+        convention = (
+            skill_dir("docs-workflow-bootstrap")
+            / "references"
+            / "feature-convention.md"
+        ).read_text(encoding="utf-8")
+        architecture = (ROOT / "ARCHITECTURE.md").read_text(encoding="utf-8")
+        for phrase in (
+            "Remove a wholly selected requirement",
+            "rewrite the unselected remainder",
+            "keep the Feature directory",
+            "ungrouped and newest-first",
+            "history, not a second live-status authority",
+        ):
+            self.assertIn(phrase, milestone)
+        self.assertIn("YYYY-MM-DD", completed)
+        self.assertIn("completed.md", convention)
+        self.assertIn(
+            "`requirements.md` → active Feature → `completed.md`", architecture
+        )
+
+    def test_owner_resolution_reads_local_identity_before_asking(self) -> None:
+        for name in ("milestone-planning", "feature-spec", "task-planning"):
+            with self.subTest(skill=name):
+                text = (skill_dir(name) / "SKILL.md").read_text(encoding="utf-8")
+                self.assertIn("`.waypoint/local.yaml`", text)
+                self.assertIn("ask the user", text)
+                self.assertIn("Git author metadata", text)
+        planning = (skill_dir("task-planning") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("too large for one safe fresh context", planning)
+        self.assertIn("one owner executes them sequentially", planning)
+
+    def test_target_specific_skills_resolve_owned_work_without_guessing(self) -> None:
+        for name in (
+            "feature-spec",
+            "task-planning",
+            "technical-design",
+            "implementation-plan",
+        ):
+            with self.subTest(skill=name):
+                text = (skill_dir(name) / "SKILL.md").read_text(encoding="utf-8")
+                metadata = read_frontmatter(skill_dir(name) / "SKILL.md")
+                self.assertIn("explicitly targeted or unambiguously current", metadata["description"])
+                self.assertIn("`.waypoint/local.yaml`", text)
+                self.assertIn("exactly one candidate remains", text)
+                self.assertIn("current branch", text)
+        spec = (skill_dir("feature-spec") / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("Never fall back to another owner's Feature", spec)
+        expected = (
+            FIXTURES_ROOT / "v2" / "new-window-owned-target.expected.md"
+        ).read_text(encoding="utf-8")
+        for phrase in (
+            "resolve the current actor as `alice`",
+            "select `F-alice` only",
+            "Never select `F-bob`",
+            "zero or multiple active Features",
+            "Git history or the current branch",
+        ):
+            self.assertIn(phrase, expected)
+
     def test_feature_spec_and_design_are_distinct_and_threshold_driven(self) -> None:
         spec = (skill_dir("feature-spec") / "SKILL.md").read_text(encoding="utf-8")
         design = (skill_dir("technical-design") / "SKILL.md").read_text(
@@ -222,6 +281,16 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("missing design file", design)
         self.assertIn("materiality gate", design)
         self.assertIn("return it to `feature-spec`", design)
+        for phrase in (
+            "primary and foreign keys",
+            "migration or compatibility implications",
+            "state table or state diagram",
+            "sequence diagram",
+            "component or container diagram",
+            "Mermaid diagrams",
+            "diagram is not decoration",
+        ):
+            self.assertIn(phrase, design)
 
     def test_task_planning_adapts_matt_and_stops_before_assignment(self) -> None:
         planning = (skill_dir("task-planning") / "SKILL.md").read_text(
@@ -284,6 +353,7 @@ class RepositoryContractTests(unittest.TestCase):
             "expected record revision",
             "does not assign it",
             "global Feature dashboard",
+            "newest-first completed Feature index",
         ):
             self.assertIn(phrase, tracker)
         self.assertIn("<!-- waypoint:tasks:start -->", feature_template)
@@ -324,17 +394,27 @@ class RepositoryContractTests(unittest.TestCase):
         removal = "npx skills@latest remove roadmap-planning task-spec task-state task-execution-simple milestone-workflow --agent '*'"
         self.assertIn(removal, english)
         self.assertIn(removal, chinese)
-        self.assertIn("Generic recursive skill installers", english)
-        self.assertIn("通用递归式 skill 安装器", chinese)
+        self.assertIn("with no installable skills", english)
+        self.assertIn("不再包含可安装 skill", chinese)
         self.assertIn("mattpocock/skills", english)
         self.assertIn("mattpocock/skills", chinese)
 
-    def test_changeset_is_valid_and_minor(self) -> None:
-        path = ROOT / ".changeset" / "risk-driven-design.md"
-        text = path.read_text(encoding="utf-8")
-        self.assertRegex(text, r'\A---\n"waypoint-skills": minor\n---\n\n\S')
+    def test_release_metadata_is_valid(self) -> None:
+        fragments = [
+            path
+            for path in (ROOT / ".changeset").glob("*.md")
+            if path.name != "README.md"
+        ]
+        texts = [path.read_text(encoding="utf-8") for path in fragments]
+        for text in texts:
+            self.assertRegex(
+                text, r'\A---\n"waypoint-skills": (patch|minor|major)\n---\n\n\S'
+            )
         package = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))
         self.assertEqual("waypoint-skills", package["name"])
+        self.assertRegex(package["version"], r"^\d+\.\d+\.\d+$")
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        self.assertIn(f'## {package["version"]}', changelog)
 
     def test_fixture_pairs_remain_complete(self) -> None:
         prompts = {

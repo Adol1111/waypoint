@@ -24,7 +24,7 @@ Waypoint 在 Matt Pocock 的澄清、实现、评审和 handoff skills 外围补
 
 - 共享 Milestone 是默认冻结的 Feature 批次，不是串行 Task 队列或 Git 分支。
 - Feature 是完整行为与最终验收边界。
-- 小 Feature 可以直接实现；只有跨协作者、窗口、harness 或 session 时才创建子 Task。
+- 小 Feature 可以直接实现；当工作大到无法在一个安全 fresh context 内完成，或需要跨协作者、窗口、harness、session 建立独立交付边界时，再创建子 Task。
 - Task 嵌入所属 Feature，并拥有独立 ownership、Acceptance、契约、blocker、验证、分支和 MR。
 - Git 按最小安全 Feature/Task 边界集成；不会等 Milestone 完成才 push 或 merge。
 
@@ -35,7 +35,7 @@ Waypoint 在 Matt Pocock 的澄清、实现、评审和 handoff skills 外围补
 | [`domain-context`](skills/waypoints/domain-context/SKILL.md) | 保存持久术语和符合门槛的 ADR |
 | [`milestone-planning`](skills/waypoints/milestone-planning/SKILL.md) | 从需求池选择或重规划共享、已分配 owner 的 Feature 批次 |
 | [`feature-spec`](skills/waypoints/feature-spec/SKILL.md) | 记录一个 Feature 的可观察行为，不规定实现 |
-| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | 只决定需要评审的重大技术选择和共享契约 |
+| [`technical-design`](skills/waypoints/technical-design/SKILL.md) | 决定需评审的重大技术选择，并具体表达关键表结构、状态与交互 |
 | [`task-planning`](skills/waypoints/task-planning/SKILL.md) | 把 Feature 适配成经用户确认的独立子 Task 图 |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | 持久化一个 Feature/Task 内部的高风险执行策略 |
 | [`local-work-tracker`](skills/setup/local-work-tracker/SKILL.md) | 没有外部 tracker 时，显式初始化或更新本地 tracker |
@@ -70,6 +70,7 @@ Use $waypoint-workflow to recommend one next skill without doing its work.
 docs/work/
 ├── index.md
 ├── requirements.md
+├── completed.md
 ├── milestones/<milestone>.md
 └── features/<feature>/
     ├── feature.md
@@ -84,7 +85,11 @@ docs/work/
 
 `feature.md` 是正常入口。拆分后的 Feature 必须共享同一 spec；design、Task plan 和 execution plan 都按门槛创建。
 
-`local-work-tracker` 会创建提交 Git 的 `.waypoint/config.yaml`、被忽略的 `.waypoint/local.yaml` 和提交 Git 的运行状态记录。它附带无第三方依赖的身份、revision assignment、状态迁移、校验和视图生成脚本。Git 无法在未同步机器间提供强一致 claim，因此本地 fallback 采用单一 coordinator 写入。
+全局生命周期是 `requirements.md` → active Feature → `completed.md`。完整候选物化为 Feature 时从活动需求池移除；部分选择只改写剩余部分。完成后保留 Feature 目录，`completed.md` 不分组、按时间倒序只记录日期、链接和可选的一句结果。
+
+`local-work-tracker` 会创建提交 Git 的 `.waypoint/config.yaml`、被忽略的 `.waypoint/local.yaml` 和提交 Git 的运行状态记录。它附带无第三方依赖的身份、revision assignment、状态迁移、校验以及 active/completed 视图生成脚本。其他 Waypoint skill 在需要当前 actor 时直接读取 `.waypoint/local.yaml`；若既没有持久 owner、显式身份，也没有有效本地 actor 可以确定 ownership，就询问用户，而不是从 Git 或执行环境信息猜测。Git 无法在未同步机器间提供强一致 claim，因此本地 fallback 采用单一 coordinator 写入。
+
+身份不等于目标。操作具体对象的 skill 优先使用请求明确指定的 Feature/Task；没有指定时，才按 `.waypoint/local.yaml` 过滤当前 actor 拥有或被分配的 active work。只有恰好一个候选时才能继续；零个或多个都要询问，不能因为别人的任务 ready、排第一、最近修改或看似匹配当前分支就自动选中。
 
 ## 直接复用 Matt Pocock
 
@@ -164,7 +169,7 @@ npx skills add mattpocock/skills \
 - `task-execution-simple` → Matt `implement`
 - `milestone-workflow` → 共享 Milestone artifacts 与 tracker；不再提供有状态 workflow 替代品
 
-退休 skill 的快照保存在 [`skills/deprecated/`](skills/deprecated/README.md)，只用于迁移参考，不属于当前 active catalog。通用递归式 skill 安装器仍可能展示这些保留 `SKILL.md` 的快照，请勿将它们用于新安装。使用下面一条命令从所有 agent 移除项目级旧安装：
+退休实现已在 `0.3.x` 迁移窗口后删除。[`skills/deprecated/`](skills/deprecated/README.md) 现在只保留替代关系和卸载说明，不再包含可安装 skill。使用下面一条命令从所有 agent 移除项目级旧安装：
 
 ```bash
 npx skills@latest remove roadmap-planning task-spec task-state task-execution-simple milestone-workflow --agent '*'

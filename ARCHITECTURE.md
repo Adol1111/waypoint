@@ -27,19 +27,19 @@ skills/
 ├── waypoints/   # independently useful durable engineering outcomes
 ├── workflows/   # explicitly invoked read-only navigation
 ├── setup/       # opt-in repository scaffolding or local tracking
-└── deprecated/  # archived migration snapshots, excluded from the active catalog
+└── deprecated/  # replacement and uninstall guidance only
 ```
 
 Every atomic skill remains usable without a workflow, bootstrap, fixed docs tree, tracker, branch policy, or commit sequence. A template is a fallback owned only by the skill that creates that artifact.
 
-Deprecated snapshots preserve the last published shape for migration reference. They are not routed, bundled, or treated as active artifact owners.
+The deprecated directory contains no installable skills. It preserves replacement and uninstall guidance after retired implementations leave the repository.
 
 ## Artifact ownership
 
 | Artifact or action | Owner |
 | --- | --- |
 | Glossary entry and qualifying ADR | `domain-context` |
-| Requirement-pool scoring, shared Milestone Feature selection, ownership, cross-Feature dependencies, and replanning | `milestone-planning` |
+| Requirement-pool scoring and consumption, shared Milestone Feature selection, ownership, cross-Feature dependencies, replanning, and completed-Feature index | `milestone-planning` |
 | Feature behavioral contract | `feature-spec` |
 | Review-critical technical choices and shared implementation contracts | `technical-design` |
 | Feature-owned child Task DAG, ownership surfaces, blockers, safe parallelism, and integration proof | `task-planning` |
@@ -63,15 +63,19 @@ Waypoint does not duplicate these protocols.
 Artifact ownership is semantic, not filename-prescriptive. The fallback convention is:
 
 ```text
-docs/work/features/<feature>/
-├── feature.md
-├── spec.md
-├── design.md
-├── task-plan.md
-├── plan.md
-└── tasks/<task>/
-    ├── task.md
-    └── plan.md
+docs/work/
+├── index.md
+├── requirements.md
+├── completed.md
+└── features/<feature>/
+    ├── feature.md
+    ├── spec.md
+    ├── design.md
+    ├── task-plan.md
+    ├── plan.md
+    └── tasks/<task>/
+        ├── task.md
+        └── plan.md
 ```
 
 `feature.md` is always the human entry point after a Feature is materialized. It owns stable identity, Feature owner, outcome, canonical Acceptance, references, and a generated linked Task checklist when the Feature is split.
@@ -84,6 +88,8 @@ Other artifacts are threshold-driven:
 - `plan.md` exists only when one already-bounded execution unit needs durable strategy or recovery beyond an approach preview.
 
 Child Tasks remain under their Feature. There is no second authoritative global Task directory.
+
+The global lifecycle is `requirements.md` → active Feature → `completed.md`. A wholly selected requirement leaves the active pool when its Feature is materialized; partial selection rewrites and rescores only the remainder. Completion removes the Feature from the active view but never moves or deletes its directory. `completed.md` is an ungrouped, newest-first history containing only date, Feature link, and optional one-line outcome.
 
 ## Tracking model
 
@@ -105,7 +111,9 @@ The local fallback uses committed shared configuration and ignored machine-local
 .waypoint/tracker/        # committed operational records
 ```
 
-Identity resolution is explicit request, local configuration, authenticated external identity, then user clarification. Git author metadata is never silently treated as ownership. The local tracker uses one coordinator as writer and does not claim strong consistency across unsynchronized machines or worktrees.
+Resolve ownership from the target artifact or configured tracker, explicit request, `.waypoint/local.yaml`, authenticated external identity, then user clarification. Atomic skills read `.waypoint/local.yaml` directly when present; they do not require `local-work-tracker` to be invoked. Its `actor_id` identifies the current actor only. Git author metadata, harness, machine, branch, and temporary window labels are never silently treated as ownership. The local tracker uses one coordinator as writer and does not claim strong consistency across unsynchronized machines or worktrees.
+
+Target resolution is separate from identity resolution. Prefer an exact ID, link, path, or artifact from the current request. When it is omitted, filter active Feature ownership and Task assignment by the resolved current actor. Proceed only for exactly one matching target; ask when zero or multiple targets remain. Never choose another actor's work, the first ready or unchecked item, recent edits, Git history, or branch naming merely to keep moving.
 
 ## Git integration
 

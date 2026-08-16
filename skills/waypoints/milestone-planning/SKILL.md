@@ -1,6 +1,6 @@
 ---
 name: milestone-planning
-description: Select or revise a shared Milestone as a frozen batch of owned Features from a requirement pool. Use for backlog scoring, shared iteration or release scope, Feature ownership, cross-Feature dependencies, exit coverage, or explicit Milestone replanning; never decompose Feature Tasks or drive implementation.
+description: Select or revise a shared Milestone as a frozen batch of owned Features from a requirement pool, and reconcile completed Features into a concise global history. Use for backlog scoring, shared iteration or release scope, Feature ownership, cross-Feature dependencies, exit coverage, completion indexing, or explicit Milestone replanning; never decompose Feature Tasks or drive implementation.
 ---
 
 # Milestone Planning
@@ -15,6 +15,12 @@ Turn requirement candidates into a shared, reviewable Feature commitment without
 4. Score Feature candidates, not their future Tasks. Keep hard dependencies separate from priority.
 
 Use [references/requirement-pool-template.md](references/requirement-pool-template.md) only when no stronger pool or tracker convention exists.
+
+Consume a selected candidate only after its Feature record is durable. Remove a wholly selected requirement from the active pool in the same change that materializes the Feature. For partial selection, materialize the selected outcome, rewrite the unselected remainder as a bounded candidate, and rescore it. Never keep the same full outcome authoritative in both the requirement pool and a Feature.
+
+## Resolve stable actors
+
+Reuse an owner or coordinator already recorded in the Feature, Milestone, or configured external tracker. Otherwise use an identity explicitly supplied by the current request. If the current actor is still needed, read `.waypoint/local.yaml` directly when it exists, even when `local-work-tracker` was not invoked or installed, and use its `actor_id` as the current actor identity. If the file is absent, invalid, or does not answer which participant should own the work, ask the user. Never infer ownership from Git author metadata, a harness, machine, branch, or temporary window label.
 
 ## Select a shared Feature batch
 
@@ -44,7 +50,13 @@ Keep live status, assignment, and priority in the external tracker when one exis
 
 Feature status may summarize child Tasks, but only the Feature owner can confirm Feature completion after Feature Acceptance and integration proof pass. The Milestone completes only when exit criteria and required Features are complete and the coordinator confirms closure.
 
-Finish after reporting planned, blocked, and dependency-ready Features. Do not invoke Feature specification, Task planning, or implementation.
+## Reconcile completed Features
+
+After the Feature owner confirms Acceptance and integration proof, keep the Feature directory as the durable detailed record, remove it from the active Feature view, and add one entry to the repository's completed-Feature index. Use [references/completed-feature-index.md](references/completed-feature-index.md) only when no stronger convention exists.
+
+Keep the index ungrouped and newest-first. Record only the completion date, Feature link, and an optional one-sentence outcome. Do not copy owner, Tasks, MR, verification, or Milestone detail. The index is history, not a second live-status authority. With an external tracker, follow its accepted completion event; with `local-work-tracker`, let its coordinator render the entry. Otherwise the Milestone coordinator is the single writer so parallel Feature branches do not contend on one global file.
+
+Finish after reporting planned, blocked, dependency-ready, and newly reconciled completed Features. Do not invoke Feature specification, Task planning, or implementation.
 
 ## Companion skills
 

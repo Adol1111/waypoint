@@ -1,4 +1,4 @@
 interface:
   display_name: "Milestone Planning"
-  short_description: "Select a shared, owned feature batch"
-  default_prompt: "Use $milestone-planning to select a shared Milestone of owned Features from the requirement pool."
+  short_description: "Plan milestones and reconcile completed features"
+  default_prompt: "Use $milestone-planning to select or replan a shared Milestone of owned Features, or reconcile completed Feature history."

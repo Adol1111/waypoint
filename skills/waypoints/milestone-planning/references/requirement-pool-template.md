@@ -18,3 +18,5 @@ Use only when no stronger backlog or tracker convention exists. Keep candidates 
 ```
 
 Do not pre-create detailed specifications, designs, or Tasks for unselected candidates.
+
+When a candidate becomes a durable Feature, remove the selected outcome from this active pool. If selection is partial, rewrite and rescore only the unselected remainder. Never duplicate the same full outcome in both this pool and a Feature.

@@ -1,6 +1,6 @@
 ---
 name: implementation-plan
-description: Create or revise a durable implementation plan when the user wants to review execution before coding, work must remain recoverable across multiple meaningful slices or collaborators, or sequencing, migration, compatibility, rollout, rollback, or cross-module coordination creates real risk. Capture strategy, change map, stable slices, constraints, and final verification without prescribing commits.
+description: Create or revise a durable implementation plan for one explicitly targeted or unambiguously current Feature or Task when the user wants to review execution before coding, work must remain recoverable across multiple meaningful slices or collaborators, or sequencing, migration, compatibility, rollout, rollback, or cross-module coordination creates real risk. Capture strategy, change map, stable slices, constraints, and final verification without prescribing commits.
 ---
 
 # Implementation Plan
@@ -25,12 +25,13 @@ If none applies, return a concise approach preview covering change surface, exec
 
 ## Work independently
 
-1. Read repository instructions, the assigned Feature or Task, Feature spec, any relevant technical design, relevant code, and existing plan conventions.
-2. Identify which material trigger requires durable planning. Update an existing plan when it fits; otherwise propose the smallest Markdown artifact beside its Feature or Task.
-3. Preserve the spec's scope and the technical design's choices; surface contradictions rather than adding requirements or redesigning the solution.
-4. Capture the execution strategy, change map, ordered slices, constraints, rollback or containment, and final verification.
-5. Make clear why the order matters and what stable state follows each slice.
-6. Add a plan Reference to `feature.md` or the owning `task.md` only after the plan artifact exists. Link only the actual repository-native filename and do not create placeholder References.
+1. Resolve one exact assigned Feature or Task before planning. Prefer an ID, link, path, or artifact from the request. Otherwise read `.waypoint/local.yaml` and filter active owned Features or assigned Tasks by `actor_id`. Continue only when exactly one candidate remains; otherwise ask. Never fall back to another actor's work, queue order, recency, Git history, or the current branch.
+2. Read repository instructions, the resolved Feature or Task, Feature spec, any relevant technical design, relevant code, and existing plan conventions.
+3. Identify which material trigger requires durable planning. Update an existing plan when it fits; otherwise propose the smallest Markdown artifact beside its Feature or Task.
+4. Preserve the spec's scope and the technical design's choices; surface contradictions rather than adding requirements or redesigning the solution.
+5. Capture the execution strategy, change map, ordered slices, constraints, rollback or containment, and final verification.
+6. Make clear why the order matters and what stable state follows each slice.
+7. Add a plan Reference to `feature.md` or the owning `task.md` only after the plan artifact exists. Link only the actual repository-native filename and do not create placeholder References.
 
 Do not require a fixed docs tree, branch convention, workflow stage, review pause, or commit sequence. Never prescribe one commit per slice.
 

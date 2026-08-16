@@ -1,5 +1,11 @@
 # waypoint-skills
 
+## 0.4.2
+
+### Patch Changes
+
+- [#18](https://github.com/Adol1111/waypoint/pull/18) [`e07f777`](https://github.com/Adol1111/waypoint/commit/e07f7772204430f65dde7132e53d1f5a7f0b779c) Thanks [@Adol1111](https://github.com/Adol1111)! - Add an optional Milestone-level Feature dependency DAG that makes blocking edges and parallel-ready Features reviewable without duplicating live tracker state.
+
 ## 0.4.1
 
 ### Patch Changes

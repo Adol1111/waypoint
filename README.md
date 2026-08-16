@@ -33,7 +33,7 @@ Requirement pool
 | Skill | Use it to |
 | --- | --- |
 | [`domain-context`](skills/waypoints/domain-context/SKILL.md) | Preserve durable terminology and qualifying ADRs |
-| [`milestone-planning`](skills/waypoints/milestone-planning/SKILL.md) | Select or replan a shared, owned Feature batch from the requirement pool |
+| [`milestone-planning`](skills/waypoints/milestone-planning/SKILL.md) | Select or replan a shared, owned Feature batch and its dependency DAG |
 | [`feature-spec`](skills/waypoints/feature-spec/SKILL.md) | Capture one Feature's observable behavior without prescribing implementation |
 | [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Decide review-critical technical choices and express material schemas, states, and interactions concretely |
 | [`task-planning`](skills/waypoints/task-planning/SKILL.md) | Adapt a Feature into a user-confirmed graph of independent child Tasks |

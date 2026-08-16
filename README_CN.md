@@ -33,7 +33,7 @@ Waypoint 在 Matt Pocock 的澄清、实现、评审和 handoff skills 外围补
 | Skill | 用途 |
 | --- | --- |
 | [`domain-context`](skills/waypoints/domain-context/SKILL.md) | 保存持久术语和符合门槛的 ADR |
-| [`milestone-planning`](skills/waypoints/milestone-planning/SKILL.md) | 从需求池选择或重规划共享、已分配 owner 的 Feature 批次 |
+| [`milestone-planning`](skills/waypoints/milestone-planning/SKILL.md) | 从需求池选择或重规划共享、已分配 owner 的 Feature 批次及依赖 DAG |
 | [`feature-spec`](skills/waypoints/feature-spec/SKILL.md) | 记录一个 Feature 的可观察行为，不规定实现 |
 | [`technical-design`](skills/waypoints/technical-design/SKILL.md) | 决定需评审的重大技术选择，并具体表达关键表结构、状态与交互 |
 | [`task-planning`](skills/waypoints/task-planning/SKILL.md) | 把 Feature 适配成经用户确认的独立子 Task 图 |

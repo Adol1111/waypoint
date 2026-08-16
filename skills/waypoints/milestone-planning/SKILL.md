@@ -16,7 +16,7 @@ Turn requirement candidates into a shared, reviewable Feature commitment without
 
 Use [references/requirement-pool-template.md](references/requirement-pool-template.md) only when no stronger pool or tracker convention exists.
 
-Consume a selected candidate only after its Feature record is durable. Remove a wholly selected requirement from the active pool in the same change that materializes the Feature. For partial selection, materialize the selected outcome, rewrite the unselected remainder as a bounded candidate, and rescore it. Never keep the same full outcome authoritative in both the requirement pool and a Feature.
+Consume a selected candidate only after its Feature record is durable. Remove a wholly selected requirement from the active pool in the same change that materializes the Feature. For partial selection, materialize the selected outcome, rewrite the unselected remainder as a bounded candidate, and rescore it. Never keep the same full outcome authoritative in both the requirement pool and a Feature. Using this skill is optional; Features may be created and delivered without a Milestone. When the repository has chosen Milestone-grouped fallback documentation, materialize the Feature at `milestones/<milestone>/features/<feature>/feature.md`; otherwise create or preserve its single repository-native Feature record and link it from the Milestone.
 
 ## Resolve stable actors
 
@@ -47,6 +47,8 @@ Follow the repository's tracker and documentation convention. Otherwise use:
 
 - [references/milestone-template.md](references/milestone-template.md) for the shared Milestone;
 - [references/feature-handoff-template.md](references/feature-handoff-template.md) for each selected Feature.
+
+When the repository uses Milestone-grouped fallback documentation, keep each Milestone as one directory containing `milestone.md` and its newly materialized `features/<feature>/` directories. In a repository that keeps standalone flat Features, keep those paths and let the Milestone link them. Feature IDs remain globally unique in either layout. Before Feature execution begins, explicit replanning may move the entire Feature directory and update every durable reference and tracker path in the same change. Once execution has begun, keep its path stable and let a later Milestone link the carried Feature rather than moving files underneath active branches.
 
 Keep live status, assignment, and priority in the external tracker when one exists. When the user has explicitly initialized `local-work-tracker`, use its records instead. With neither tracker, keep only the confirmed Feature owners and planning facts in repository-native Markdown, report the collaboration limitation, and never initialize tracking implicitly. Keep the Milestone as a compact linked Feature view; do not copy child Task state into it or encode live status in the DAG. Update the graph only when explicit replanning changes a Feature or a cross-Feature dependency.
 

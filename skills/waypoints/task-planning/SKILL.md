@@ -59,7 +59,7 @@ Approval authorizes only the task plan and child Task records. It does not assig
 Follow an existing tracker and repository convention. Otherwise use [references/task-plan-template.md](references/task-plan-template.md).
 
 - Keep `task-plan.md` beside the Feature as the coordinating DAG.
-- Keep each Task's durable contract under `features/<feature>/tasks/<task>/task.md` or the repository-native equivalent.
+- Keep each Task's durable contract at `tasks/<task>/task.md` beneath the resolved Feature directory, or use the repository-native equivalent.
 - Keep live status, assignee, executor, MR, and blocker state in an external tracker, or in `local-work-tracker` only after the user explicitly initialized it. With neither tracker, publish the durable graph, require user-directed assignment, report that claims are not atomic, and do not initialize tracking.
 - Keep a generated, linked Task checklist in `feature.md` whether status comes from an external or local tracker.
 - Use stable Feature/Task IDs independent of tracker issue numbers.

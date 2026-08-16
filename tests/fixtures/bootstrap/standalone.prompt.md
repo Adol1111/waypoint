@@ -1,3 +1,3 @@
 # Prompt
 
-Bootstrap repository-local documentation. We do not want Milestones; tasks should stay flat and atomic skills should remain directly usable.
+Bootstrap repository-local Feature documentation. We do not use Milestones and do not want to introduce them.

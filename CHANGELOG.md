@@ -1,5 +1,11 @@
 # waypoint-skills
 
+## 0.6.0
+
+### Minor Changes
+
+- [#22](https://github.com/Adol1111/waypoint/pull/22) [`950d6dc`](https://github.com/Adol1111/waypoint/commit/950d6dce49ad22c972b14b54cfe7b1e41c101921) Thanks [@Adol1111](https://github.com/Adol1111)! - Simplify `local-work-tracker` to maintain local actor identity and Feature ownership, with owner-filtered Feature discovery and lifecycle views instead of a second local Task status and assignment store.
+
 ## 0.5.0
 
 ### Minor Changes

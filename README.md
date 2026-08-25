@@ -62,7 +62,7 @@ Operational state has one authority:
 - otherwise invoke `local-work-tracker` manually;
 - do not maintain both as competing live state.
 
-Tracking reaches Task granularity for assignment and conflict detection, while the default global dashboard remains Feature-first. Every split `feature.md` contains a generated linked Task checklist regardless of tracker choice.
+The local fallback stops at Feature ownership and target resolution. Task plans and child Task contracts remain under the Feature, but local tracking does not create a second Task status or assignment store. A Feature-owned document may keep a static linked Task list; live Task state belongs there or in the configured external tracker.
 
 The optional Milestone-grouped fallback layout is:
 
@@ -90,9 +90,9 @@ Only `feature.md` is the normal Feature entry point. A split Feature requires on
 
 The global lifecycle is `requirements.md` → active Feature → `completed.md`. Materializing a complete candidate removes it from the active requirement pool; partial selection rewrites only the remainder. Feature IDs stay globally unique. Their documents are grouped under Milestones when the user adopts Milestones and stay flat otherwise. Completed Feature directories stay in place, while `completed.md` lists date, link, and an optional one-line outcome newest-first without grouping.
 
-`local-work-tracker` creates committed `.waypoint/config.yaml`, ignored `.waypoint/local.yaml`, and committed operational records. It includes a dependency-free script for identity, revision-checked assignment, state transitions, validation, active and completed views. Other Waypoint skills read `.waypoint/local.yaml` directly when they need the current actor; if no durable owner, explicit identity, or valid local actor resolves ownership, they ask instead of guessing from Git or execution metadata. Because Git cannot provide strong claims across unsynchronized machines, the local fallback uses one coordinator as its writer.
+`local-work-tracker` creates committed `.waypoint/config.yaml`, ignored `.waypoint/local.yaml`, and committed Feature owner records. It includes a dependency-free script for identity, owner-filtered Feature discovery, revision-checked Feature transitions, validation, and active/completed views. Other Waypoint skills read `.waypoint/local.yaml` directly when they need the current actor; if no durable owner, explicit identity, or valid local actor resolves ownership, they ask instead of guessing from Git or execution metadata. Because Git cannot provide strong claims across unsynchronized machines, the local fallback uses one coordinator as its writer.
 
-Identity does not imply a target. A target-specific skill first uses an exact Feature or Task named by the request; otherwise it filters active ownership or assignment by `.waypoint/local.yaml`. It continues only when exactly one target remains and asks when the result is empty or ambiguous. It never selects another actor's work just because it is ready, first, recent, or branch-adjacent.
+Identity does not imply a target. A target-specific skill first uses an exact Feature or Task named by the request; otherwise it filters active Features by owner from `.waypoint/local.yaml`. It continues only when exactly one Feature remains and asks when the result is empty or ambiguous. Once the Feature is selected, Task detail comes from its Feature-owned artifact or external tracker. It never selects another actor's work just because it is ready, first, recent, or branch-adjacent.
 
 ## Reuse from Matt Pocock
 

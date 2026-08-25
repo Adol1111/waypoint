@@ -62,7 +62,7 @@ Use $waypoint-workflow to recommend one next skill without doing its work.
 - 没有时才显式调用 `local-work-tracker`；
 - 不同时维护两套竞争的实时状态。
 
-数据跟踪到 Task，以支持 assignment 和冲突检测；默认全局 dashboard 仍只展示 Feature。无论 tracker 类型，每个拆分后的 `feature.md` 都包含生成的带链接 Task checklist。
+本地 fallback 只跟踪到 Feature owner 和目标解析。Task plan 与子 Task contract 仍归属 Feature，但本地 tracker 不再创建第二套 Task 状态或 assignment 存储。Feature 自己的文档可以保留静态的 Task 链接列表；实时 Task 状态应放在那里或放在已配置的外部 tracker 中。
 
 采用 Milestone 时的可选 fallback 布局：
 
@@ -90,9 +90,9 @@ docs/work/
 
 全局生命周期是 `requirements.md` → active Feature → `completed.md`。完整候选物化为 Feature 时从活动需求池移除；部分选择只改写剩余部分。Feature ID 全局唯一；用户采用 Milestone 时文档按 Milestone 分组，否则保持扁平。完成后保留 Feature 目录，`completed.md` 不分组、按时间倒序只记录日期、链接和可选的一句结果。
 
-`local-work-tracker` 会创建提交 Git 的 `.waypoint/config.yaml`、被忽略的 `.waypoint/local.yaml` 和提交 Git 的运行状态记录。它附带无第三方依赖的身份、revision assignment、状态迁移、校验以及 active/completed 视图生成脚本。其他 Waypoint skill 在需要当前 actor 时直接读取 `.waypoint/local.yaml`；若既没有持久 owner、显式身份，也没有有效本地 actor 可以确定 ownership，就询问用户，而不是从 Git 或执行环境信息猜测。Git 无法在未同步机器间提供强一致 claim，因此本地 fallback 采用单一 coordinator 写入。
+`local-work-tracker` 会创建提交 Git 的 `.waypoint/config.yaml`、被忽略的 `.waypoint/local.yaml` 和提交 Git 的 Feature owner 记录。它附带无第三方依赖的身份、按 owner 过滤 Feature、revision 校验的 Feature 状态迁移、校验以及 active/completed 视图生成脚本。其他 Waypoint skill 在需要当前 actor 时直接读取 `.waypoint/local.yaml`；若既没有持久 owner、显式身份，也没有有效本地 actor 可以确定 ownership，就询问用户，而不是从 Git 或执行环境信息猜测。Git 无法在未同步机器间提供强一致 claim，因此本地 fallback 采用单一 coordinator 写入。
 
-身份不等于目标。操作具体对象的 skill 优先使用请求明确指定的 Feature/Task；没有指定时，才按 `.waypoint/local.yaml` 过滤当前 actor 拥有或被分配的 active work。只有恰好一个候选时才能继续；零个或多个都要询问，不能因为别人的任务 ready、排第一、最近修改或看似匹配当前分支就自动选中。
+身份不等于目标。操作具体对象的 skill 优先使用请求明确指定的 Feature/Task；没有指定时，才按 `.waypoint/local.yaml` 过滤当前 actor 拥有的 active Feature。只有恰好一个 Feature 候选时才能继续；零个或多个都要询问。选定 Feature 后，Task 详情来自 Feature 自己的文档或外部 tracker，不能因为别人的任务 ready、排第一、最近修改或看似匹配当前分支就自动选中。
 
 ## 直接复用 Matt Pocock
 

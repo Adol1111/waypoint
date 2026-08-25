@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Dependency-free repository-local Feature/Task tracker."""
+"""Dependency-free repository-local Feature owner index."""
 
 from __future__ import annotations
 
@@ -14,15 +14,6 @@ from pathlib import Path
 
 
 VALID_ID = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
-STORED_TASK_STATES = {
-    "planned",
-    "assigned",
-    "in-progress",
-    "blocked",
-    "in-review",
-    "completed",
-    "cancelled",
-}
 FEATURE_STATES = {"planned", "in-progress", "blocked", "integration", "completed", "cancelled"}
 FEATURE_TRANSITIONS = {
     "planned": {"in-progress", "blocked", "cancelled"},
@@ -32,21 +23,10 @@ FEATURE_TRANSITIONS = {
     "completed": set(),
     "cancelled": set(),
 }
-TRANSITIONS = {
-    "planned": {"assigned", "cancelled"},
-    "assigned": {"in-progress", "blocked", "cancelled"},
-    "in-progress": {"blocked", "in-review", "cancelled"},
-    "blocked": {"assigned", "in-progress", "cancelled"},
-    "in-review": {"in-progress", "blocked", "completed", "cancelled"},
-    "completed": set(),
-    "cancelled": set(),
-}
 DASHBOARD_START = "<!-- waypoint:dashboard:start -->"
 DASHBOARD_END = "<!-- waypoint:dashboard:end -->"
 COMPLETED_START = "<!-- waypoint:completed:start -->"
 COMPLETED_END = "<!-- waypoint:completed:end -->"
-TASKS_START = "<!-- waypoint:tasks:start -->"
-TASKS_END = "<!-- waypoint:tasks:end -->"
 
 
 class TrackerError(RuntimeError):
@@ -90,16 +70,6 @@ def validate_id(value: str, label: str) -> str:
     return value
 
 
-def validate_date(value: str, label: str) -> str:
-    try:
-        parsed = date.fromisoformat(value)
-    except ValueError as error:
-        raise TrackerError(f"invalid {label} {value!r}; use YYYY-MM-DD") from error
-    if parsed.isoformat() != value:
-        raise TrackerError(f"invalid {label} {value!r}; use YYYY-MM-DD")
-    return value
-
-
 def config_path(root: Path) -> Path:
     return root / ".waypoint" / "config.yaml"
 
@@ -112,12 +82,11 @@ def feature_record_path(root: Path, feature_id: str) -> Path:
     return root / ".waypoint" / "tracker" / "features" / f"{feature_id}.yaml"
 
 
-def task_record_path(root: Path, feature_id: str, task_id: str) -> Path:
-    return root / ".waypoint" / "tracker" / "tasks" / feature_id / f"{task_id}.yaml"
-
-
 def require_initialized(root: Path) -> dict[str, object]:
-    return parse_flat_yaml(config_path(root))
+    config = parse_flat_yaml(config_path(root))
+    if config.get("tracker_mode") != "local":
+        raise TrackerError("Waypoint tracker is not configured for local mode")
+    return config
 
 
 def repository_relative_path(root: Path, raw: str, label: str) -> Path:
@@ -165,23 +134,22 @@ def command_init(args: argparse.Namespace, root: Path) -> None:
     with mutation_lock(root):
         write_flat_yaml(
             config_path(root),
-            {"version": 1, "tracker_mode": "local", "docs_root": args.docs_root},
+            {"version": 2, "tracker_mode": "local", "docs_root": args.docs_root},
         )
         write_flat_yaml(
             local_path(root),
             {
-                "version": 1,
+                "version": 2,
                 "actor_id": actor,
                 "actor_display_name": args.display_name or actor,
-                "executor_harness": args.executor_harness or "",
-                "executor_label": args.executor_label or "",
             },
         )
         ensure_ignore_rules(root)
-    print(f"initialized local tracker for actor {actor}")
+    print(f"initialized local Feature owner index for actor {actor}")
 
 
 def command_whoami(args: argparse.Namespace, root: Path) -> None:
+    require_initialized(root)
     values = parse_flat_yaml(local_path(root))
     print(json.dumps(values, ensure_ascii=False, indent=2))
 
@@ -200,12 +168,6 @@ def command_set_actor(args: argparse.Namespace, root: Path) -> None:
     print(f"actor set to {actor}")
 
 
-def command_set_executor(args: argparse.Namespace, root: Path) -> None:
-    require_initialized(root)
-    update_local(root, {"executor_harness": args.harness, "executor_label": args.label or ""})
-    print(f"executor set to {args.harness}/{args.label or ''}")
-
-
 def command_register_feature(args: argparse.Namespace, root: Path) -> None:
     require_initialized(root)
     feature_id = validate_id(args.id, "Feature ID")
@@ -218,7 +180,7 @@ def command_register_feature(args: argparse.Namespace, root: Path) -> None:
         write_flat_yaml(
             record_path,
             {
-                "version": 1,
+                "version": 2,
                 "feature_id": feature_id,
                 "title": args.title,
                 "summary": args.summary or "",
@@ -233,136 +195,34 @@ def command_register_feature(args: argparse.Namespace, root: Path) -> None:
     print(f"registered Feature {feature_id} revision 0")
 
 
-def parse_blockers(raw_values: list[str] | None) -> list[str]:
-    values: list[str] = []
-    for raw in raw_values or []:
-        for item in raw.split(","):
-            item = item.strip()
-            if item:
-                values.append(validate_id(item, "Task blocker ID"))
-    return sorted(set(values))
+def load_features(root: Path) -> list[dict[str, object]]:
+    directory = root / ".waypoint" / "tracker" / "features"
+    return [parse_flat_yaml(path) for path in sorted(directory.glob("*.yaml"))] if directory.exists() else []
 
 
-def command_register_task(args: argparse.Namespace, root: Path) -> None:
+def current_actor(root: Path) -> str:
+    return validate_id(str(parse_flat_yaml(local_path(root)).get("actor_id", "")), "actor ID")
+
+
+def command_list_features(args: argparse.Namespace, root: Path) -> None:
     require_initialized(root)
-    feature_id = validate_id(args.feature, "Feature ID")
-    task_id = validate_id(args.id, "Task ID")
-    parse_flat_yaml(feature_record_path(root, feature_id))
-    task_path = repository_relative_path(root, args.path, "Task path")
-    record_path = task_record_path(root, feature_id, task_id)
-    if record_path.exists():
-        raise TrackerError(f"Task already registered: {feature_id}/{task_id}")
-    blockers = parse_blockers(args.blocked_by)
-    if task_id in blockers:
-        raise TrackerError("a Task cannot block itself")
-    for blocker in blockers:
-        parse_flat_yaml(task_record_path(root, feature_id, blocker))
-    with mutation_lock(root):
-        write_flat_yaml(
-            record_path,
-            {
-                "version": 1,
-                "feature_id": feature_id,
-                "task_id": task_id,
-                "title": args.title,
-                "status": "planned",
-                "assignee": "",
-                "executor": "",
-                "blocked_by": blockers,
-                "reason": "",
-                "branch": "",
-                "mr": "",
-                "evidence": "",
-                "path": str(task_path.relative_to(root)),
-                "revision": 0,
-            },
-        )
-    print(f"registered Task {feature_id}/{task_id} revision 0")
+    owner = current_actor(root) if args.mine else args.owner
+    if owner:
+        owner = validate_id(owner, "Feature owner")
+    features = load_features(root)
+    selected = [
+        feature
+        for feature in features
+        if (not owner or feature.get("owner") == owner)
+        and (not args.active_only or feature.get("status") not in {"completed", "cancelled"})
+    ]
+    print(json.dumps(selected, ensure_ascii=False, indent=2))
 
 
 def require_revision(record: dict[str, object], expected: int) -> None:
     actual = record.get("revision")
     if actual != expected:
         raise TrackerError(f"revision mismatch: expected {expected}, current {actual}")
-
-
-def blockers_completed(root: Path, record: dict[str, object]) -> bool:
-    feature_id = str(record["feature_id"])
-    blockers = record.get("blocked_by", [])
-    if not isinstance(blockers, list):
-        raise TrackerError("blocked_by must be a list")
-    return all(
-        parse_flat_yaml(task_record_path(root, feature_id, str(blocker))).get("status")
-        == "completed"
-        for blocker in blockers
-    )
-
-
-def local_executor(root: Path) -> str:
-    values = parse_flat_yaml(local_path(root))
-    harness = str(values.get("executor_harness", ""))
-    label = str(values.get("executor_label", ""))
-    return "/".join(part for part in (harness, label) if part)
-
-
-def command_assign(args: argparse.Namespace, root: Path) -> None:
-    require_initialized(root)
-    feature_id = validate_id(args.feature, "Feature ID")
-    task_id = validate_id(args.task, "Task ID")
-    assignee = validate_id(args.assignee, "assignee")
-    path = task_record_path(root, feature_id, task_id)
-    with mutation_lock(root):
-        record = parse_flat_yaml(path)
-        require_revision(record, args.expect_revision)
-        if record.get("status") != "planned":
-            raise TrackerError(f"Task is not planned: {record.get('status')}")
-        if not blockers_completed(root, record):
-            raise TrackerError("Task is blocked by incomplete structural dependencies")
-        record.update(
-            {
-                "status": "assigned",
-                "assignee": assignee,
-                "executor": args.executor or local_executor(root),
-                "branch": args.branch or "",
-                "revision": int(record["revision"]) + 1,
-            }
-        )
-        write_flat_yaml(path, record)
-    print(f"assigned {feature_id}/{task_id} revision {record['revision']}")
-
-
-def command_transition(args: argparse.Namespace, root: Path) -> None:
-    require_initialized(root)
-    feature_id = validate_id(args.feature, "Feature ID")
-    task_id = validate_id(args.task, "Task ID")
-    target = args.to
-    if target == "ready" or target not in STORED_TASK_STATES:
-        raise TrackerError("ready is derived; choose a stored Task state")
-    path = task_record_path(root, feature_id, task_id)
-    with mutation_lock(root):
-        record = parse_flat_yaml(path)
-        require_revision(record, args.expect_revision)
-        current = str(record.get("status"))
-        if target not in TRANSITIONS.get(current, set()):
-            raise TrackerError(f"invalid transition: {current} -> {target}")
-        if target in {"assigned", "in-progress", "in-review", "completed"} and not blockers_completed(root, record):
-            raise TrackerError("Task is blocked by incomplete structural dependencies")
-        if target == "completed" and not args.evidence:
-            raise TrackerError("completed requires --evidence for accepted and integrated proof")
-        if target == "blocked" and not args.reason:
-            raise TrackerError("blocked requires --reason")
-        record["status"] = target
-        if args.reason is not None:
-            record["reason"] = args.reason
-        if args.branch is not None:
-            record["branch"] = args.branch
-        if args.mr is not None:
-            record["mr"] = args.mr
-        if args.evidence is not None:
-            record["evidence"] = args.evidence
-        record["revision"] = int(record["revision"]) + 1
-        write_flat_yaml(path, record)
-    print(f"transitioned {feature_id}/{task_id} to {target} revision {record['revision']}")
 
 
 def command_transition_feature(args: argparse.Namespace, root: Path) -> None:
@@ -399,57 +259,17 @@ def command_replan_feature(args: argparse.Namespace, root: Path) -> None:
         status = str(record.get("status"))
         if status in {"completed", "cancelled"}:
             raise TrackerError(f"cannot replan a {status} Feature")
-
-        task_updates: list[tuple[Path, dict[str, object]]] = []
         if args.path is not None:
             if status != "planned":
                 raise TrackerError(
-                    "cannot move a Feature after execution begins; omit --path and keep its document path stable"
+                    "cannot move a Feature after execution begins; keep its document path stable"
                 )
-            tasks = load_tasks(root, feature_id)
-            non_planned = [
-                str(task["task_id"])
-                for task in tasks
-                if task.get("status") != "planned"
-            ]
-            if non_planned:
-                raise TrackerError(
-                    "cannot move a Feature with active Tasks: " + ", ".join(non_planned)
-                )
-            old_feature = (root / str(record["path"])).resolve()
-            try:
-                old_feature.relative_to(root)
-            except ValueError as error:
-                raise TrackerError(
-                    f"current Feature path must stay inside repository: {record['path']}"
-                ) from error
             new_feature = repository_relative_path(root, args.path, "Feature path")
-            for task in tasks:
-                old_task = root / str(task["path"])
-                try:
-                    relative_task = old_task.relative_to(old_feature.parent)
-                except ValueError as error:
-                    raise TrackerError(
-                        f"Task path is outside its Feature directory: {task['task_id']}"
-                    ) from error
-                new_task = repository_relative_path(
-                    root,
-                    str(new_feature.parent / relative_task),
-                    f"Task path for {task['task_id']}",
-                )
-                task["path"] = str(new_task.relative_to(root))
-                task["revision"] = int(task["revision"]) + 1
-                task_updates.append(
-                    (task_record_path(root, feature_id, str(task["task_id"])), task)
-                )
             record["path"] = str(new_feature.relative_to(root))
-
         record["milestone"] = milestone
         record["replan_reason"] = args.reason
         record["revision"] = int(record["revision"]) + 1
         write_flat_yaml(path, record)
-        for task_path, task in task_updates:
-            write_flat_yaml(task_path, task)
     destination = milestone or "standalone"
     print(f"replanned Feature {feature_id} to {destination} revision {record['revision']}")
 
@@ -458,17 +278,11 @@ def command_close_feature(args: argparse.Namespace, root: Path) -> None:
     require_initialized(root)
     feature_id = validate_id(args.feature, "Feature ID")
     path = feature_record_path(root, feature_id)
-    tasks = load_tasks(root, feature_id)
-    incomplete = [str(task["task_id"]) for task in tasks if task.get("status") != "completed"]
-    if incomplete:
-        raise TrackerError(f"cannot close Feature with incomplete Tasks: {', '.join(incomplete)}")
     with mutation_lock(root):
         record = parse_flat_yaml(path)
         require_revision(record, args.expect_revision)
         if args.confirmed_by != record.get("owner"):
-            raise TrackerError(
-                f"Feature completion must be confirmed by owner {record.get('owner')}"
-            )
+            raise TrackerError(f"Feature completion must be confirmed by owner {record.get('owner')}")
         if record.get("status") in {"completed", "cancelled"}:
             raise TrackerError(f"Feature is already {record.get('status')}")
         record.update(
@@ -485,37 +299,14 @@ def command_close_feature(args: argparse.Namespace, root: Path) -> None:
     print(f"closed Feature {feature_id} revision {record['revision']}")
 
 
-def load_features(root: Path) -> list[dict[str, object]]:
-    directory = root / ".waypoint" / "tracker" / "features"
-    return [parse_flat_yaml(path) for path in sorted(directory.glob("*.yaml"))] if directory.exists() else []
-
-
-def load_tasks(root: Path, feature_id: str | None = None) -> list[dict[str, object]]:
-    directory = root / ".waypoint" / "tracker" / "tasks"
-    pattern = f"{feature_id}/*.yaml" if feature_id else "*/*.yaml"
-    return [parse_flat_yaml(path) for path in sorted(directory.glob(pattern))] if directory.exists() else []
-
-
-def display_status(root: Path, task: dict[str, object]) -> str:
-    if task.get("status") == "planned":
-        return "ready" if blockers_completed(root, task) else "blocked"
-    return str(task.get("status"))
-
-
-def feature_summary(root: Path, feature: dict[str, object], tasks: list[dict[str, object]]) -> str:
-    if feature.get("status") in {"completed", "cancelled"}:
-        return str(feature["status"])
-    if not tasks:
-        return str(feature.get("status", "planned"))
-    statuses = [display_status(root, task) for task in tasks]
-    if all(status == "completed" for status in statuses):
-        return "integration"
-    active = {"assigned", "in-progress", "in-review"}
-    if any(status in active | {"completed"} for status in statuses):
-        return "in-progress"
-    if all(status in {"blocked", "cancelled", "completed"} for status in statuses):
-        return "blocked"
-    return "planned"
+def validate_date(value: str, label: str) -> str:
+    try:
+        parsed = date.fromisoformat(value)
+    except ValueError as error:
+        raise TrackerError(f"invalid {label} {value!r}; use YYYY-MM-DD") from error
+    if parsed.isoformat() != value:
+        raise TrackerError(f"invalid {label} {value!r}; use YYYY-MM-DD")
+    return value
 
 
 def replace_region(text: str, start: str, end: str, heading: str, body: str) -> str:
@@ -528,30 +319,6 @@ def replace_region(text: str, start: str, end: str, heading: str, body: str) -> 
     return text + separator + f"## {heading}\n\n" + region + "\n"
 
 
-def render_feature(root: Path, feature: dict[str, object], tasks: list[dict[str, object]]) -> None:
-    if not tasks:
-        return
-    path = repository_relative_path(root, str(feature["path"]), "Feature path")
-    lines = []
-    for task in tasks:
-        status = display_status(root, task)
-        checked = "x" if status == "completed" else " "
-        task_path = Path(str(task["path"]))
-        link = os.path.relpath(root / task_path, path.parent)
-        details = [status]
-        if task.get("assignee"):
-            details.append(f"assignee: {task['assignee']}")
-        if task.get("executor"):
-            details.append(f"executor: {task['executor']}")
-        if task.get("branch"):
-            details.append(f"branch: {task['branch']}")
-        if task.get("mr"):
-            details.append(f"MR: {task['mr']}")
-        lines.append(f"- [{checked}] [{task['title']}]({link}) — {'; '.join(details)}")
-    current = path.read_text(encoding="utf-8")
-    path.write_text(replace_region(current, TASKS_START, TASKS_END, "Task progress", "\n".join(lines)), encoding="utf-8")
-
-
 def render_dashboard(root: Path, config: dict[str, object], features: list[dict[str, object]]) -> Path:
     docs_root = root / str(config.get("docs_root", "docs/work"))
     path = docs_root / "index.md"
@@ -561,23 +328,13 @@ def render_dashboard(root: Path, config: dict[str, object], features: list[dict[
     for feature in features:
         if feature.get("status") in {"completed", "cancelled"}:
             continue
-        tasks = load_tasks(root, str(feature["feature_id"]))
-        counts: dict[str, int] = {}
-        for task in tasks:
-            status = display_status(root, task)
-            counts[status] = counts.get(status, 0) + 1
-        summary = ", ".join(f"{count} {status}" for status, count in sorted(counts.items())) or "unsplit"
         feature_path = root / str(feature["path"])
         link = os.path.relpath(feature_path, path.parent)
-        status = feature_summary(root, feature, tasks)
         milestone = str(feature.get("milestone") or "Unscheduled")
         grouped.setdefault(milestone, []).append(
-            f"| [{feature['title']}]({link}) | {feature['owner']} | {status} | {summary} |"
+            f"| [{feature['title']}]({link}) | {feature['owner']} | {feature['status']} |"
         )
-    table_header = [
-        "| Feature | Owner | Status | Tasks |",
-        "| --- | --- | --- | --- |",
-    ]
+    table_header = ["| Feature | Owner | Status |", "| --- | --- | --- |"]
     if set(grouped) == {"Unscheduled"}:
         lines = [*table_header, *grouped["Unscheduled"]]
     else:
@@ -588,7 +345,10 @@ def render_dashboard(root: Path, config: dict[str, object], features: list[dict[
             lines.extend([f"### {milestone}", "", *table_header, *grouped[milestone]])
     if not grouped:
         lines = ["No active Features."]
-    path.write_text(replace_region(current, DASHBOARD_START, DASHBOARD_END, "Feature dashboard", "\n".join(lines)), encoding="utf-8")
+    path.write_text(
+        replace_region(current, DASHBOARD_START, DASHBOARD_END, "Feature dashboard", "\n".join(lines)),
+        encoding="utf-8",
+    )
     return path
 
 
@@ -614,10 +374,7 @@ def render_completed(root: Path, config: dict[str, object], features: list[dict[
             entry += f" — {feature['summary']}"
         lines.append(entry)
     body = "\n".join(lines) if lines else "No completed Features yet."
-    path.write_text(
-        replace_region(current, COMPLETED_START, COMPLETED_END, "Timeline", body),
-        encoding="utf-8",
-    )
+    path.write_text(replace_region(current, COMPLETED_START, COMPLETED_END, "Timeline", body), encoding="utf-8")
     return path
 
 
@@ -625,8 +382,6 @@ def command_render(args: argparse.Namespace, root: Path) -> None:
     config = require_initialized(root)
     features = load_features(root)
     with mutation_lock(root):
-        for feature in features:
-            render_feature(root, feature, load_tasks(root, str(feature["feature_id"])))
         dashboard = render_dashboard(root, config, features)
         completed = render_completed(root, config, features)
     print(
@@ -636,11 +391,9 @@ def command_render(args: argparse.Namespace, root: Path) -> None:
 
 
 def command_check(args: argparse.Namespace, root: Path) -> None:
-    config = require_initialized(root)
+    require_initialized(root)
     local = parse_flat_yaml(local_path(root))
     errors: list[str] = []
-    if config.get("tracker_mode") != "local":
-        errors.append("tracker_mode is not local")
     try:
         validate_id(str(local.get("actor_id", "")), "actor ID")
     except TrackerError as error:
@@ -648,32 +401,23 @@ def command_check(args: argparse.Namespace, root: Path) -> None:
     ignore_lines = (root / ".gitignore").read_text(encoding="utf-8").splitlines()
     if "/.waypoint/local.yaml" not in ignore_lines:
         errors.append(".waypoint/local.yaml is not ignored")
-    feature_ids = {str(feature["feature_id"]) for feature in load_features(root)}
+    feature_ids: set[str] = set()
     for feature in load_features(root):
+        feature_id = str(feature.get("feature_id", ""))
+        feature_ids.add(feature_id)
         try:
+            validate_id(feature_id, "Feature ID")
+            validate_id(str(feature.get("owner", "")), "Feature owner")
+            if feature.get("status") not in FEATURE_STATES:
+                raise TrackerError(f"invalid Feature status: {feature.get('status')}")
             repository_relative_path(root, str(feature["path"]), "Feature path")
-        except TrackerError as error:
-            errors.append(str(error))
-        if feature.get("status") == "completed":
-            try:
+            if feature.get("status") == "completed":
                 validate_date(str(feature.get("completed_at", "")), "completion date")
-            except TrackerError as error:
-                errors.append(str(error))
-    for task in load_tasks(root):
-        feature_id = str(task.get("feature_id"))
-        task_id = str(task.get("task_id"))
-        if feature_id not in feature_ids:
-            errors.append(f"Task has unknown Feature: {feature_id}/{task_id}")
-        if task.get("status") not in STORED_TASK_STATES:
-            errors.append(f"Task has invalid status: {feature_id}/{task_id}")
-        try:
-            repository_relative_path(root, str(task["path"]), "Task path")
-            blockers_completed(root, task)
         except TrackerError as error:
             errors.append(str(error))
     if errors:
         raise TrackerError("check failed:\n- " + "\n- ".join(errors))
-    print(f"check passed for {len(feature_ids)} Features and {len(load_tasks(root))} Tasks")
+    print(f"check passed for {len(feature_ids)} Features; local tracker stores no Task state")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -684,8 +428,6 @@ def build_parser() -> argparse.ArgumentParser:
     init = subparsers.add_parser("init")
     init.add_argument("--actor", required=True)
     init.add_argument("--display-name")
-    init.add_argument("--executor-harness")
-    init.add_argument("--executor-label")
     init.add_argument("--docs-root", default="docs/work")
     init.set_defaults(handler=command_init)
 
@@ -697,11 +439,6 @@ def build_parser() -> argparse.ArgumentParser:
     set_actor.add_argument("--display-name")
     set_actor.set_defaults(handler=command_set_actor)
 
-    set_executor = subparsers.add_parser("set-executor")
-    set_executor.add_argument("--harness", required=True)
-    set_executor.add_argument("--label")
-    set_executor.set_defaults(handler=command_set_executor)
-
     register_feature = subparsers.add_parser("register-feature")
     register_feature.add_argument("--id", required=True)
     register_feature.add_argument("--title", required=True)
@@ -711,33 +448,12 @@ def build_parser() -> argparse.ArgumentParser:
     register_feature.add_argument("--path", required=True)
     register_feature.set_defaults(handler=command_register_feature)
 
-    register_task = subparsers.add_parser("register-task")
-    register_task.add_argument("--feature", required=True)
-    register_task.add_argument("--id", required=True)
-    register_task.add_argument("--title", required=True)
-    register_task.add_argument("--path", required=True)
-    register_task.add_argument("--blocked-by", action="append")
-    register_task.set_defaults(handler=command_register_task)
-
-    assign = subparsers.add_parser("assign")
-    assign.add_argument("--feature", required=True)
-    assign.add_argument("--task", required=True)
-    assign.add_argument("--assignee", required=True)
-    assign.add_argument("--executor")
-    assign.add_argument("--branch")
-    assign.add_argument("--expect-revision", required=True, type=int)
-    assign.set_defaults(handler=command_assign)
-
-    transition = subparsers.add_parser("transition")
-    transition.add_argument("--feature", required=True)
-    transition.add_argument("--task", required=True)
-    transition.add_argument("--to", required=True)
-    transition.add_argument("--expect-revision", required=True, type=int)
-    transition.add_argument("--reason")
-    transition.add_argument("--branch")
-    transition.add_argument("--mr")
-    transition.add_argument("--evidence")
-    transition.set_defaults(handler=command_transition)
+    list_features = subparsers.add_parser("list-features")
+    owner_filter = list_features.add_mutually_exclusive_group()
+    owner_filter.add_argument("--owner")
+    owner_filter.add_argument("--mine", action="store_true")
+    list_features.add_argument("--active-only", action="store_true")
+    list_features.set_defaults(handler=command_list_features)
 
     transition_feature = subparsers.add_parser("transition-feature")
     transition_feature.add_argument("--feature", required=True)

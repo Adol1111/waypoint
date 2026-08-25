@@ -386,18 +386,19 @@ class RepositoryContractTests(unittest.TestCase):
         for phrase in (
             "Never invoke this skill implicitly",
             "one tracker coordinator",
-            "expected record revision",
-            "does not assign it",
+            "expected revision",
+            "owner-filtered target discovery",
+            "does not create a second Task status store",
             "global Feature dashboard",
             "newest-first completed Feature index",
             "global Feature dashboard grouped by Milestone when present",
-            "flat `.waypoint/tracker/features/` records",
+            "`.waypoint/tracker/features/` records",
             "replan-feature",
-            "rebases registered child Task paths and revisions",
+            "`.waypoint/tracker/tasks/` authority",
         ):
             self.assertIn(phrase, tracker)
-        self.assertIn("<!-- waypoint:tasks:start -->", feature_template)
-        self.assertIn("Executors do not edit it manually", feature_template)
+        self.assertIn("Optional links to Feature-owned Task contracts", feature_template)
+        self.assertIn("does not create or update a Task progress region", feature_template)
         self.assertTrue(script.exists())
         self.assertTrue(script.stat().st_mode & 0o111)
 

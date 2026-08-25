@@ -84,7 +84,7 @@ docs/work/
 
 Milestones are optional. Without them, use the same Feature contents under `docs/work/features/<feature>/`. The repository or user chooses one placement convention; no atomic Feature or Task skill requires a Milestone.
 
-`feature.md` is always the human entry point after a Feature is materialized. It owns a globally unique stable identity, Feature owner, outcome, canonical Acceptance, references, and a generated linked Task checklist when the Feature is split. The containing Milestone groups human-readable documents but does not own Feature execution.
+`feature.md` is always the human entry point after a Feature is materialized. It owns a globally unique stable identity, Feature owner, outcome, canonical Acceptance, references, and any Feature-owned Task list when the Feature is split. The containing Milestone groups human-readable documents but does not own Feature execution.
 
 Other artifacts are threshold-driven:
 
@@ -105,21 +105,21 @@ Live operational state has exactly one owner:
 - otherwise explicitly initialize `local-work-tracker`;
 - never maintain both as competing authorities.
 
-Tracking data reaches Task granularity so assignment, executor, blockers, MR, and safe parallelism remain visible. The default global view remains Feature-first and expands Task detail only on demand. `feature.md` always carries a simple generated Task checklist for human readers when child Tasks exist.
+The local fallback deliberately stops at Feature ownership and target resolution. It does not duplicate Task assignment, executor, blockers, MR, or status. Task detail remains in the Feature-owned artifact or the configured external tracker. The default global view is Feature-first.
 
-Feature completion is not a percentage calculation. Task summaries may be derived, but only the Feature owner confirms completion after Feature Acceptance and integration proof pass. The Milestone coordinator alone confirms Milestone scope changes and closure.
+Feature completion is not a percentage calculation. Task detail may be summarized by the chosen Task authority, but only the Feature owner confirms completion after Feature Acceptance and integration proof pass. The Milestone coordinator alone confirms Milestone scope changes and closure.
 
-The local fallback uses committed shared configuration and ignored machine-local identity:
+The local fallback uses committed shared configuration, ignored machine-local identity, and flat Feature owner records:
 
 ```text
 .waypoint/config.yaml
 .waypoint/local.yaml      # ignored
-.waypoint/tracker/        # committed operational records
+.waypoint/tracker/features/ # committed Feature owner records
 ```
 
 Resolve ownership from the target artifact or configured tracker, explicit request, `.waypoint/local.yaml`, authenticated external identity, then user clarification. Atomic skills read `.waypoint/local.yaml` directly when present; they do not require `local-work-tracker` to be invoked. Its `actor_id` identifies the current actor only. Git author metadata, harness, machine, branch, and temporary window labels are never silently treated as ownership. The local tracker uses one coordinator as writer and does not claim strong consistency across unsynchronized machines or worktrees.
 
-Target resolution is separate from identity resolution. Prefer an exact ID, link, path, or artifact from the current request. When it is omitted, filter active Feature ownership and Task assignment by the resolved current actor. Proceed only for exactly one matching target; ask when zero or multiple targets remain. Never choose another actor's work, the first ready or unchecked item, recent edits, Git history, or branch naming merely to keep moving.
+Target resolution is separate from identity resolution. Prefer an exact ID, link, path, or artifact from the current request. When it is omitted, filter active Feature ownership by the resolved current actor. Proceed only for exactly one matching Feature; ask when zero or multiple targets remain. After selecting the Feature, resolve child Task detail from its own artifact or external tracker. Never choose another actor's work, the first ready or unchecked item, recent edits, Git history, or branch naming merely to keep moving.
 
 ## Git integration
 

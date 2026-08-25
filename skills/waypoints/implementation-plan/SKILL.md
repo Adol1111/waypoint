@@ -25,7 +25,7 @@ If none applies, return a concise approach preview covering change surface, exec
 
 ## Work independently
 
-1. Resolve one exact assigned Feature or Task before planning. Prefer an ID, link, path, or artifact from the request. Otherwise read `.waypoint/local.yaml` and filter active owned Features or assigned Tasks by `actor_id`. Continue only when exactly one candidate remains; otherwise ask. Never fall back to another actor's work, queue order, recency, Git history, or the current branch.
+1. Resolve one exact Feature or Task before planning. Prefer an ID, link, path, or artifact from the request. Otherwise read `.waypoint/local.yaml` and filter active owned Features by `actor_id`; use assigned Tasks only when their assignment is recorded in the Feature-owned artifact or external tracker. Continue only when exactly one candidate remains; otherwise ask. Never fall back to another actor's work, queue order, recency, Git history, or the current branch.
 2. Read repository instructions, the resolved Feature or Task, Feature spec, any relevant technical design, relevant code, and existing plan conventions.
 3. Identify which material trigger requires durable planning. Update an existing plan when it fits; otherwise propose the smallest Markdown artifact beside its Feature or Task.
 4. Preserve the spec's scope and the technical design's choices; surface contradictions rather than adding requirements or redesigning the solution.

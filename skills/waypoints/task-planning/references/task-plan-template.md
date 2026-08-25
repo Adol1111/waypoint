@@ -1,6 +1,6 @@
 # Feature Task Plan Template
 
-Use only when no stronger repository convention exists. Keep status out of this durable graph; render current status into `feature.md` from the configured tracker.
+Use only when no stronger repository convention exists. Keep live status out of this durable graph unless the Feature-owned artifact is the chosen local authority.
 
 ## Coordinating graph
 
@@ -73,4 +73,4 @@ Tracker: <link when external tracking exists>
 - <Feature spec, design, plan, ADR, issue, or source artifact>
 ```
 
-Keep live Status, Assignee, Executor, MR, and blocker state in the configured tracker. Without an external tracker, `local-work-tracker` owns those fields. Omit unused optional sections. Task Acceptance remains authoritative here; do not create a second behavioral specification for the child Task.
+Keep live Status, Assignee, Executor, MR, and blocker state in the configured external tracker or in the Feature-owned artifact when the team explicitly chooses that convention. The local-work-tracker only owns Feature identity and owner filtering; it does not own those Task fields. Omit unused optional sections. Task Acceptance remains authoritative here; do not create a second behavioral specification for the child Task.

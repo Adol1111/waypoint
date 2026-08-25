@@ -26,15 +26,13 @@ Tracker: <link when external tracking exists>
 
 - [ ] <Observable Feature completion condition>
 
-## Task progress
+## Tasks
 
-<!-- waypoint:tasks:start -->
-<Generated linked checklist when child Tasks exist. Omit this section for an unsplit Feature.>
-<!-- waypoint:tasks:end -->
+<Optional links to Feature-owned Task contracts. Keep live Task state in the chosen Task authority.>
 
 ## References
 
 - <Existing spec, design, task plan, ADR, or source link>
 ```
 
-An external tracker or `local-work-tracker` renders the Task progress region. Executors do not edit it manually. Omit empty optional fields and sections.
+The local-work-tracker only renders Feature owner and lifecycle views; it does not create or update a Task progress region. Omit empty optional fields and sections.

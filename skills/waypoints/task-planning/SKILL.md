@@ -60,8 +60,8 @@ Follow an existing tracker and repository convention. Otherwise use [references/
 
 - Keep `task-plan.md` beside the Feature as the coordinating DAG.
 - Keep each Task's durable contract at `tasks/<task>/task.md` beneath the resolved Feature directory, or use the repository-native equivalent.
-- Keep live status, assignee, executor, MR, and blocker state in an external tracker, or in `local-work-tracker` only after the user explicitly initialized it. With neither tracker, publish the durable graph, require user-directed assignment, report that claims are not atomic, and do not initialize tracking.
-- Keep a generated, linked Task checklist in `feature.md` whether status comes from an external or local tracker.
+- Keep live status, assignee, executor, MR, and blocker state in an external tracker or in the Feature-owned artifact. The local-work-tracker only resolves the current actor and Feature owner; it does not create a second Task status store. With no Task tracker, publish the durable graph, require user-directed assignment, report that claims are not atomic, and do not initialize tracking.
+- Keep a linked Task list in `feature.md` or the repository-native Feature artifact when it helps readers; local-work-tracker does not generate or update it.
 - Use stable Feature/Task IDs independent of tracker issue numbers.
 - Preserve completed Tasks and stable contracts while replanning. Only the Feature owner may confirm graph or shared-contract changes.
 

@@ -1,5 +1,11 @@
 # waypoint-skills
 
+## 0.6.1
+
+### Patch Changes
+
+- [#24](https://github.com/Adol1111/waypoint/pull/24) [`7c6f135`](https://github.com/Adol1111/waypoint/commit/7c6f1359a4ca277c87b5001877e79ab09da15c0b) Thanks [@Adol1111](https://github.com/Adol1111)! - Add a `feature-close` waypoint that audits Task, Feature, and Milestone Acceptance before integration and cleanup.
+
 ## 0.6.0
 
 ### Minor Changes

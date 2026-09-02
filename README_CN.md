@@ -38,6 +38,7 @@ Waypoint 在 Matt Pocock 的澄清、实现、评审和 handoff skills 外围补
 | [`technical-design`](skills/waypoints/technical-design/SKILL.md) | 决定需评审的重大技术选择，并具体表达关键表结构、状态与交互 |
 | [`task-planning`](skills/waypoints/task-planning/SKILL.md) | 把 Feature 适配成经用户确认的独立子 Task 图 |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | 持久化一个 Feature/Task 内部的高风险执行策略 |
+| [`feature-close`](skills/waypoints/feature-close/SKILL.md) | 核对 Acceptance 并安全收尾已完成的 Feature |
 | [`local-work-tracker`](skills/setup/local-work-tracker/SKILL.md) | 没有外部 tracker 时，显式初始化或更新本地 tracker |
 | [`docs-workflow-bootstrap`](skills/setup/docs-workflow-bootstrap/SKILL.md) | 显式创建可选的 Feature-centered 文档约定 |
 | [`waypoint-workflow`](skills/workflows/waypoint-workflow/SKILL.md) | 读取证据，只推荐一个下一 skill，然后停止 |
@@ -52,6 +53,7 @@ Use $feature-spec to record this Feature's agreed behavior.
 Use $task-planning to split this Feature across collaborators and stop before assignment.
 Use $local-work-tracker to initialize local tracking because this repository has no external tracker.
 Use $waypoint-workflow to recommend one next skill without doing its work.
+Use $feature-close after implementation to verify Acceptance before merge and cleanup.
 ```
 
 ## Tracker 与人类可读文档
@@ -87,6 +89,8 @@ docs/work/
 不使用 Milestone 时，相同的 Feature 内容直接放在 `docs/work/features/<feature>/`。目录约定由用户选择；Waypoint 不会仅为了目录分组而创建 Milestone。
 
 `feature.md` 是正常入口。拆分后的 Feature 必须共享同一 spec；design、Task plan 和 execution plan 都按门槛创建。
+
+实现完成后调用 `feature-close`，逐层核对适用的 Task、Feature、Milestone Acceptance 复选框及验证/集成证据，再决定是否收口。具体 MR 合并、branch/worktree 删除和丢弃工作仍分别需要精确确认。
 
 全局生命周期是 `requirements.md` → active Feature → `completed.md`。完整候选物化为 Feature 时从活动需求池移除；部分选择只改写剩余部分。Feature ID 全局唯一；用户采用 Milestone 时文档按 Milestone 分组，否则保持扁平。完成后保留 Feature 目录，`completed.md` 不分组、按时间倒序只记录日期、链接和可选的一句结果。
 
@@ -137,6 +141,8 @@ npx skills add Adol1111/waypoint \
   --skill technical-design \
   --skill task-planning \
   --skill implementation-plan
+
+npx skills add Adol1111/waypoint --skill feature-close
 ```
 
 按需增加导航、上下文、文档或本地 tracker：

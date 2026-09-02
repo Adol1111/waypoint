@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Close"
+  short_description: "Verify and safely close a completed Feature"
+  default_prompt: "Use $feature-close to audit Task, Feature, and Milestone Acceptance before integration and cleanup."

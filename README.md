@@ -38,6 +38,7 @@ Requirement pool
 | [`technical-design`](skills/waypoints/technical-design/SKILL.md) | Decide review-critical technical choices and express material schemas, states, and interactions concretely |
 | [`task-planning`](skills/waypoints/task-planning/SKILL.md) | Adapt a Feature into a user-confirmed graph of independent child Tasks |
 | [`implementation-plan`](skills/waypoints/implementation-plan/SKILL.md) | Make one Feature or Task's risky internal execution strategy durable |
+| [`feature-close`](skills/waypoints/feature-close/SKILL.md) | Audit Acceptance and safely close a completed Feature |
 | [`local-work-tracker`](skills/setup/local-work-tracker/SKILL.md) | Explicitly initialize or update local tracking when no external tracker exists |
 | [`docs-workflow-bootstrap`](skills/setup/docs-workflow-bootstrap/SKILL.md) | Explicitly scaffold the optional Feature-centered docs convention |
 | [`waypoint-workflow`](skills/workflows/waypoint-workflow/SKILL.md) | Read evidence, recommend exactly one next skill, and stop |
@@ -52,6 +53,7 @@ Use $feature-spec to record this Feature's agreed behavior.
 Use $task-planning to split this Feature across collaborators and stop before assignment.
 Use $local-work-tracker to initialize local tracking because this repository has no external tracker.
 Use $waypoint-workflow to recommend one next skill without doing its work.
+Use $feature-close after implementation to verify Acceptance before merge and cleanup.
 ```
 
 ## Tracking and human-readable docs
@@ -87,6 +89,8 @@ docs/work/
 Without Milestones, use the same Feature contents under `docs/work/features/<feature>/`. The user chooses the convention; Waypoint never creates a Milestone only to obtain a directory.
 
 Only `feature.md` is the normal Feature entry point. A split Feature requires one shared spec; design, Task plan, and execution plan remain threshold-driven.
+
+After implementation, invoke `feature-close` to audit every applicable Task, Feature, and Milestone Acceptance checkbox and its verification/integration evidence. It coordinates the closeout decision while preserving separate confirmation for a specific merge, branch/worktree deletion, or discard.
 
 The global lifecycle is `requirements.md` → active Feature → `completed.md`. Materializing a complete candidate removes it from the active requirement pool; partial selection rewrites only the remainder. Feature IDs stay globally unique. Their documents are grouped under Milestones when the user adopts Milestones and stay flat otherwise. Completed Feature directories stay in place, while `completed.md` lists date, link, and an optional one-line outcome newest-first without grouping.
 
@@ -137,6 +141,8 @@ npx skills add Adol1111/waypoint \
   --skill technical-design \
   --skill task-planning \
   --skill implementation-plan
+
+npx skills add Adol1111/waypoint --skill feature-close
 ```
 
 Add optional navigation, context, docs, or local tracking individually:

@@ -46,6 +46,7 @@ The deprecated directory contains no installable skills. It preserves replacemen
 | Review-critical technical choices and shared implementation contracts | `technical-design` |
 | Feature-owned child Task DAG, ownership surfaces, blockers, safe parallelism, and integration proof | `task-planning` |
 | One Feature or Task's durable internal execution strategy, stable slices, migration, containment, and rollback | `implementation-plan` |
+| Feature closeout: Task/Feature/Milestone Acceptance audit, completion evidence, integration decision, and cleanup handoff | `feature-close` |
 | Optional local identity, operational state, and generated Feature-first views when no external tracker exists | `local-work-tracker` |
 | Optional Feature-centered docs scaffold | `docs-workflow-bootstrap` |
 | One next-skill recommendation only | `waypoint-workflow` |
@@ -107,7 +108,7 @@ Live operational state has exactly one owner:
 
 The local fallback deliberately stops at Feature ownership and target resolution. It does not duplicate Task assignment, executor, blockers, MR, or status. Task detail remains in the Feature-owned artifact or the configured external tracker. The default global view is Feature-first.
 
-Feature completion is not a percentage calculation. Task detail may be summarized by the chosen Task authority, but only the Feature owner confirms completion after Feature Acceptance and integration proof pass. The Milestone coordinator alone confirms Milestone scope changes and closure.
+Feature completion is not a percentage calculation. `feature-close` audits every applicable Task, Feature, and Milestone Acceptance checkbox plus verification and integration evidence before a Feature is closed. Task detail may be summarized by the chosen Task authority, but only the Feature owner confirms completion after Feature Acceptance and integration proof pass. The Milestone coordinator alone confirms Milestone scope changes and closure.
 
 The local fallback uses committed shared configuration, ignored machine-local identity, and flat Feature owner records:
 
@@ -126,11 +127,12 @@ Target resolution is separate from identity resolution. Prefer an exact ID, link
 - An unsplit small Feature uses a short-lived Feature branch.
 - A split Feature gives every Task its own branch or worktree.
 - Executors may commit, push, open or update an MR, run verification, and respond to review.
+- After implementation, `feature-close` checks Task → Feature → Milestone Acceptance and evidence before recommending integration or cleanup; it does not make those actions implicit.
 - Safe Tasks should reach `main` through separate MRs early; use flags, compatibility layers, or expand–migrate–contract when intermediate behavior must remain hidden or compatible.
 - Use a temporary Feature integration branch only when Tasks cannot safely merge independently. It has one coordinator and accepts changes through MRs, not shared direct pushes.
 - Milestones never own branches, commits, pushes, MRs, or merge timing.
 
-Task `completed` means accepted, verified, and safely integrated—not merely coded on a branch. Feature completion adds Feature-level integration proof.
+Task `completed` means accepted, verified, and safely integrated—not merely coded on a branch. A Feature is closed only after its own Acceptance and Feature-level integration proof pass; a Milestone closes only after its coordinator confirms all required exit criteria.
 
 ## Authorization boundaries
 

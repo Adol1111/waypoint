@@ -69,4 +69,4 @@ Run `render` after an accepted Feature state change. It updates only generated m
 - a global Feature dashboard grouped by Milestone when present and flat when all Features are standalone;
 - a newest-first completed Feature index in `docs/work/completed.md` containing only date, Feature link, and optional one-line outcome.
 
-The dashboard is Feature-first and owner-visible. It does not summarize or rewrite child Tasks. Finish after reporting changed records, revisions, generated views, and any synchronization limitation. Do not modify Feature contracts, run implementation, merge an MR, or delete branches/worktrees.
+The dashboard is Feature-first and owner-visible. It does not summarize or rewrite child Tasks. Finish after reporting changed records, revisions, generated views, and any synchronization limitation. `feature-close` owns the surrounding Acceptance audit and closeout decision; this tracker only performs its exact Feature state transition and renders views. Do not modify Feature contracts, run implementation, merge an MR, or delete branches/worktrees.

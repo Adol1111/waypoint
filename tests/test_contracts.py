@@ -11,6 +11,7 @@ FIXTURES_ROOT = ROOT / "tests" / "fixtures"
 
 WAYPOINT_SKILLS = {
     "domain-context",
+    "feature-close",
     "milestone-planning",
     "feature-spec",
     "technical-design",
@@ -35,6 +36,7 @@ OWNED_TEMPLATES = {
     "technical-design": {"technical-design-template.md"},
     "task-planning": {"task-plan-template.md"},
     "implementation-plan": {"plan-template.md"},
+    "feature-close": set(),
     "docs-workflow-bootstrap": {"feature-convention.md"},
     "local-work-tracker": {"local-tracker-format.md"},
     "waypoint-workflow": set(),
@@ -368,6 +370,25 @@ class RepositoryContractTests(unittest.TestCase):
         ):
             self.assertIn(phrase, workflow)
         self.assertNotIn("milestone-workflow", workflow)
+        self.assertIn("feature-close", workflow)
+
+    def test_feature_closeout_checks_acceptance_before_merge_and_cleanup(self) -> None:
+        closing = (skill_dir("feature-close") / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        for phrase in (
+            "Task, Feature, and optional Milestone Acceptance",
+            "every Task Acceptance item to be `[x]`",
+            "every Feature Acceptance item to be `[x]`",
+            "Milestone entry and every exit criterion",
+            "Do not merge until every applicable Task, Feature",
+            "stale",
+            "fresh confirmation naming that MR",
+            "separate target-specific confirmation",
+            "Never delete or discard unrelated uncommitted files",
+            "Do not invoke implementation",
+        ):
+            self.assertIn(phrase, closing)
 
     def test_tracking_has_one_authority_and_feature_first_view(self) -> None:
         tracker = (skill_dir("local-work-tracker") / "SKILL.md").read_text(

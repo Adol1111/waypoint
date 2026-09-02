@@ -22,6 +22,7 @@ Choose the capability closest to the user's requested outcome:
 - one already-bounded Feature or Task's durable execution strategy, migration, compatibility, rollback, or recoverable internal slices: `implementation-plan`;
 - explicit user request for repository-local tracking setup or an exact state update, after confirming no external tracker exists: `local-work-tracker`;
 - explicitly assigned implementation-ready Feature or Task: Matt Pocock's `implement` when installed;
+- implementation or review reports a Feature/Task as done, or the user asks to finish, close, merge, or clean up a Feature: `feature-close`;
 - cross-window or cross-harness transfer: Matt Pocock's `handoff` when installed;
 - qualifying terminology or durable architecture decision: `domain-context`;
 - explicitly requested docs convention: `docs-workflow-bootstrap`.

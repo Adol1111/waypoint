@@ -90,7 +90,7 @@ docs/work/
 
 `feature.md` 是正常入口。拆分后的 Feature 必须共享同一 spec；design、Task plan 和 execution plan 都按门槛创建。
 
-实现完成后调用 `feature-close`，逐层核对适用的 Task、Feature、Milestone Acceptance 复选框及验证/集成证据，再决定是否收口。具体 MR 合并、branch/worktree 删除和丢弃工作仍分别需要精确确认。
+实现完成后调用 `feature-close`，主动将每项适用的 Task、Feature、Milestone Acceptance 要求与当前实现及验证/集成证据逐一对照，已勾选和未勾选的项目都要检查。它会执行可用检查以补齐证据，将已证实满足的项目标为 `[x]`，撤销缺乏依据的勾选并说明原因，逐项报告证据和剩余阻塞。合并前检查通过后，它会主动询问适用的下一步：合并具体分支或 PR/MR、发布 PR/MR，或保留工作稍后处理。依赖集成的项目保持未勾选，待集成后验证。集成验证通过后再询问是否清理；具体合并、branch/worktree 删除和丢弃工作仍分别需要精确确认。
 
 全局生命周期是 `requirements.md` → active Feature → `completed.md`。完整候选物化为 Feature 时从活动需求池移除；部分选择只改写剩余部分。Feature ID 全局唯一；用户采用 Milestone 时文档按 Milestone 分组，否则保持扁平。完成后保留 Feature 目录，`completed.md` 不分组、按时间倒序只记录日期、链接和可选的一句结果。
 

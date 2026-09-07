@@ -1,5 +1,13 @@
 # waypoint-skills
 
+## 0.6.2
+
+### Patch Changes
+
+- [#26](https://github.com/Adol1111/waypoint/pull/26) [`13853e9`](https://github.com/Adol1111/waypoint/commit/13853e98effdb57e0cb424b7389a63d32b629ee0) Thanks [@Adol1111](https://github.com/Adol1111)! - Make `feature-close` proactively verify checked and unchecked Acceptance items against the current implementation, run available checks to fill evidence gaps, and correct checkbox marks with item-level evidence before deciding whether closeout can proceed.
+
+  After pre-integration checks pass, actively offer applicable merge, PR/MR publication, or keep-work choices. Verify integration-dependent Acceptance after the selected integration, then ask about cleanup with separate target-specific authorization.
+
 ## 0.6.1
 
 ### Patch Changes
